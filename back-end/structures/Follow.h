@@ -11,5 +11,10 @@ typedef struct follow_t{
     int follower_id; // follower -> user
 }*Follow;
 
+Follow follow_create();
+
+void follow_print(Follow follow);
+
+void follow_free(Follow follow);
 
 #endif //LAP_TRINH_MANG_FOLLOW_H
