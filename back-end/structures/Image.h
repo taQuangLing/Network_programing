@@ -9,11 +9,4 @@ typedef struct image_t{
     int size;
     char* path;
 }*Image;
-
-Image image_create();
-
-void image_print(Image image);
-
-void image_free(Image image);
-
 #endif //LAP_TRINH_MANG_IMAGE_H

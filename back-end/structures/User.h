@@ -17,10 +17,5 @@ typedef struct user_t{
     char *avatar;
 }*User;
 
-User user_create();
-
-void user_print(User user);
-
-void user_free(User user);
 
 #endif //LAP_TRINH_MANG_USER_H

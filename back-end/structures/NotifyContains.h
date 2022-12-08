@@ -10,11 +10,4 @@ typedef struct notify_contains_t{
     int cmt_id;
     int post_id;
 }*NotifyContains;
-
-NotifyContains notifyContains_create();
-
-void notifyContains_print(NotifyContains notifyContains);
-
-void notifyContains_free(NotifyContains notifyContains);
-
 #endif //LAP_TRINH_MANG_NOTIFYCONTAINS_H

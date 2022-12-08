@@ -18,10 +18,4 @@ typedef struct post_t{
     char *file; // path
 }*Post;
 
-Post post_create();
-
-void post_print(Post post);
-
-void post_free(Post post);
-
 #endif //LAP_TRINH_MANG_POST_H
