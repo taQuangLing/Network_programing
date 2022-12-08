@@ -11,4 +11,10 @@ typedef struct reaction_t{
     int post_id;
 }*Reaction;
 
+Reaction reaction_create();
+
+void reaction_print(Reaction reaction);
+
+void reaction_free(Reaction reaction);
+
 #endif //LAP_TRINH_MANG_REACTION_H

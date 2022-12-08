@@ -5,11 +5,7 @@
 #include "File.h"
 
 File file_create(){
-    File file = (File)malloc(sizeof (struct file_t));
-    file->id = 0;
-    file->path = NULL;
-    file->size = 0;
-    return file;
+    return (File)calloc(1, sizeof (struct file_t));
 }
 
 void file_print(File file){
