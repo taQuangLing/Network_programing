@@ -26,3 +26,7 @@ char *convert_timestamp(char *timestamp){
 
     return res;
 }
+
+int append(char *string, int index, char *data){
+    return index + sprintf(string + index, "%s", data);
+}

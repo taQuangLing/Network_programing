@@ -7,4 +7,6 @@
 
 char *convert_timestamp(char *timestamp);
 
+int append(char *sql, int index, char *data);
+
 #endif //LAP_TRINH_MANG_APPUTILS_H

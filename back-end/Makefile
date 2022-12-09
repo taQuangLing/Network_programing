@@ -4,12 +4,14 @@ LIBS = -lm
 MYSQLCFLAGS= -L/usr/local/mysql/lib
 MYSQLLIBS= -lmysqlclient
 
-all: main
+all: test
 
-main: main.o
-	${CC} $(MYSQLCFLAGS) main.o $(MYSQLLIBS) -o main
+test: test.o db_linklist.o
+	${CC} $(MYSQLCFLAGS) test.o $(MYSQLLIBS) db_linklist.o -o test
 
-main.o: main.c
-	${CC} ${CFLAGS} main.c
+test.o: test.c
+	${CC} ${CFLAGS} test.c
+db_linklist.o: lib/db_linklist.c
+	${CC} ${CFLAGS} lib/db_linklist.c
 clean:
 	rm -f *.o *~
