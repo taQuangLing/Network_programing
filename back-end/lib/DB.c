@@ -52,7 +52,7 @@ Table DB_get(MYSQL **conn, char *sql){
     Table data = (Table) malloc(sizeof (struct data_t));
 
     if (mysql_query(*conn, sql)) {
-        print_mess((char*)mysql_error(*conn), "");
+        print_mess((char*)mysql_error(*conn), "FUNCTION: DB_get");
         exit(1);
     }
     res = mysql_store_result(*conn);
@@ -88,12 +88,6 @@ Table DB_get_by_id(MYSQL **conn, char *table, char *id){
 }
 
 int DB_update(MYSQL **conn, char *table, char *id, char **key, char **value, int num){
-//    char sql[1000] = "update comment "
-//                     "set post_id = val1, "
-//                     "user_id = val2, "
-//                     "created_at = val3, "
-//                     "content = val4 "
-//                     "where id = val5";
     Table data = DB_get_by_id(conn, table, id);
     for (int i = 0; i < num; i++){
         for (int j = 0; j < data->column; j++){
