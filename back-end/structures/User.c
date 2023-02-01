@@ -16,9 +16,9 @@ void user_print(User user){
     printf("\nbio = %s", user->bio);
     printf("\nbirthday = %s", user->birthday);
     printf("\nemail = %s", user->email);
-    printf("\n", user->gender);
-    printf("\n", user->pwd);
-    printf("\n", user->created_at);
+    printf("\ngender = %c", user->gender);
+    printf("\npassword = %s", user->pwd);
+    printf("\ncreated_at = %s", user->created_at);
 }
 
 void user_free(User user){

@@ -30,29 +30,31 @@ typedef struct db_lnode{
 	void* data;
 	struct db_lnode* prev;
 	struct db_lnode* next;
-}db_lnode_t;
+}node;
 
 typedef struct db_list{
 	int limit_size;
-	db_lnode_t* head;
-	db_lnode_t* tail;
-}db_list_t;
+	node* head;
+	node* tail;
+}list;
 
-db_list_t* db_list_create(void );
-int __db_list_insert_before(db_list_t** ,int ,void* );
+list* list_create(void );
+int list_insert_before(list** ,int ,void* );
 
-int __db_list_insert_after(db_list_t** ,int ,void* );
+int list_insert_after(list** ,int ,void* );
 
-void __db_lnode_flush(db_list_t* ,int ,void* );
+void lnode_flush(list* ,int ,void* );
 
-void __db_list_delete(db_list_t** ,int );
+void list_delete(list** ,int );
 
-void __db_list_destory(db_list_t* );
+void list_destory(list* );
 
-void* __db_list_visit(db_list_t** ,int );
+void* list_visit(list* ,int );
 
-void __db_list_travel(db_list_t* ,void(*do_function)(void* ));
+void list_travel(list* ,void(*do_function)(void* ));
 
-int __db_list_search(db_list_t** ,void* ,int(*compare)(void* ,void* ));
+int list_search(list** ,void* ,int(*compare)(void* ,void* ));
+
+void list_free(list * root);
 
 #endif
