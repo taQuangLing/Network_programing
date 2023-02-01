@@ -5,16 +5,16 @@
 #ifndef LAP_TRINH_MANG_DB_H
 #define LAP_TRINH_MANG_DB_H
 
-typedef struct data_t{
-    long size;
-    int column;
-    char **header;
-    char ***data;
-}*Table;
-
 #include <mysql/mysql.h>
 
-int add(MYSQL **conn, char *table, char **key, char **value, int num_field);
+typedef struct data_t{
+    long size; // so hang
+    int column; // so cot
+    char **header; // tieu de
+    char ***data; // data
+}*Table;
+
+int DB_insert(MYSQL **conn, char *table, char **key, char **value, int num_field);
 
 Table DB_get_by_id(MYSQL **conn, char *table, char *id);
 

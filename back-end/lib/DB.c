@@ -5,8 +5,8 @@
 #include <string.h>
 #include "DB.h"
 #include "mysql/mysql.h"
-#include "message.h"
 #include "AppUtils.h"
+#include "config.h"
 
 
 void DB_free_data(Table *data){
@@ -39,9 +39,11 @@ int DB_insert(MYSQL **conn, char *table, char **key, char **value, int num_field
     sprintf(sql + index, ");");
     printf("sql = \"%s\"", sql);
     if (mysql_query(*conn, sql)){
-        print_mess((char*)mysql_error(*conn), ", FUNCTION: DB_insert");
+        logger(L_ERROR, "%s; %s", (char*)mysql_error(*conn),"function: DB_insert - 41");
         return -1;
     }
+    logger(L_SUCCESS, "%s", "function: DB_insert");
+    return 1;
 }
 
 Table DB_get(MYSQL **conn, char *sql){
@@ -52,7 +54,7 @@ Table DB_get(MYSQL **conn, char *sql){
     Table data = (Table) malloc(sizeof (struct data_t));
 
     if (mysql_query(*conn, sql)) {
-        print_mess((char*)mysql_error(*conn), "FUNCTION: DB_get");
+        logger(L_ERROR, "%s; %s", (char*)mysql_error(*conn),"function: DB_get - 54");
         exit(1);
     }
     res = mysql_store_result(*conn);
@@ -75,7 +77,8 @@ Table DB_get(MYSQL **conn, char *sql){
     data->size = num_row;
     data->column = num_field;
     mysql_free_result(res);
-     return data;
+    logger(L_SUCCESS, "%s", "function: DB_get");
+    return data;
 }
 
 Table DB_get_by_id(MYSQL **conn, char *table, char *id){
@@ -114,10 +117,11 @@ int DB_update(MYSQL **conn, char *table, char *id, char **key, char **value, int
 
     if (mysql_query(*conn, sql)){
         DB_free_data(&data);
-        print_mess((char*)mysql_error(*conn), ", FUNCTION: DB_update");
+        logger(L_ERROR, "%s; %s", (char*)mysql_error(*conn),"function: DB_update - 54");
         return -1;
     }
     DB_free_data(&data);
+    logger(L_SUCCESS, "%s", "function: DB_update");
     return 1;
 }
 //int main(){
@@ -138,7 +142,7 @@ int DB_update(MYSQL **conn, char *table, char *id, char **key, char **value, int
 ////    char table[] =  "comment";
 ////    char *key[] = {"post_id", "user_id", "created_at", "content"};
 ////    char *value[] = {"2", "2", "2022/9/12", "Ta Quang Linh"};
-////    if (add(&conn, table, key, value, 4) == -1){
+////    if (DB_insert(&conn, table, key, value, 4) == -1){
 ////        mysql_close(conn);
 ////        exit(0);
 ////    }

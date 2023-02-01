@@ -20,17 +20,18 @@
  * =====================================================================================
  */
 
-#include "db_linklist.h"
+#include "linklist.h"
 
-db_list_t* db_list_create(void ){
-	db_list_t* list_head;
-	list_head=(db_list_t* )malloc(sizeof(db_list_t));
+list * list_create(void ){
+	list * list_head;
+	list_head=(list * )malloc(sizeof(list ));
 	if(list_head==NULL){
 	      errno=ENOMEM;
 	      return NULL;
 	}
 	list_head->limit_size=0;
-	list_head->head=(db_lnode_t* )malloc(sizeof(db_lnode_t));
+	list_head->head=(node* )malloc(sizeof(node
+            ));
 	if(list_head->head==NULL){
 		free(list_head);
 		errno=ENOMEM;
@@ -42,16 +43,17 @@ db_list_t* db_list_create(void ){
 	return list_head;
 }
 
-int __db_list_insert_before(db_list_t** list_head, int num, void* new_node_data){
+int list_insert_before(list ** list_head, int num, void* new_node_data){
 	int counter=1;
-	db_lnode_t* current;
-	db_lnode_t* new_node;
+	node* current;
+	node* new_node;
 	if( *list_head==NULL || list_head==NULL){
 		errno=EINVAL;
 		return -1;
 	}
 	if((*list_head)->limit_size!=0){
-		new_node=(db_lnode_t* )malloc(sizeof(db_lnode_t));
+		new_node=(node* )malloc(sizeof(node
+                ));
 		if(new_node==NULL){
 			errno=ENOMEM;
 			return -1;
@@ -64,17 +66,18 @@ int __db_list_insert_before(db_list_t** list_head, int num, void* new_node_data)
 				counter++;
 				current = current->next;
 			}
-			if(counter==1){
+			if(current->prev == NULL){
 				(*list_head)->head->prev=new_node;
 				new_node->next=(*list_head)->head;
 				(*list_head)->head=new_node;
 				(*list_head)->limit_size++;
 				return 0;
 			}
-			current->next->prev=new_node;
+
 			new_node->prev=current->prev;
+            new_node->next=current;
+            current->prev->next=new_node;
 			current->prev=new_node;
-			new_node->next=current;
 			(*list_head)->limit_size++;
 			return 0;
 		}else{
@@ -93,25 +96,25 @@ int __db_list_insert_before(db_list_t** list_head, int num, void* new_node_data)
 	}
 }
 
-int __db_list_insert_after(db_list_t** list_head ,int num ,void* new_node_data){
+int list_insert_after(list ** list_head ,int num ,void* new_node_data){
 	int counter=0;
-	db_lnode_t* current;
-	db_lnode_t* new_node;
+	node* current;
+	node* new_node;
 	if((*list_head)==NULL || list_head==NULL){
 		errno=EINVAL;
 		return -1;
 	}
 	if((*list_head)->limit_size!=0){
-        new_node=(db_lnode_t* )malloc(sizeof (db_lnode_t));
+        new_node=(node* )malloc(sizeof (node));
 		if(new_node==NULL){
 			errno=ENOMEM;
 			return -1;
 		}
 		new_node->data=new_node_data;
 		new_node->next=new_node->prev=NULL;
-		if(num>0&&num<=(*list_head)->limit_size){
+		if(num>=0&&num<(*list_head)->limit_size){
 			current=(*list_head)->head;
-			while(counter!=num-1){
+			while(counter<num){
 				counter++;
 				current=current->next;
 			}
@@ -134,7 +137,7 @@ int __db_list_insert_after(db_list_t** list_head ,int num ,void* new_node_data){
 			return -1;
 		}
 	}else{
-		if(num!=0){
+		if(num!=-1){
 			errno=EINVAL;
 			return -1;
 		}
@@ -144,9 +147,9 @@ int __db_list_insert_after(db_list_t** list_head ,int num ,void* new_node_data){
 	}
 }
 
-void __db_lnode_flush(db_list_t* list_head ,int num ,void* new_node_data){
+void lnode_flush(list * list_head ,int num ,void* new_node_data){
 	int counter=0;
-	db_lnode_t* current;
+	node* current;
 	if(list_head==NULL || num<0 || num>list_head->limit_size){
 		errno=EINVAL;
 		return ;
@@ -159,20 +162,26 @@ void __db_lnode_flush(db_list_t* list_head ,int num ,void* new_node_data){
 	current->data=new_node_data;
 }
 
-void __db_list_delete(db_list_t** list_head ,int num){
-	int counter=1;
-	db_lnode_t* current;
-	db_lnode_t* tmp;
+void list_delete(list ** list_head ,int num){
+	int i = 0;
+	node* current;
+	node* tmp;
 	if((*list_head)==NULL||list_head==NULL){
 		errno=EINVAL;
 		return ;
 	}
 	current=(*list_head)->head;
-	while(counter<num){
-		counter++;
-		current=current->next;
-	}
-	if(counter==1){
+	for (i = 0; i < num; i++){
+        current = current->next;
+    }
+    if ((*list_head)->limit_size == 1){
+        (*list_head)->head->next=(*list_head)->head->prev=NULL;
+        (*list_head)->head->data=NULL;
+        (*list_head)->tail=(*list_head)->head;
+        (*list_head)->limit_size--;
+        return;
+    }
+	if(num == 0){
 		tmp=(*list_head)->head;
 		(*list_head)->head=(*list_head)->head->next;
 		free(tmp);
@@ -180,7 +189,7 @@ void __db_list_delete(db_list_t** list_head ,int num){
 		(*list_head)->limit_size--;
 		return ;
 	}
-	if((*list_head)->limit_size==counter){
+	if((*list_head)->limit_size == i+1){
 		tmp=(*list_head)->tail;
 		(*list_head)->tail=(*list_head)->tail->prev;
 		free(tmp);
@@ -195,9 +204,9 @@ void __db_list_delete(db_list_t** list_head ,int num){
 	(*list_head)->limit_size--;
 }
 
-void __db_list_destory(db_list_t* list_head){
-	db_lnode_t* current;
-	db_lnode_t* pos;
+void list_destory(list * list_head){
+	node* current;
+	node* pos;
 	if(list_head==NULL){
 		errno=EINVAL;
 		return ;
@@ -213,33 +222,31 @@ void __db_list_destory(db_list_t* list_head){
 	}
 }
 
-void* __db_list_visit(db_list_t** list_head ,int num){
-	int counter;
-	db_lnode_t* current=(*list_head)->head;
-	if(num<0||num>(*list_head)->limit_size){
+void* list_visit(list * list_head ,int num){
+	node* current=(list_head)->head;
+	if(num<0 || num>(list_head)->limit_size-1){
 		errno=EINVAL;
 		return NULL;
 	}
-	for(counter=0;counter<num;counter++){
+	for(int i = 0;i < num ;i++){
 		current=current->next;
-		counter++;
 	}
 	return current->data;
 }
 
-void __db_list_travel(db_list_t* list_head ,void(*do_function)(void* )){
+void list_travel(list * list_head ,void(*do_function)(void* )){
 	if(list_head->limit_size<0 || list_head==NULL){
 		errno=EINVAL;
 		return ;
 	}
 	for(int i=0;i<list_head->limit_size;i++){
-		(*do_function)(__db_list_visit(&list_head,i));
+		(*do_function)(list_visit(list_head,i));
 	}
 }
 
-int __db_list_search(db_list_t** list_head,void* find_data ,int(*compare)(void* ,void* )){
+int list_search(list ** list_head,void* find_data ,int(*compare)(void* ,void* )){
 	int counter=1;
-	db_lnode_t* current;
+	node* current;
 	if((*list_head)==NULL||list_head==NULL){
 		errno=EINVAL;
 		return errno;
@@ -252,4 +259,16 @@ int __db_list_search(db_list_t** list_head,void* find_data ,int(*compare)(void* 
 	if(current->next==NULL && compare(current->data,find_data)!=0)
 	      return 0;
 	return counter;
+}
+void list_free(list * root){
+	if(root->limit_size<0 || root==NULL){
+		errno=EINVAL;
+		return ;
+	}
+	void *p;
+	for (int i = 0; i < root->limit_size; i++){
+		p = list_visit(root, i);
+		free(p);
+	}
+	list_destory(root);
 }
