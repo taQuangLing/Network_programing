@@ -38,7 +38,7 @@ int login(int client, Param p){
     sprintf(sql, "select * from user where email = '%s' and password = '%s';", email, password);
     Table data = DB_get(&conn, sql);
     if (data->size == 0){
-        logger(L_SUCCESS, "%s", "Email va mat khau khong hop le");
+        logger(L_ERROR, "%s", "Email va mat khau khong hop le");
         response = data_create(NULL, INCORRECT_PASS);
         return 0;
     }else{
