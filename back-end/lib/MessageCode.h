@@ -42,7 +42,7 @@ typedef enum{
     NEWS, // 33
     OPEN, // 34
     COMMENT, // 35
-    FRIEND, //36
+    FRIENDS, //36
     DELETE_FRIEND, // 37
     FOLLOWING, // 38
     FOLLOWER, // 39
@@ -51,6 +51,7 @@ typedef enum{
     NOTIFY, // 42
     SEARCH, // 43
 
+    COMMENTS,
 }MessageCode;
 
 void print_mess(char *s1, char *s2);

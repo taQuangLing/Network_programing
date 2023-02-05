@@ -16,9 +16,9 @@ typedef struct data_t{
 
 int DB_insert(MYSQL **conn, char *table, char **key, char **value, int num_field);
 
-Table DB_get_by_id(MYSQL **conn, char *table, char *id);
+Table DB_get_by_id(MYSQL **conn, char *table, int id);
 
-int DB_update(MYSQL **conn, char *table, char *id, char **key, char **value, int num);
+int DB_update(MYSQL **conn, char *table, int id, char **key, char **value, int num);
 
 Table DB_get(MYSQL **conn, char *sql);
 
