@@ -81,16 +81,23 @@ Table DB_get(MYSQL **conn, char *sql){
     return data;
 }
 
-Table DB_get_by_id(MYSQL **conn, char *table, char *id){
+Table DB_get_by_id(MYSQL **conn, char *table, int id){
+    char idS[10];
+    refresh(idS, 10);
+    intTostr(id, idS);
     char sql[100] = "select * from ";
     int index = (int)strlen(sql);
     index = append(sql, index, table);
     index = append(sql, index, " where id = ");
-    index = append(sql, index, id);
+    index = append(sql, index, idS);
     return DB_get(conn, sql);
 }
 
-int DB_update(MYSQL **conn, char *table, char *id, char **key, char **value, int num){
+int DB_update(MYSQL **conn, char *table, int id, char **key, char **value, int num){
+    char idS[10];
+    refresh(idS, 10);
+    intTostr(id, idS);
+
     Table data = DB_get_by_id(conn, table, id);
     for (int i = 0; i < num; i++){
         for (int j = 0; j < data->column; j++){
@@ -113,7 +120,7 @@ int DB_update(MYSQL **conn, char *table, char *id, char **key, char **value, int
         index = append(sql, index, "', ");
     }
     index = append(sql, index, " where id = ");
-    index = append(sql, index, id);
+    index = append(sql, index, idS);
 
     if (mysql_query(*conn, sql)){
         DB_free_data(&data);

@@ -15,6 +15,7 @@ create table follow(
     id int auto_increment,
     user_id int not null,
     follower_id int not null,
+    status int,
     primary key (id)
 )
 create table noitification(
@@ -49,12 +50,6 @@ create table post(
     content text,
     created_at timestamp not null,
     book varchar(100) not null,
-    primary key (id)
-)
-create table image(
-    id int auto_increment,
-    size int not null,
-    path text not null ,
     primary key (id)
 )
 create table file(

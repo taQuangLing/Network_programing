@@ -8,7 +8,7 @@
 #define TIMEOUT 2         /* Timeout cho select() là 5s */
 
 #define BUFF_LEN 1024
-#define PORT 5001
+#define PORT 5004
 #define BUFF_SIZE 1024
 #define BUFFER 1024
 

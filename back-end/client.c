@@ -17,6 +17,8 @@ int id;
 int client_sock;
 
 
+int notify();
+
 int login(){
     char enter;
     char i2s[10];
@@ -61,7 +63,7 @@ int login(){
 int main(int argc, char *argv[]){
 
     char idAddress[] = "127.0.0.1";
-    int port = PORT;
+    int port = atoi(argv[1]);
 
     struct sockaddr_in server_addr; /* server's address information */
     int  bytes_sent, bytes_received;
@@ -87,6 +89,7 @@ int main(int argc, char *argv[]){
     while (1){
         printf("\n============START============");
         printf("\n1. Login");
+        printf("\n100. Notification");
         printf("\nYour choice: ");
 
         scanf("%d", &menu);
@@ -94,7 +97,9 @@ int main(int argc, char *argv[]){
         switch (menu) {
             case 1:
                 status = login();
-                if (status == 0)
+                break;
+            case 100:
+                status = notify();
                 break;
             case 111:
                 exit(0);
@@ -103,4 +108,41 @@ int main(int argc, char *argv[]){
 
     close(client_sock);
     return 0;
+}
+
+int notify() {
+    int count;
+    Data request, response;
+    Param root = param_create();
+    param_add_int(&root, id);
+    request = data_create(root, NOTIFY);
+    send_data(client_sock, request, 0, 0);
+    // waiting from server
+    response = recv_data(client_sock, 0, 0);
+
+    if (response->message == FAIL){
+        logger(L_WARN, "%s", response->params->value);
+        return 0;
+    }
+    int seen, i;
+    char *content, *username, *image;
+    count = param_get_int(&response->params);
+    data_free(&response);
+    for (i = 0; i < count; i++){
+        response = recv_data(client_sock, 0, 0);
+
+        Param p = response->params;
+        username = param_get_str(&p);
+        image = param_get_str(&p);
+        content = param_get_str(&p);
+        seen = param_get_int(&p);
+
+        if (seen == 1){
+            printf("\n\t%s(img=\"%s\") %s (đã xem)", username, image, content);
+        }else
+            printf("\n\t%s(img=\"%s\")\n\t %s (chưa xem)",  username, image, content);
+
+        data_free(&response);
+    }
+    return 1;
 }

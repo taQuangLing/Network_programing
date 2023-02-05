@@ -24,6 +24,8 @@ void param_free(Param *root);
 Data data_create(Param root, MessageCode code);
 void data_free(Data *data);
 void data_print(Data data);
+char *param_get_str(Param *p);
+int param_get_int(Param *p);
 #endif //LAP_TRINH_MANG_DATA_H
 
 // Param root = param_create(); Param tail = root;

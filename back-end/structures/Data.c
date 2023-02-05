@@ -1,5 +1,6 @@
 #include <malloc.h>
 #include <string.h>
+#include <stdlib.h>
 #include "Data.h"
 #include "../lib/AppUtils.h"
 
@@ -60,4 +61,12 @@ void data_print(Data data){
     for(Param p = data->params; p != NULL; p = p->next){
         printf("Param[%d] = %s\n", i++, p->value);
     }
+}
+char *param_get_str(Param *p){
+    Param result = *p;
+    *p = (*p)->next;
+    return result->value;
+}
+int param_get_int(Param *p){
+    return atoi(param_get_str(p));
 }
