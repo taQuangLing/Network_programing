@@ -37,12 +37,11 @@ int DB_insert(MYSQL **conn, char *table, char **key, char **value, int num_field
         if (j < num_field - 1)index = append(sql, index, ",");
     }
     sprintf(sql + index, ");");
-    printf("sql = \"%s\"", sql);
     if (mysql_query(*conn, sql)){
-        logger(L_ERROR, "%s; %s", (char*)mysql_error(*conn),"function: DB_insert - 41");
+        logger(L_ERROR, "function: DB_insert, sql = %s. %s.", sql, (char*)mysql_error(*conn));
         return -1;
     }
-    logger(L_SUCCESS, "%s", "function: DB_insert");
+    logger(L_SUCCESS, "function: DB_insert, sql = %s", sql);
     return 1;
 }
 
@@ -136,6 +135,7 @@ char *get_by(Table data, char *field){
         if (strcmp(data->header[i], field) == 0)return data->data[0][i];
     }
     logger(L_ERROR, "Không tồn tại trường: %s", field);
+    return NULL;
 }
 //int main(){
 //    char *server = "localhost";

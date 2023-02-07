@@ -15,6 +15,7 @@
 #include "error.h"
 #include "config.h"
 #include "MessageCode.h"
+#include "AppUtils.h"
 
 #define NUM_OF_CODE 10
 
@@ -133,7 +134,7 @@ int server_init_connect(char *service) {
 
     struct addrinfo *server;
     if (getaddrinfo(NULL, service, &addrConfig, &server) != 0) {
-        send_message(ERR_SERVER_NOT_FOUND, "");
+        logger(L_ERROR, "SERVER NOT FOUND");
         exit(FAIL);
     }
 
@@ -180,7 +181,7 @@ int client_init_connect(char *server, char *port) {
     // Get server information via server
     struct addrinfo *servAddr;
     if (getaddrinfo(server, port, &addrConfig, &servAddr) != 0) {
-        send_message(ERR_SERVER_NOT_FOUND, "");
+        logger(L_ERROR, "Error server not found!");
         exit(FAIL);
     }
 
@@ -213,7 +214,7 @@ int accept_connection(int sock) {
     // Wait for a client to connect
     int client_fd = accept(sock, (struct sockaddr *) &client, &clientAddrLen);
     if (client_fd < 0) {
-        send_message(CONECTION_FAIL, "");
+        logger(L_ERROR, "Connect fail!");
         exit(FAIL);
     }
 

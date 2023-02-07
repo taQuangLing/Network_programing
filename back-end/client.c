@@ -25,6 +25,8 @@ void write_file();
 
 int exit_server();
 
+int sign_up();
+
 int login(){
     char enter;
     char i2s[10];
@@ -96,6 +98,8 @@ int main(int argc, char *argv[]){
         printf("\n============START============");
         printf("\n1. Login");
         printf("\n2. Open book");
+        printf("\n3. Sign up");
+        printf("\n4. Forgot password");
         printf("\n100. Notification");
         printf("\nYour choice: ");
 
@@ -108,6 +112,9 @@ int main(int argc, char *argv[]){
             case 2:
                 status = open_book();
                 break;
+            case 3 :
+                status = sign_up();
+                break;
             case 100:
                 status = notify();
                 break;
@@ -119,6 +126,62 @@ int main(int argc, char *argv[]){
 
     close(client_sock);
     return 0;
+}
+
+int sign_up() {
+    char enter;
+    char email[EMAIL_LEN] = {0}, password[PASSWORD_LEN] = {0}, confirm_pwd[PASSWORD_LEN] = {0}, username[USERNAME_LEN] = {0};
+    int status;
+
+    while(1){
+        printf("Nhap email: ");
+        scanf("%s", email);
+        scanf("%c", &enter);
+        printf("Nhap username: ");
+        scanf("%s", username);
+        scanf("%c", &enter);
+        printf("Nhap password: ");
+        scanf("%s", password);
+        scanf("%c", &enter);
+        printf("Nhap confirm password: ");
+        scanf("%s", confirm_pwd);
+        scanf("%c", &enter);
+        if (check_space(email) == 0 ||
+            check_space(username) == 0 ||
+            check_space(password) == 0 ||
+            check_space(confirm_pwd) == 0){
+            printf("Khong duoc bo trong!");
+            continue;
+        }
+        if (strcmp(password, confirm_pwd) != 0){
+            printf("Mat khau xac nhan khong dung!");
+            continue;
+        }
+        break;
+
+    }
+
+    Param root = param_create(), tail = root;
+    param_add_str(&tail, email);
+    param_add_str(&tail, username);
+    param_add_str(&tail, password);
+
+    Data request = data_create(root, SIGNUP);
+    if (send_data(client_sock, request, 0, 0) == -1){
+        logger(L_ERROR, "function: sign_up() - 169");
+        return -1;
+    }
+    Data response = recv_data(client_sock, 0, 0);
+
+    if (response->message == EMAIL_DUPLICATE){
+        logger(L_WARN, "Email da duoc dang ky!");
+        status = 0;
+    }else{
+        logger(L_SUCCESS, "Dang ky thanh cong!");
+        status = 1;
+    }
+    data_free(&response);
+    return status;
 }
 
 int exit_server() {

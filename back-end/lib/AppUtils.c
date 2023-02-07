@@ -162,7 +162,7 @@ int send_error(int sock, int flag){
 void get_time_now(char *res){
     time_t rawtime;
     struct tm * timeinfo;
-    const char format[] = "%H:%M:%S %d:%m:%Y";
+    const char format[] = "%Y-%m-%d %H:%M:%S";
     time ( &rawtime );
     timeinfo = localtime ( &rawtime );
 

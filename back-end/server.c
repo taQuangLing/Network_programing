@@ -8,8 +8,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <arpa/inet.h>
-#include <ctype.h>
 #include <mysql/mysql.h>
 #include "lib/http.h"
 #include "lib/Data.h"
@@ -27,6 +25,8 @@ int notify(int client, Param p);
 int open_book(int client, Param p);
 
 void send_file(int client, char *path);
+
+int sign_up(int client, Param pParam);
 
 int login(int client, Param p){
     Data response;
@@ -81,6 +81,7 @@ void handle_client(int client){
                 if (status == 0)exit(0);
                 break;
             case SIGNUP:
+                status = sign_up(client, p);
                 break;
             case FORGOT:
                 break;
@@ -121,6 +122,44 @@ void handle_client(int client){
         if (connection == 0)break;
     }
 }
+
+int sign_up(int client, Param p) {
+    char *username, *password, *email;
+    email = param_get_str(&p);
+    username = param_get_str(&p);
+    password = param_get_str(&p);
+    Table data;
+    Data response;
+    char sql[1000] = {0};
+
+    // check email
+    sprintf(sql, "select * from user where email = '%s'", email);
+    data = DB_get(&conn, sql);
+    if (data->size > 0){
+        response = data_create(NULL, EMAIL_DUPLICATE);
+        send_data(client, response, 0, 0);
+        DB_free_data(&data);
+        return 1;
+    }
+    DB_free_data(&data);
+
+    // insert
+    char now[20] = {0};
+    char *key[] = {"email", "name", "created_at", "password"};
+    get_time_now(now);
+    char *value[] = {email, username, now, password};
+    if (DB_insert(&conn, "user", key, value, 4) == -1){
+        mysql_close(conn);
+        return -1;
+    }
+    response = data_create(NULL, SUCCESS);
+    if (send_data(client, response, 0, 0) == -1){
+        logger(L_ERROR, "function: sign_up");
+        return -1;
+    }
+    return 1;
+}
+
 
 int open_book(int client, Param p) {
     Data response;

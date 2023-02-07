@@ -6,8 +6,8 @@
 #define LAP_TRINH_MANG_MESSAGECODE_H
 
 typedef enum{
-    USER_DUPLICATE = 0, //0
-    ACC_BLOCKED, //1
+    USERNAME_DUPLICATE = 0, //0
+    EMAIL_DUPLICATE, //1
     ACC_EXISTED, //2
     LOGIN_SUCCESS, //3
     INCORRECT_PASS, //4
@@ -54,8 +54,5 @@ typedef enum{
     FAIL_OPEN_FILE,
     DONE,
 }MessageCode;
-
-void print_mess(char *s1, char *s2);
-void send_message(MessageCode mess, char *param);
 
 #endif //LAP_TRINH_MANG_MESSAGECODE_H
