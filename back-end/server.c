@@ -28,6 +28,8 @@ void send_file(int client, char *path);
 
 int sign_up(int client, Param pParam);
 
+int forgot_password(int client, Param p);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -84,6 +86,7 @@ void handle_client(int client){
                 status = sign_up(client, p);
                 break;
             case FORGOT:
+                status = forgot_password(client, p);
                 break;
             case NEWS:
                 break;
@@ -121,6 +124,51 @@ void handle_client(int client){
         data_free(&request);
         if (connection == 0)break;
     }
+}
+
+int forgot_password(int client, Param p) {
+    Param root;
+    int id;
+    char sql[1000] = {0};
+    char *email = param_get_str(&p);
+    Data response, request;
+
+    sprintf(sql, "select * from user where email = '%s'", email);
+    Table data = DB_get(&conn, sql);
+    if (data->size == 1){
+        id = atoi(get_by(data, "id"));
+        root = param_create();
+        param_add_int(&root, id);
+        response = data_create(root, OK);
+        send_data(client, response, 0, 0);
+        DB_free_data(&data);
+    }else
+    if (data->size > 1){
+        logger(L_WARN, "Tai khoan trung email: %", email);
+        response = data_create(NULL, MAINTENANCE);
+        send_data(client, response, 0, 0);
+        DB_free_data(&data);
+        return 1;
+    }else
+    {
+        response = data_create(NULL, EMAIL_NOT_EXIST);
+        send_data(client, response, 0, 0);
+        DB_free_data(&data);
+        return 1;
+    }
+    request = recv_data(client, 0, 0);
+    int key = param_get_int(&request->params);
+    char *password = param_get_str(&request->params);
+    char *field[] = {"password"};
+    char *value[] = {password};
+    if (DB_update(&conn, "user", key, field, value, 1) == 1){
+        response = data_create(NULL, SUCCESS);
+    }else{
+        response = data_create(NULL, ERROR);
+    }
+    send_data(client, response, 0, 0);
+    data_free(&request);
+    return 0;
 }
 
 int sign_up(int client, Param p) {

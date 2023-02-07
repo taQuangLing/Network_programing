@@ -111,21 +111,22 @@ int DB_update(MYSQL **conn, char *table, int id, char **key, char **value, int n
     index = append(sql, index, table);
     index = append(sql, index, " set ");
     for (int i = 1; i < data->column; i++){
+        if (data->data[0][i] == NULL)continue;
         index = append(sql, index, data->header[i]);
         index = append(sql, index, " = \'");
         index = append(sql, index, data->data[0][i]);
-        if (i == data->column - 1)index = append(sql, index, "\' ");
-        else
         index = append(sql, index, "', ");
     }
+    index -= 2;
     index = append(sql, index, " where id = ");
     index = append(sql, index, idS);
 
     if (mysql_query(*conn, sql)){
         DB_free_data(&data);
-        logger(L_ERROR, "%s; %s", (char*)mysql_error(*conn),"function: DB_update - 54");
+        logger(L_ERROR, "function: update(), sql = \"%s\"; %s", sql, (char*)mysql_error(*conn));
         return -1;
     }
+    logger(L_INFO, "sql = %s", sql);
     DB_free_data(&data);
     logger(L_SUCCESS, "%s", "function: DB_update");
     return 1;

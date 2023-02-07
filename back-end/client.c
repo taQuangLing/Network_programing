@@ -27,6 +27,8 @@ int exit_server();
 
 int sign_up();
 
+int forgot_password();
+
 int login(){
     char enter;
     char i2s[10];
@@ -74,7 +76,7 @@ int main(int argc, char *argv[]){
     int port = atoi(argv[1]);
 
     struct sockaddr_in server_addr; /* server's address information */
-    int  bytes_sent, bytes_received;
+    int  bytes_sent, bytes_received, connection = 0;
 
     //Step 1: Construct socket
     client_sock = socket(AF_INET,SOCK_STREAM,0);
@@ -95,6 +97,7 @@ int main(int argc, char *argv[]){
     char enter;
     int status;
     while (1){
+        connection = 0;
         printf("\n============START============");
         printf("\n1. Login");
         printf("\n2. Open book");
@@ -115,17 +118,87 @@ int main(int argc, char *argv[]){
             case 3 :
                 status = sign_up();
                 break;
+            case 4:
+                status = forgot_password();
+                break;
             case 100:
                 status = notify();
                 break;
             case 111:
                 status = exit_server();
-                exit(0);
+                connection = 1;
+                break;
         }
+        if (connection == 1)break;
     }
 
     close(client_sock);
     return 0;
+}
+
+int forgot_password() {
+    char email[EMAIL_LEN] = {0}, password[PASSWORD_LEN] = {0}, confirm_pwd[PASSWORD_LEN];
+    char enter;
+    printf("\nNhap email > ");
+    scanf("%s", email);
+    scanf("%c", &enter);
+    Param root = param_create(), tail;
+
+    param_add_str(&root, email);
+    Data request = data_create(root, FORGOT);
+    if (send_data(client_sock, request, 0, 0) == -1){
+        logger(L_ERROR, "function: forgot_password()");
+        return -1;
+    }
+    // Waiting key
+    Data response = recv_data(client_sock, 0, 0);
+    if (response->message == MAINTENANCE){
+        logger(L_INFO, "He thong dang bao tri!");
+        data_free(&response);
+        return -1;
+    }if (response->message == EMAIL_NOT_EXIST){
+        logger(L_INFO, "Email khong ton tai!");
+        data_free(&response);
+        return -1;
+    }
+    int key = param_get_int(&response->params);
+    printf("\nThiet lap lai mat khau!");
+    while(1){
+        printf("\nNhap password: ");
+        scanf("%s", password);
+        scanf("%c", &enter);
+        printf("\nNhap confirm password: ");
+        scanf("%s", confirm_pwd);
+        scanf("%c", &enter);
+        if (check_space(password) == 0 ||
+            check_space(confirm_pwd) == 0){
+            printf("Khong duoc bo trong!");
+            continue;
+        }
+        if (strcmp(password, confirm_pwd) != 0){
+            printf("Mat khau xac nhan khong dung!");
+            continue;
+        }
+        break;
+    }
+    root = param_create();
+    tail = root;
+    param_add_int(&tail, key);
+    param_add_str(&tail, password);
+    request = data_create(root, FORGOT);
+    send_data(client_sock, request, 0, 0);
+    data_free(&response);
+
+    response = recv_data(client_sock, 0, 0);
+    if (response->message == SUCCESS){
+        logger(L_SUCCESS, "Cap nhat mat khau moi thanh cong!");
+    }
+    else
+    if (response->message == ERROR){
+        logger(L_ERROR, "Loi he thong");
+    }
+    data_free(&response);
+    return 1;
 }
 
 int sign_up() {
@@ -134,16 +207,16 @@ int sign_up() {
     int status;
 
     while(1){
-        printf("Nhap email: ");
+        printf("\nNhap email: ");
         scanf("%s", email);
         scanf("%c", &enter);
-        printf("Nhap username: ");
+        printf("\nNhap username: ");
         scanf("%s", username);
         scanf("%c", &enter);
-        printf("Nhap password: ");
+        printf("\nNhap password: ");
         scanf("%s", password);
         scanf("%c", &enter);
-        printf("Nhap confirm password: ");
+        printf("\nNhap confirm password: ");
         scanf("%s", confirm_pwd);
         scanf("%c", &enter);
         if (check_space(email) == 0 ||

@@ -53,6 +53,11 @@ typedef enum{
     COMMENTS,
     FAIL_OPEN_FILE,
     DONE,
+    OK,
+    MAINTENANCE,
+    CANCEL,
+    EMAIL_NOT_EXIST,
+    ERROR,
 }MessageCode;
 
 #endif //LAP_TRINH_MANG_MESSAGECODE_H
