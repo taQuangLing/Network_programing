@@ -24,6 +24,10 @@ MYSQL *conn;
 
 int notify(int client, Param p);
 
+int open_book(int client, Param p);
+
+void send_file(int client, char *path);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -47,7 +51,10 @@ int login(int client, Param p){
         logger(L_SUCCESS, "%s: %s", email, "da dang nhap");
         root = param_create(); // tail = root;
         for (int j = 0; j < data->column; j++){
-            if (strcmp(data->header[j], "id") == 0)param_add_str(&root, data->data[0][j]); // nhieu hon 1 param thi truyen tail
+            if (strcmp(data->header[j], "id") == 0){
+                param_add_str(&root, data->data[0][j]); // nhieu hon 1 param thi truyen tail
+                break;
+            }
         }
         response = data_create(root, LOGIN_SUCCESS);
     }
@@ -62,7 +69,7 @@ int login(int client, Param p){
 void handle_client(int client){
     Data request;
     Param p;
-    int status;
+    int status, connection = 1;
     MessageCode option;
     while (0==0){
         request = recv_data(client, 0, 0);
@@ -80,6 +87,7 @@ void handle_client(int client){
             case NEWS:
                 break;
             case OPEN:
+                status = open_book(client, p);
                 break;
             case COMMENT:
                 break;
@@ -103,12 +111,74 @@ void handle_client(int client){
             case SEARCH:
                 break;
             case EXIT:
+                close(client);
+                connection = 0;
                 break;
             default:
                 break;
         }
         data_free(&request);
+        if (connection == 0)break;
     }
+}
+
+int open_book(int client, Param p) {
+    Data response;
+    int user_id = param_get_int(&p);
+    int post_id = param_get_int(&p);
+
+    Table data = DB_get_by_id(&conn, "post", post_id);
+    int user_id_t = atoi(get_by(data, "user_id"));
+    char *path;
+    if (user_id != user_id_t){
+        response = data_create(NULL, FAIL);
+    }else{
+        response = data_create(NULL, SUCCESS);
+        send_data(client, response, 0, 0);
+        usleep(1000);
+        path = get_by(data, "path");
+        send_file(client, path);
+    }
+    return 1;
+}
+
+void send_file(int client, char *path) {
+    Data response;
+    FILE *f;
+    int i, n;
+    if ((f = fopen(path, "rb")) == NULL){
+        response = data_create(NULL, FAIL_OPEN_FILE);
+        send_data(client, response, 0, 0);
+        logger(L_ERROR, "Lỗi mở file %s", path);
+        return;
+    }
+    char data[BUFF_SIZE] = {0};
+    char file_name[50] = {0};
+    for (i = strlen(path)-1; i >= 0; i--){
+        if (path[i] == '/'){
+            strcpy(file_name, path+i+1);
+            break;
+        }
+    }
+    if (i == -1){
+        strcpy(file_name, path);
+    }
+    Param root = param_create();
+    param_add_str(&root, file_name);
+    response = data_create(root, OPEN);
+    send_data(client, response, 0, 0);
+    usleep(1000);
+
+    while ((n = fread(data, 1, BUFF_SIZE, f)) > 0) {
+        if (send(client, data, n, 0) == -1) {
+            logger(L_ERROR, "function: send_file()");
+            break;
+        }
+        usleep(1000);
+        bzero(data, BUFF_SIZE);
+    }
+    fclose(f);
+    logger(L_SUCCESS, "File %s sent successfully.", path);
 }
 
 int notify(int client, Param p) {
@@ -218,5 +288,6 @@ int main(int argc, char *argv[]){
     printf("\t=======================\n");
     printf("\t=======================\n");
     server_listen();
+    close(server_sock);
     return 1;
 }

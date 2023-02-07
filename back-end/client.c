@@ -19,6 +19,12 @@ int client_sock;
 
 int notify();
 
+int open_book();
+
+void write_file();
+
+int exit_server();
+
 int login(){
     char enter;
     char i2s[10];
@@ -89,6 +95,7 @@ int main(int argc, char *argv[]){
     while (1){
         printf("\n============START============");
         printf("\n1. Login");
+        printf("\n2. Open book");
         printf("\n100. Notification");
         printf("\nYour choice: ");
 
@@ -98,16 +105,78 @@ int main(int argc, char *argv[]){
             case 1:
                 status = login();
                 break;
+            case 2:
+                status = open_book();
+                break;
             case 100:
                 status = notify();
                 break;
             case 111:
+                status = exit_server();
                 exit(0);
         }
     }
 
     close(client_sock);
     return 0;
+}
+
+int exit_server() {
+    Data response = data_create(NULL, EXIT);
+    if (send_data(client_sock, response, 0, 0) == -1){
+        logger(L_ERROR, "function: exit_server() - 126");
+        return -1;
+    }
+    return 1;
+}
+
+int open_book() {
+    int post_id;
+    char enter;
+    printf("Nhap id post(sach) = ");
+    scanf("%d", &post_id);
+    scanf("%c", &enter);
+
+    Param root = param_create(), tail = root;
+    param_add_int(&tail, id);
+    param_add_int(&tail, post_id);
+    Data request = data_create(root, OPEN);
+    send_data(client_sock, request, 0, 0);
+
+    Data response = recv_data(client_sock, 0, 0);
+    if (response->message == FAIL){
+        logger(L_WARN, "%s", "Lỗi không có quyền truy cập");
+    }else{
+        write_file();
+    }
+
+    data_free(&response);
+    return 1;
+}
+
+void write_file() {
+    int n;
+    FILE *fp;
+    char *filename;
+    char buffer[BUFF_SIZE];
+
+    Data response = recv_data(client_sock, 0, 0);
+    filename = param_get_str(&response->params);
+    data_free(&response);
+
+    fp = fopen(filename, "wb");
+    while (1) {
+        n = recv(client_sock, buffer, BUFF_SIZE, 0);
+        if (fwrite(buffer, 1, n, fp) < n)
+            logger(L_ERROR, "function: write_file()");
+        bzero(buffer, BUFF_SIZE);
+        printf("\nn = %d", n);
+        if (n < BUFF_SIZE)break;
+    }
+    fclose(fp);
+    char command[100] = {0};
+    sprintf(command, "gopen %s", filename);
+    system(command);
 }
 
 int notify() {
@@ -138,9 +207,9 @@ int notify() {
         seen = param_get_int(&p);
 
         if (seen == 1){
-            printf("\n\t%s(img=\"%s\") %s (đã xem)", username, image, content);
+            printf("\n\t%s(img=\"%s\") %s (đã xem)\n", username, image, content);
         }else
-            printf("\n\t%s(img=\"%s\")\n\t %s (chưa xem)",  username, image, content);
+            printf("\n\t%s(img=\"%s\")\n\t %s (chưa xem)\n",  username, image, content);
 
         data_free(&response);
     }

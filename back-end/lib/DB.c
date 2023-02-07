@@ -131,6 +131,12 @@ int DB_update(MYSQL **conn, char *table, int id, char **key, char **value, int n
     logger(L_SUCCESS, "%s", "function: DB_update");
     return 1;
 }
+char *get_by(Table data, char *field){
+    for (int i = 0; i < data->column; i++){
+        if (strcmp(data->header[i], field) == 0)return data->data[0][i];
+    }
+    logger(L_ERROR, "Không tồn tại trường: %s", field);
+}
 //int main(){
 //    char *server = "localhost";
 //    char *user = "root";

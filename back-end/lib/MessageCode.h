@@ -50,8 +50,9 @@ typedef enum{
     POST, // 41
     NOTIFY, // 42
     SEARCH, // 43
-
     COMMENTS,
+    FAIL_OPEN_FILE,
+    DONE,
 }MessageCode;
 
 void print_mess(char *s1, char *s2);

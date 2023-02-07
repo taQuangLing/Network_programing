@@ -125,7 +125,9 @@ int send_data(int sock, Data data, int flag, int key){
     strcpy(buff, data_to_str(data, key));
 //    print_mess(buff, "");
     data_free(&data);
+    logger(L_INFO, "Recv message: %s", buff);
     int bytes_sent = send(sock, buff, strlen(buff), flag);
+    bzero(buff, BUFF_SIZE);
     if(bytes_sent == -1){
         logger(L_ERROR, "%s", "Error sending data");
         return -1;
@@ -143,9 +145,9 @@ Data recv_data(int sock, int flag, int key){
         logger(L_ERROR, "%s", "Error recv data");
         return NULL;
     }
-
+    logger(L_INFO, "Send message: %s", buff);
     Data data = str_to_data(buff, key);
-    refresh(buff, BUFF_SIZE);
+    bzero(buff, BUFF_SIZE);
     return data;
 }
 int ping(int sock, int flag){
@@ -258,7 +260,7 @@ void logger(char *type, const char *format, ...) {
     if(strcmp(type, L_ERROR) == 0)   printf("\x1b[1;38;5;196m[x]  ");
     if(strcmp(type, L_SUCCESS) == 0) printf("\x1b[1;38;5;47m[\xE2\x9C\x93]  ");
     if(strcmp(type, L_WARN) == 0)    printf("\x1b[1;38;5;226m[!]  ");
-    if(strcmp(type, L_INFO) == 0)    printf("\x1b[1;38;5;202m[i]  ");
+    if(strcmp(type, L_INFO) == 0)    printf("\x1b[1;38;5;014m[i]  ");
 
     va_start(args, format);
     vprintf(format, args);

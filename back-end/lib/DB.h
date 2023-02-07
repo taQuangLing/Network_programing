@@ -24,4 +24,6 @@ Table DB_get(MYSQL **conn, char *sql);
 
 void DB_free_data(Table *data);
 
+char *get_by(Table data, char *field);
+
 #endif //LAP_TRINH_MANG_DB_H
