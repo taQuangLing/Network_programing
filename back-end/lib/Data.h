@@ -5,7 +5,7 @@
 #ifndef LAP_TRINH_MANG_DATA_H
 #define LAP_TRINH_MANG_DATA_H
 
-#include "../lib/MessageCode.h"
+#include "MessageCode.h"
 
 typedef  struct param_t{
     int id; // so thu tu bat dau tu 0

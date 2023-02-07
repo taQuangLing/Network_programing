@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Data.h"
-#include "../lib/AppUtils.h"
+#include "AppUtils.h"
 
 //
 // Created by ling on 01/02/2023.

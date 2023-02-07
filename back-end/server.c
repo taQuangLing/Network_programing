@@ -12,7 +12,7 @@
 #include <ctype.h>
 #include <mysql/mysql.h>
 #include "lib/http.h"
-#include "structures/Data.h"
+#include "lib/Data.h"
 #include "lib/AppUtils.h"
 #include "lib/config.h"
 #include "lib/DB.h"

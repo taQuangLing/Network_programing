@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "structures/Data.h"
+#include "lib/Data.h"
 #include "lib/AppUtils.h"
 
 int main(){

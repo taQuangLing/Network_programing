@@ -4,7 +4,7 @@
 
 #ifndef LAP_TRINH_MANG_APPUTILS_H
 #define LAP_TRINH_MANG_APPUTILS_H
-#include "../structures/Data.h"
+#include "Data.h"
 char *data_to_str(Data data, int key);
 Data str_to_data(char *str, int key);
 int append(char *string, int index, char *data);
