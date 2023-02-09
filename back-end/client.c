@@ -31,6 +31,8 @@ int forgot_password();
 
 int search();
 
+int news();
+
 int login(){
     char enter;
     char i2s[10];
@@ -106,6 +108,7 @@ int main(int argc, char *argv[]){
         printf("\n3. Sign up");
         printf("\n4. Forgot password");
         printf("\n5. Search");
+        printf("\n6. News");
         printf("\n100. Notification");
         printf("\nYour choice: ");
 
@@ -127,6 +130,9 @@ int main(int argc, char *argv[]){
             case 5:
                 status = search();
                 break;
+            case 6:
+                status = news();
+                break;
             case 100:
                 status = notify();
                 break;
@@ -140,6 +146,43 @@ int main(int argc, char *argv[]){
 
     close(client_sock);
     return 0;
+}
+
+int news() {
+    printf("\n\tDAY LA TRANG BANG TIN: ");
+
+    Param root = param_create();
+    param_add_int(&root, id);
+    Data request = data_create(root, NEWS);
+    send_data(client_sock, request, 0, 0);
+
+    int count;
+    Data response = recv_data(client_sock, 0, 0);
+    if (response->message == OK){
+        count = param_get_int(&response->params);
+    }else{
+        printf("\n\tHE THONG DANG NANG CAP");
+        return 0;
+    }
+    int postid, userid;
+    char *name, *avatar, *title, *content, *image;
+    Param p;
+    data_free(&response);
+    for (int i = 0; i < count; i++){
+        response = recv_data(client_sock, 0, 0);
+        p = response->params;
+        // Xu li tung ban ghi...
+        postid = param_get_int(&p);
+        userid = param_get_int(&p);
+        name = param_get_str(&p);
+        avatar = param_get_str(&p);
+        title = param_get_str(&p);
+        content = param_get_str(&p);
+        image = param_get_str(&p);
+        printf("\n-- postid: %d, userid: %d, name: %s, title: %s, content: %s\navatar: %s\nimage: %s", userid, postid, name, title, content, avatar, image);
+        data_free(&response);
+    }
+    return 1;
 }
 
 int search() {

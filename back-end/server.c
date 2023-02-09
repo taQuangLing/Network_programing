@@ -34,6 +34,8 @@ int search(int client, Param p);
 
 void send_list_data(int client, Table data);
 
+int news(int client, Param p);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -93,6 +95,7 @@ void handle_client(int client){
                 status = forgot_password(client, p);
                 break;
             case NEWS:
+                status = news(client, p);
                 break;
             case OPEN:
                 status = open_book(client, p);
@@ -129,6 +132,21 @@ void handle_client(int client){
         data_free(&request);
         if (connection == 0)break;
     }
+}
+
+int news(int client, Param p) {
+    int userid = param_get_int(&p);
+
+    char sql[1000] = {0};
+    sprintf(sql, "select post.id, user.id, name, avatar, title, content, image from post, user where\n"
+                 "user.id = post.user_id and\n"
+                 "((user_id in (select follow.others_id from follow where follow.status = 2 and follow.user_id = %d) and (status = 1 or status = 2)) or\n"
+                 "(user_id in (select others_id from follow where follow.status = 0 and follow.user_id = %d) and status = 2) or\n"
+                 " user_id = %d)"
+                 "order by post.created_at desc;", userid, userid, userid);
+    Table data = DB_get(&conn, sql);
+    send_list_data(client, data);
+    return 1;
 }
 
 int search(int client, Param p) {
@@ -168,7 +186,7 @@ void send_list_data(int client, Table data){
     root = param_create();
     tail = root;
     param_add_int(&tail, (int)data->size);
-    response = data_create(root, DATAS);
+    response = data_create(root, OK);
     send_data(client, response, 0, 0);
     usleep(1000);
 
