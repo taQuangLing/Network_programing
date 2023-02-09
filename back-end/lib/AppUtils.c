@@ -120,12 +120,12 @@ void refresh(char *str, int num){
     memset(str, 0, num);
 }
 int send_data(int sock, Data data, int flag, int key){
+    log_data(data, "Response");
     char buff[BUFF_SIZE];
     refresh(buff, BUFF_SIZE);
     strcpy(buff, data_to_str(data, key));
 //    print_mess(buff, "");
     data_free(&data);
-    logger(L_INFO, "Recv message: %s", buff);
     int bytes_sent = send(sock, buff, strlen(buff), flag);
     bzero(buff, BUFF_SIZE);
     if(bytes_sent == -1){
@@ -145,9 +145,9 @@ Data recv_data(int sock, int flag, int key){
         logger(L_ERROR, "%s", "Error recv data");
         return NULL;
     }
-    logger(L_INFO, "Send message: %s", buff);
     Data data = str_to_data(buff, key);
     bzero(buff, BUFF_SIZE);
+    log_data(data, "Request");
     return data;
 }
 int ping(int sock, int flag){
@@ -159,14 +159,18 @@ int send_error(int sock, int flag){
     data = data_create(NULL, ERROR_SYSTEM);
     return send_data(sock, data, flag, 0);
 }
-void get_time_now(char *res){
+void get_time_now(char *res, const char *format){
     time_t rawtime;
     struct tm * timeinfo;
-    const char format[] = "%Y-%m-%d %H:%M:%S";
     time ( &rawtime );
     timeinfo = localtime ( &rawtime );
 
-    strftime(res, 32, format, timeinfo);
+    if (format == NULL){
+        strftime(res, 32, "%Y-%m-%d %H:%M:%S", timeinfo);
+    }
+    else
+        strftime(res, 32, format, timeinfo);
+
 }
 void ceaser_encode(char srcStr[], char encodeStr[], int key)
 {

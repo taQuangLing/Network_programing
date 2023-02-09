@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "Data.h"
 #include "AppUtils.h"
+#include "config.h"
 
 //
 // Created by ling on 01/02/2023.
@@ -55,12 +56,20 @@ void data_free(Data *data){
     if ((*data)->params != NULL)param_free(&((*data)->params));
     free(*data);
 }
-void data_print(Data data){
-    printf("\nMessage = %d,\n", data->message);
-    int i = 0;
+void log_data(Data data, char *type){
+    char now[20] = {0};
+    get_time_now(now, "%d-%m-%Y %H:%M:%S");
+    char log_str[1000] = {0};
+    int index = 0;
+    index += sprintf(log_str, "%s: time: %s - {Message code: %d; Params={", type, now, data->message);
     for(Param p = data->params; p != NULL; p = p->next){
-        printf("Param[%d] = %s\n", i++, p->value);
+        if (p->next == NULL){
+            index += sprintf(log_str+ index, "%s}", p->value);
+        }else{
+            index += sprintf(log_str+ index, "%s, ", p->value);
+        }
     }
+    logger(L_INFO, "%s", log_str);
 }
 char *param_get_str(Param *p){
     Param result = *p;

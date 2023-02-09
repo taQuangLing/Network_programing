@@ -58,6 +58,7 @@ typedef enum{
     CANCEL,
     EMAIL_NOT_EXIST,
     ERROR,
+    DATAS,
 }MessageCode;
 
 #endif //LAP_TRINH_MANG_MESSAGECODE_H

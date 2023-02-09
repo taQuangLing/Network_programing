@@ -23,7 +23,7 @@ void param_add_int(Param *tail, int param);
 void param_free(Param *root);
 Data data_create(Param root, MessageCode code);
 void data_free(Data *data);
-void data_print(Data data);
+void log_data(Data data, char*);
 char *param_get_str(Param *p);
 int param_get_int(Param *p);
 #endif //LAP_TRINH_MANG_DATA_H

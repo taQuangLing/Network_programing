@@ -29,6 +29,8 @@ int sign_up();
 
 int forgot_password();
 
+int search();
+
 int login(){
     char enter;
     char i2s[10];
@@ -103,6 +105,7 @@ int main(int argc, char *argv[]){
         printf("\n2. Open book");
         printf("\n3. Sign up");
         printf("\n4. Forgot password");
+        printf("\n5. Search");
         printf("\n100. Notification");
         printf("\nYour choice: ");
 
@@ -121,6 +124,9 @@ int main(int argc, char *argv[]){
             case 4:
                 status = forgot_password();
                 break;
+            case 5:
+                status = search();
+                break;
             case 100:
                 status = notify();
                 break;
@@ -134,6 +140,63 @@ int main(int argc, char *argv[]){
 
     close(client_sock);
     return 0;
+}
+
+int search() {
+    char keyword[50], enter;
+    int type;
+    printf("\nNhap tu khoa muon search > ");
+    scanf("%[^\n]s", keyword);
+    scanf("%c", &enter);
+    printf("\n0. Tim kiem sach");
+    printf("\n1. Tim kiem ban be.");
+    printf("\nYour choice > ");
+    scanf("%d", &type);
+    scanf("%c", &enter);
+
+    Param root, tail;
+    Data request, response;
+    // Gui keyword
+    root = param_create();
+    tail = root;
+    param_add_int(&tail, id);
+    param_add_str(&tail, keyword);
+    param_add_int(&tail, type);
+    request = data_create(root, SEARCH);
+    send_data(client_sock, request, 0, 0);
+    // Nhan danh sach ket qua
+    int postid, userid;
+    char *username, *image, *title, *content;
+    Param p;
+
+    response = recv_data(client_sock, 0, 0);
+    int n = param_get_int(&response->params);
+    data_free(&response);
+    if (type == 0){
+        for (int i = 0; i < n; i++){
+            response = recv_data(client_sock, 0, 0);
+            p = response->params;
+            postid = param_get_int(&p);
+            userid = param_get_int(&p);
+            username = param_get_str(&p);
+            image = param_get_str(&p);
+            title = param_get_str(&p);
+            content = param_get_str(&p);
+            printf("\npostid: %d, userid: %d, username: %s, image: %s, title: %s, content: %s", postid, userid, username, image, title, content);
+            data_free(&response);
+        }
+    }else{
+        for (int i = 0; i < n; i++){
+            response = recv_data(client_sock, 0, 0);
+            p = response->params;
+            userid = param_get_int(&p);
+            username = param_get_str(&p);
+            image = param_get_str(&p);
+            printf("\nuserid: %d, username: %s, avatar: %s", userid, username, image);
+            data_free(&response);
+        }
+    }
+    return 1;
 }
 
 int forgot_password() {
@@ -311,7 +374,7 @@ void write_file() {
     }
     fclose(fp);
     char command[100] = {0};
-    sprintf(command, "gopen %s", filename);
+    sprintf(command, "gopen \"%s\"", filename);
     system(command);
 }
 

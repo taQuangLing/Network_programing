@@ -53,7 +53,7 @@ Table DB_get(MYSQL **conn, char *sql){
     Table data = (Table) malloc(sizeof (struct data_t));
 
     if (mysql_query(*conn, sql)) {
-        logger(L_ERROR, "%s; %s", (char*)mysql_error(*conn),"function: DB_get - 54");
+        logger(L_ERROR, "function: DB_get - 48. %s; %s", sql,(char*)mysql_error(*conn));
         exit(1);
     }
     res = mysql_store_result(*conn);
@@ -76,7 +76,7 @@ Table DB_get(MYSQL **conn, char *sql){
     data->size = num_row;
     data->column = num_field;
     mysql_free_result(res);
-    logger(L_SUCCESS, "%s", "function: DB_get");
+    logger(L_SUCCESS, "function: DB_get. %s", sql);
     return data;
 }
 

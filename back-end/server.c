@@ -30,6 +30,10 @@ int sign_up(int client, Param pParam);
 
 int forgot_password(int client, Param p);
 
+int search(int client, Param p);
+
+void send_list_data(int client, Table data);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -113,6 +117,7 @@ void handle_client(int client){
                 status = notify(client, p);
                 break;
             case SEARCH:
+                status = search(client, p);
                 break;
             case EXIT:
                 close(client);
@@ -123,6 +128,61 @@ void handle_client(int client){
         }
         data_free(&request);
         if (connection == 0)break;
+    }
+}
+
+int search(int client, Param p) {
+    char keyword[50] = {0};
+    int id, type;
+    char sql[1000] = {0};
+    Param root, tail;
+    Data response;
+
+    id = param_get_int(&p);
+    strcpy(keyword+1, param_get_str(&p));
+    type = param_get_int(&p);
+
+    keyword[0] = '%';
+    int lenght = (int)strlen(keyword);
+    keyword[lenght] = '%';
+    keyword[lenght+1] = '\0';
+    if (type == 0){
+        // search sach
+        sprintf(sql, "select post.id as postid, user.id as userid, name, image, title, content from post, user where user.id = user_id and (title LIKE '%s' or content LIKE '%s') and status = 1", keyword, keyword);
+    }else
+    {
+        // search nguoi
+        sprintf(sql, "select id, name, avatar from user where name LIKE '%s'", keyword);
+    }
+    Table data = DB_get(&conn, sql);
+
+    send_list_data(client, data);
+
+    return 1;
+}
+
+void send_list_data(int client, Table data){
+    Data response;
+    Param root, tail;
+
+    root = param_create();
+    tail = root;
+    param_add_int(&tail, (int)data->size);
+    response = data_create(root, DATAS);
+    send_data(client, response, 0, 0);
+    usleep(1000);
+
+    for (int i = 0; i < data->size; i++){
+        root = param_create();
+        tail = root;
+        for (int j = 0; j < data->column; j++){
+            if (data->data[i][j] == NULL)param_add_str(&tail, "");
+            else
+                param_add_str(&tail, data->data[i][j]);
+        }
+        response = data_create(root, DATAS);
+        send_data(client, response, 0, 0);
+        usleep(1000);
     }
 }
 
@@ -194,7 +254,7 @@ int sign_up(int client, Param p) {
     // insert
     char now[20] = {0};
     char *key[] = {"email", "name", "created_at", "password"};
-    get_time_now(now);
+    get_time_now(now, NULL);
     char *value[] = {email, username, now, password};
     if (DB_insert(&conn, "user", key, value, 4) == -1){
         mysql_close(conn);
@@ -208,17 +268,18 @@ int sign_up(int client, Param p) {
     return 1;
 }
 
-
 int open_book(int client, Param p) {
     Data response;
     int user_id = param_get_int(&p);
     int post_id = param_get_int(&p);
 
     Table data = DB_get_by_id(&conn, "post", post_id);
-    int user_id_t = atoi(get_by(data, "user_id"));
+    int status = atoi(get_by(data, "status"));
     char *path;
-    if (user_id != user_id_t){
+    if (status == 0){
+        // 0: private, 1: public
         response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
     }else{
         response = data_create(NULL, SUCCESS);
         send_data(client, response, 0, 0);

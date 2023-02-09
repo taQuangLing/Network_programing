@@ -16,7 +16,7 @@ Data recv_data(int sock, int flag, int key);
 int send_data(int sock, Data request, int flag, int key);
 int checkChar(char ch);
 int send_error(int sock, int flag);
-void get_time_now(char *res);
+void get_time_now(char *res,const char *);
 void ceaser_decode(char srcStr[], char decodeStr[], int key);
 void ceaser_encode(char srcStr[], char encodeStr[], int key);
 int check_space(char *str);
