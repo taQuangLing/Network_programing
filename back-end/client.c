@@ -33,6 +33,16 @@ int search();
 
 int news();
 
+int friends();
+
+int following();
+
+int follower();
+
+int unflow();
+
+int accept_friend();
+
 int login(){
     char enter;
     char i2s[10];
@@ -160,6 +170,26 @@ int main(int argc, char *argv[]){
     }
 
     close(client_sock);
+    return 0;
+}
+
+int accept_friend() {
+    return 0;
+}
+
+int unflow() {
+    return 0;
+}
+
+int follower() {
+    return 0;
+}
+
+int following() {
+    return 0;
+}
+
+int friends() {
     return 0;
 }
 
@@ -403,6 +433,8 @@ int open_book() {
     Data response = recv_data(client_sock, 0, 0);
     if (response->message == FAIL){
         logger(L_WARN, "%s", "Lỗi không có quyền truy cập");
+    }else if (response->message == ERROR){
+        logger(L_ERROR, "%s", "HE THONG DANG NANG CAP");
     }else{
         write_file();
     }

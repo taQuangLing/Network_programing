@@ -36,6 +36,16 @@ void send_list_data(int client, Table data);
 
 int news(int client, Param p);
 
+int friends(int client, Param p);
+
+int unflow(int client, Param p);
+
+int following(int client, Param p);
+
+int follower(int client, Param p);
+
+int accept_friend(int client, Param p);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -105,19 +115,19 @@ void handle_client(int client){
             case COMMENTS:
                 break;
             case FRIENDS:
-                status = friends();
+                status = friends(client, p);
                 break;
             case UNFLOW:
-                status = unflow();
+                status = unflow(client, p);
                 break;
             case FOLLOWING:
-                status = following();
+                status = following(client, p);
                 break;
             case FOLLOWER:
-                status = follower();
+                status = follower(client, p);
                 break;
             case ACCEPT:
-                status = accept_friend();
+                status = accept_friend(client, p);
                 break;
             case PROFILE:
                 break;
@@ -139,6 +149,26 @@ void handle_client(int client){
         data_free(&request);
         if (connection == 0)break;
     }
+}
+
+int accept_friend(int client, Param p) {
+    return 0;
+}
+
+int follower(int client, Param p) {
+    return 0;
+}
+
+int following(int client, Param p) {
+    return 0;
+}
+
+int unflow(int client, Param p) {
+    return 0;
+}
+
+int friends(int client, Param p) {
+    return 0;
 }
 
 int news(int client, Param p) {
@@ -295,23 +325,40 @@ int sign_up(int client, Param p) {
 
 int open_book(int client, Param p) {
     Data response;
+    char sql[1000] = {0};
     int user_id = param_get_int(&p);
     int post_id = param_get_int(&p);
 
     Table data = DB_get_by_id(&conn, "post", post_id);
+    Table data2;
+    int post_userid = atoi(get_by(data, "user_id"));
     int status = atoi(get_by(data, "status"));
     char *path;
-    if (status == 0){
-        // 0: private, 1: public
+    if ((path = get_by(data, "path")) == NULL){
+        response = data_create(NULL, ERROR);
+        send_data(client, response, 0, 0);
+        return 0;
+    }
+    if (status == 0) {
+        // 0: private, 1: friend, 2: public
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
-    }else{
-        response = data_create(NULL, SUCCESS);
-        send_data(client, response, 0, 0);
-        usleep(1000);
-        path = get_by(data, "path");
-        send_file(client, path);
+        return 0;
+    }else if(status == 1){
+        sprintf(sql, "select * from follow where user_id = %d and others_id = %d", user_id, post_id);
+        data2 = DB_get(&conn, sql);
+        if (data2->size == 0 || atoi(get_by(data2, "status")) != 2){
+            response = data_create(NULL, FAIL);
+            send_data(client, response, 0, 0);
+            DB_free_data(&data2);
+            return 0;
+        }
+        DB_free_data(&data2);
     }
+    response = data_create(NULL, OK);
+    send_data(client, response, 0, 0);
+    usleep(1000);
+    send_file(client, path);
     return 1;
 }
 
