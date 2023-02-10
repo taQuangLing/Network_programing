@@ -13,7 +13,7 @@
 #include "lib/AppUtils.h"
 
 
-int id;
+int id = 1;
 int client_sock;
 
 
@@ -39,9 +39,15 @@ int following();
 
 int follower();
 
-int unflow();
+int unfollow();
 
 int accept_friend();
+
+void get_list_user(Param p);
+
+int interaction(MessageCode type);
+
+int follow();
 
 int login(){
     char enter;
@@ -119,6 +125,12 @@ int main(int argc, char *argv[]){
         printf("\n4. Forgot password");
         printf("\n5. Search");
         printf("\n6. News");
+        printf("\n7. Friends");
+        printf("\n8. Following");
+        printf("\n9. Follower");
+        printf("\n10. Unfollow");
+        printf("\n11. Accept Friend");
+        printf("\n12. Accept Friend");
         printf("\n100. Notification");
         printf("\nYour choice: ");
 
@@ -153,10 +165,13 @@ int main(int argc, char *argv[]){
                 status = follower();
                 break;
             case 10:
-                status = unflow();
+                status = unfollow();
                 break;
             case 11:
                 status = accept_friend();
+                break;
+            case 12:
+                status = follow();
                 break;
             case 100:
                 status = notify();
@@ -173,24 +188,136 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-int accept_friend() {
-    return 0;
+int follow() {
+    int userid;
+    char enter;
+    printf("Nhap userid > ");
+    scanf("%d", &userid);
+    scanf("%c", &enter);
+
+    Param root = param_create(), tail = root;
+    param_add_int(&tail, id);
+    param_add_int(&tail, userid);
+    Data request = data_create(root, FOLLOW);
+    send_data(client_sock, request, 0, 0);
+
+    Data response = recv_data(client_sock, 0, 0);
+    if (response->message == SUCCESS){
+        logger(L_SUCCESS, "Theo dõi bạn bè thành công");
+        return 1;
+    }else if(response->message == FOLLOWED){
+        logger(L_WARN, "Đã theo dõi người này");
+        return 1;
+    }
+    else if (response->message == ACCEPTED){
+        logger(L_WARN, "Đã trở thành bạn bè");
+    }else{
+        logger(L_ERROR, "HE THONG DANG NANG CAP");
+        return -1;
+    }
 }
 
-int unflow() {
-    return 0;
+int accept_friend() {
+    int userid;
+    char enter;
+    printf("Nhap userid > ");
+    scanf("%d", &userid);
+    scanf("%c", &enter);
+
+    Param root = param_create(), tail = root;
+    param_add_int(&tail, id);
+    param_add_int(&tail, userid);
+    Data request = data_create(root, ACCEPT);
+    send_data(client_sock, request, 0, 0);
+
+    Data response = recv_data(client_sock, 0, 0);
+    if (response->message == SUCCESS){
+        logger(L_SUCCESS, "Đã chấp nhận lời mời kết bạn");
+        return 1;
+    }else if(response->message == FAIL){
+        logger(L_WARN, "Người này chưa theo dõi bạn");
+        return 0;
+    }
+    else if (response->message == ACCEPTED){
+        logger(L_WARN, "Đã trờ thành bạn bè");
+        return 0;
+    }
+    else{
+        logger(L_ERROR, "HE THONG DANG NANG CAP");
+        return -1;
+    }
+}
+
+int unfollow() {
+    int userid;
+    char enter;
+    printf("Nhap userid > ");
+    scanf("%d", &userid);
+    scanf("%c", &enter);
+
+    Param root = param_create(), tail = root;
+    param_add_int(&tail, id);
+    param_add_int(&tail, userid);
+    Data request = data_create(root, UNFOLLOW);
+    send_data(client_sock, request, 0, 0);
+
+    Data response = recv_data(client_sock, 0, 0);
+    if (response->message == SUCCESS){
+        logger(L_SUCCESS, "Bỏ theo dõi thành công");
+        return 1;
+    }else if (response->message == FAIL){
+        logger(L_WARN, "Bạn chưa theo dõi người này");
+        return 1;
+    }
+    else{
+        logger(L_ERROR, "HE THONG DANG NANG CAP");
+        return -1;
+    }
 }
 
 int follower() {
-    return 0;
+    return interaction(FOLLOWER);
+}
+
+int interaction(MessageCode type) {
+    Param root = param_create();
+    param_add_int(&root, id);
+    Data request = data_create(root, type);
+    send_data(client_sock, request, 0, 0);
+
+    Data response = recv_data(client_sock, 0, 0);
+    if (response->message == OK){
+        get_list_user(response->params);
+    }else if (response->message == ERROR){
+        logger(L_ERROR, "HE THONG DANG NANG CAP");
+        return -1;
+    }
+    return 1;
 }
 
 int following() {
-    return 0;
+    return interaction(FOLLOWING);
 }
 
 int friends() {
-    return 0;
+    return interaction(FRIENDS);
+}
+
+void get_list_user(Param p) {
+    int count = param_get_int(&p);
+    char *name, *avatar;
+    int user_id, status;
+    Data response;
+    for (int i = 0; i < count; i++){
+        response = recv_data(client_sock, 0, 0);
+        p = response->params;
+        user_id = param_get_int(&p);
+        name = param_get_str(&p);
+        avatar = param_get_str(&p);
+        status = param_get_int(&p);
+        printf("\nuser_id: %d, name = %s, avatar = %s, status = %d.", user_id, name, avatar, status);
+        data_free(&response);
+    }
 }
 
 int news() {

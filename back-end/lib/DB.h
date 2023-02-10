@@ -14,16 +14,22 @@ typedef struct data_t{
     char ***data; // data
 }*Table;
 
+int DB_insert_v2(MYSQL **conn, char *sql);
+
 int DB_insert(MYSQL **conn, char *table, char **key, char **value, int num_field);
 
 Table DB_get_by_id(MYSQL **conn, char *table, int id);
 
 int DB_update(MYSQL **conn, char *table, int id, char **key, char **value, int num);
 
+int DB_update_v2(MYSQL **conn, char *sql);
+
 Table DB_get(MYSQL **conn, char *sql);
 
 void DB_free_data(Table *data);
 
-char *get_by(Table data, char *field);
+char *DB_str_get_by(Table data, char *field);
+
+int DB_int_get_by(Table data, char *field);
 
 #endif //LAP_TRINH_MANG_DB_H

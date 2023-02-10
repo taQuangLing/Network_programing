@@ -38,13 +38,17 @@ int news(int client, Param p);
 
 int friends(int client, Param p);
 
-int unflow(int client, Param p);
+int unfollow(int client, Param p);
 
 int following(int client, Param p);
 
 int follower(int client, Param p);
 
 int accept_friend(int client, Param p);
+
+int interaction(int client, Param p, MessageCode type);
+
+int follow(int client, Param p);
 
 int login(int client, Param p){
     Data response;
@@ -117,8 +121,8 @@ void handle_client(int client){
             case FRIENDS:
                 status = friends(client, p);
                 break;
-            case UNFLOW:
-                status = unflow(client, p);
+            case UNFOLLOW:
+                status = unfollow(client, p);
                 break;
             case FOLLOWING:
                 status = following(client, p);
@@ -129,6 +133,8 @@ void handle_client(int client){
             case ACCEPT:
                 status = accept_friend(client, p);
                 break;
+            case FOLLOW:
+                status = follow(client, p);
             case PROFILE:
                 break;
             case POST:
@@ -151,24 +157,175 @@ void handle_client(int client){
     }
 }
 
+int follow(int client, Param p) {
+    Data response;
+    int userid = param_get_int(&p), others_id = param_get_int(&p);
+    char sql[1000] = {0};
+    sprintf(sql, "select id, user_id, status from follow where (user_id = %d and others_id = %d) or (user_id = %d and others_id = %d)", userid, others_id, others_id, userid);
+    Table data = DB_get(&conn, sql);
+    int userid_t = DB_int_get_by(data, "user_id");
+    if (data == NULL){
+        response = data_create(NULL, ERROR);
+        send_data(client, response, 0, 0);
+        return 1;
+    }
+
+    if (data->size == 0){
+        sprintf(sql, "insert into follow (user_id, others_id, status) value (%d, %d, 0)", userid, others_id);
+        DB_insert_v2(&conn, sql);
+        response = data_create(NULL, SUCCESS);
+        send_data(client, response, 0, 0);
+        return 1;
+    }else{
+        int status = DB_int_get_by(data, "status");
+        if (status == 0){
+            response = data_create(NULL, FOLLOWED);
+            send_data(client, response, 0, 0);
+            return 1;
+        }else if (status == 1){
+            response = data_create(NULL, ACCEPTED);
+            send_data(client, response, 0, 0);
+            return 1;
+        }
+    }
+    int id = DB_int_get_by(data, "id");
+    if (userid != userid_t){
+        sprintf(sql, "update follow set user_id = %d, others_id = %d, status = %d where id = %d", others_id, userid, 0, id);
+    }else
+        sprintf(sql, "update follow set status = %d where id = %d", 0, id);
+    if (DB_update_v2(&conn, sql) == -1){
+        response = data_create(NULL, ERROR);
+        send_data(client, response, 0, 0);
+        return -1;
+    }
+
+    response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
+    return 1;
+}
+
 int accept_friend(int client, Param p) {
-    return 0;
+    Data response;
+    int userid = param_get_int(&p), others_id = param_get_int(&p);
+    char sql[1000] = {0};
+    sprintf(sql, "select id, status from follow where user_id = %d and others_id = %d", others_id, userid);
+    Table data = DB_get(&conn, sql);
+    if (data == NULL){
+        response = data_create(NULL, ERROR);
+        send_data(client, response, 0, 0);
+        return 1;
+    }
+    if (data->size == 0){
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        return 1;
+    }
+    int status = atoi(DB_str_get_by(data, "status"));
+    if (status != 0){
+        response = data_create(NULL, ACCEPTED);
+        send_data(client, response, 0, 0);
+        return 1;
+    }
+
+    int id = atoi(DB_str_get_by(data, "id"));
+    char *key[] = {"status"};
+    char *value[] = {"1"};
+    if (DB_update(&conn, "follow", id, key, value, 1) == -1){
+        response = data_create(NULL, ERROR);
+        send_data(client, response, 0, 0);
+        return -1;
+    }
+
+    response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
+    return 1;
 }
 
 int follower(int client, Param p) {
-    return 0;
+    return interaction(client, p, FOLLOWER);
 }
 
 int following(int client, Param p) {
-    return 0;
+    return interaction(client, p, FOLLOWING);
 }
 
-int unflow(int client, Param p) {
-    return 0;
+int unfollow(int client, Param p) {
+    Data response;
+    int userid = param_get_int(&p), others_id = param_get_int(&p);
+    char sql[1000] = {0};
+    sprintf(sql, "select id,user_id, status from follow where (user_id = %d and others_id = %d) or (user_id = %d and others_id = %d)", userid, others_id, others_id, userid);
+    Table data = DB_get(&conn, sql);
+    int id = DB_int_get_by(data, "id");
+    int userid_t = DB_int_get_by(data, "user_id");
+    int status = atoi(DB_str_get_by(data, "status"));
+
+    if (data == NULL){
+        response = data_create(NULL, ERROR);
+        send_data(client, response, 0, 0);
+        return 1;
+    }
+    if (status == -1 || data->size == 0 || (status == 0 && userid != userid_t)){
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        return 1;
+    }
+
+    if (status == 1){
+        if (userid == userid_t)sprintf(sql, "update follow set user_id = %d, others_id = %d, status = %d where id = %d", others_id, userid, 0, id);
+        else{
+            sprintf(sql, "update follow set status = %d where id = %d", -1, id);
+        }
+    }else{
+        if (userid == userid_t)sprintf(sql, "update follow set status = %d where id = %d", -1, id);
+    }
+    if (DB_update_v2(&conn, sql) == -1){
+        response = data_create(NULL, ERROR);
+        send_data(client, response, 0, 0);
+        return  -1;
+    }
+    response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
+    return 1;
+}
+
+int interaction(int client, Param p, MessageCode type) {
+    int userid = param_get_int(&p);
+    char sql[1000] = {0};
+    Data response;
+    switch (type) {
+        case FRIENDS:
+            sprintf(sql, "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and status = 1 and user_id = %d\n"
+                         "union\n"
+                         "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and status = 1 and others_id = %d", userid, userid);
+            break;
+        case FOLLOWING:
+            sprintf(sql, "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and (status = 0 or status = 1)\n"
+                         "union\n"
+                         "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and status = 1", userid, userid);
+            break;
+        case FOLLOWER:
+            sprintf(sql, "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and (status = 0 or status = 1)\n"
+                         "union\n"
+                         "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and status = 1", userid, userid);
+            break;
+        default:
+            logger(L_ERROR, "Lỗi nhiều hơn 3 trạng thái interaction - 187");
+            response = data_create(NULL, ERROR);
+            send_data(client, response, 0, 0);
+            return -1;
+    }
+    Table data = DB_get(&conn, sql);
+    if (data == NULL){
+        response = data_create(NULL, ERROR);
+        send_data(client, response, 0, 0);
+        return -1;
+    }
+    send_list_data(client, data);
+    return 1;
 }
 
 int friends(int client, Param p) {
-    return 0;
+    return interaction(client, p, FRIENDS);
 }
 
 int news(int client, Param p) {
@@ -251,7 +408,7 @@ int forgot_password(int client, Param p) {
     sprintf(sql, "select * from user where email = '%s'", email);
     Table data = DB_get(&conn, sql);
     if (data->size == 1){
-        id = atoi(get_by(data, "id"));
+        id = atoi(DB_str_get_by(data, "id"));
         root = param_create();
         param_add_int(&root, id);
         response = data_create(root, OK);
@@ -331,10 +488,10 @@ int open_book(int client, Param p) {
 
     Table data = DB_get_by_id(&conn, "post", post_id);
     Table data2;
-    int post_userid = atoi(get_by(data, "user_id"));
-    int status = atoi(get_by(data, "status"));
+    int post_userid = DB_int_get_by(data, "user_id");
+    int status = DB_int_get_by(data, "status");
     char *path;
-    if ((path = get_by(data, "path")) == NULL){
+    if ((path = DB_str_get_by(data, "path")) == NULL){
         response = data_create(NULL, ERROR);
         send_data(client, response, 0, 0);
         return 0;
@@ -347,7 +504,7 @@ int open_book(int client, Param p) {
     }else if(status == 1){
         sprintf(sql, "select * from follow where user_id = %d and others_id = %d", user_id, post_id);
         data2 = DB_get(&conn, sql);
-        if (data2->size == 0 || atoi(get_by(data2, "status")) != 2){
+        if (data2->size == 0 || atoi(DB_str_get_by(data2, "status")) != 2){
             response = data_create(NULL, FAIL);
             send_data(client, response, 0, 0);
             DB_free_data(&data2);

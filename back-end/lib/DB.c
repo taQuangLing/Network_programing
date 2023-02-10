@@ -41,10 +41,17 @@ int DB_insert(MYSQL **conn, char *table, char **key, char **value, int num_field
         logger(L_ERROR, "function: DB_insert, sql = %s. %s.", sql, (char*)mysql_error(*conn));
         return -1;
     }
-    logger(L_SUCCESS, "function: DB_insert, sql = %s", sql);
+    logger(L_INFO, "function: DB_insert, sql = %s", sql);
     return 1;
 }
-
+int DB_insert_v2(MYSQL **conn, char *sql){
+    if (mysql_query(*conn, sql)){
+        logger(L_ERROR, "function: DB_insert, sql = %s. %s.", sql, (char*)mysql_error(*conn));
+        return -1;
+    }
+    logger(L_INFO, "function: DB_insert, sql = %s", sql);
+    return 1;
+}
 Table DB_get(MYSQL **conn, char *sql){
     MYSQL_FIELD *field;
     MYSQL_RES *res;
@@ -76,7 +83,7 @@ Table DB_get(MYSQL **conn, char *sql){
     data->size = num_row;
     data->column = num_field;
     mysql_free_result(res);
-    logger(L_SUCCESS, "function: DB_get. %s", sql);
+    logger(L_INFO, "function: DB_get. %s", sql);
     return data;
 }
 
@@ -126,17 +133,27 @@ int DB_update(MYSQL **conn, char *table, int id, char **key, char **value, int n
         logger(L_ERROR, "function: update(), sql = \"%s\"; %s", sql, (char*)mysql_error(*conn));
         return -1;
     }
-    logger(L_INFO, "sql = %s", sql);
     DB_free_data(&data);
-    logger(L_SUCCESS, "%s", "function: DB_update");
+    logger(L_INFO, "%s. sql = \"%s\"", "function: DB_update", sql);
     return 1;
 }
-char *get_by(Table data, char *field){
+int DB_update_v2(MYSQL **conn, char *sql){
+    if (mysql_query(*conn, sql)){
+        logger(L_ERROR, "function: update(), sql = \"%s\"; %s", sql, (char*)mysql_error(*conn));
+        return -1;
+    }
+    logger(L_INFO, "%s. sql = \"%s\"", "function: DB_update", sql);
+    return 1;
+}
+char *DB_str_get_by(Table data, char *field){
     for (int i = 0; i < data->column; i++){
         if (strcmp(data->header[i], field) == 0)return data->data[0][i];
     }
     logger(L_ERROR, "Không tồn tại trường: %s", field);
     return NULL;
+}
+int DB_int_get_by(Table data, char *field){
+    return atoi(DB_str_get_by(data, field));
 }
 //int main(){
 //    char *server = "localhost";

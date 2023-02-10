@@ -59,8 +59,11 @@ typedef enum{
     EMAIL_NOT_EXIST,
     ERROR,
     DATAS,
-    UNFLOW,
+    UNFOLLOW,
     ACCEPT,
+    ACCEPTED,
+    FOLLOW,
+    FOLLOWED,
 }MessageCode;
 
 #endif //LAP_TRINH_MANG_MESSAGECODE_H
