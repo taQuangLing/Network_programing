@@ -133,6 +133,21 @@ int main(int argc, char *argv[]){
             case 6:
                 status = news();
                 break;
+            case 7:
+                status = friends();
+                break;
+            case 8:
+                status = following();
+                break;
+            case 9:
+                status = follower();
+                break;
+            case 10:
+                status = unflow();
+                break;
+            case 11:
+                status = accept_friend();
+                break;
             case 100:
                 status = notify();
                 break;

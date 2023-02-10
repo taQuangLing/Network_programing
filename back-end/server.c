@@ -105,12 +105,19 @@ void handle_client(int client){
             case COMMENTS:
                 break;
             case FRIENDS:
+                status = friends();
                 break;
-            case DELETE_FRIEND:
+            case UNFLOW:
+                status = unflow();
                 break;
             case FOLLOWING:
+                status = following();
                 break;
             case FOLLOWER:
+                status = follower();
+                break;
+            case ACCEPT:
+                status = accept_friend();
                 break;
             case PROFILE:
                 break;
