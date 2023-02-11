@@ -754,7 +754,9 @@ int open_book() {
     }else if (response->message == ERROR){
         logger(L_ERROR, "%s", "HE THONG DANG NANG CAP");
     }else{
-        write_file(client_sock, "/resource");
+        char path[150] = {0};
+        sprintf(path, "resource");
+        write_file(client_sock, path);
     }
 
     data_free(&response);

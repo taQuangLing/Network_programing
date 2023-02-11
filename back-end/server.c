@@ -24,8 +24,6 @@ int notify(int client, Param p);
 
 int open_book(int client, Param p);
 
-void send_file(int client, char *path);
-
 int sign_up(int client, Param pParam);
 
 int forgot_password(int client, Param p);
@@ -604,9 +602,7 @@ int open_book(int client, Param p) {
     int status = DB_int_get_by(data, "status");
     char *path;
     if ((path = DB_str_get_by(data, "path")) == NULL){
-        response = data_create(NULL, ERROR);
-        send_data(client, response, 0, 0);
-        return 0;
+        return send_error(client);
     }
     if (status == 0) {
         // 0: private, 1: friend, 2: public
@@ -614,9 +610,9 @@ int open_book(int client, Param p) {
         send_data(client, response, 0, 0);
         return 0;
     }else if(status == 1){
-        sprintf(sql, "select * from follow where user_id = %d and others_id = %d", user_id, post_id);
+        sprintf(sql, "select * from follow where (user_id = %d and others_id = %d) or (user_id = %d and others_id = %d) and status = 1", user_id, post_userid, post_userid, user_id);
         data2 = DB_get(&conn, sql);
-        if (data2->size == 0 || atoi(DB_str_get_by(data2, "status")) != 2){
+        if (data2->size == 0){
             response = data_create(NULL, FAIL);
             send_data(client, response, 0, 0);
             DB_free_data(&data2);
