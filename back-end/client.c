@@ -430,7 +430,7 @@ void get_news(Param p) {
         title = param_get_str(&p);
         content = param_get_str(&p);
         image = param_get_str(&p);
-        printf("\n-- postid: %d, userid: %d, name: %s, title: %s, content: %s\navatar: %s\nimage: %s", userid, postid, name, title, content, avatar, image);
+        printf("\n-- postid: %d, userid: %d, name: %s, title: %s, content: %s\navatar: %s\nimage: %s", postid, userid, name, title, content, avatar, image);
         data_free(&response);
     }
 }

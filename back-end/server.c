@@ -368,15 +368,15 @@ int friends(int client, Param p) {
 int news(int client, Param p) {
     int userid = param_get_int(&p);
 
-    char sql[1000] = {0};
-    sprintf(sql, "select post.id, user.id, name, avatar, title, content, image from post, user where\n"
-                 "user.id = post.user_id and\n"
-                 "((user_id in (select follow.others_id from follow where follow.status = 2 and follow.user_id = %d) and (status = 1 or status = 2)) or\n"
-                 "(user_id in (select others_id from follow where follow.status = 0 and follow.user_id = %d) and status = 2) or\n"
-                 " user_id = %d)"
+    char sql[1500] = {0};
+    sprintf(sql, "select post.id, user.id, name, avatar, title, content, image from post, user where user.id = post.user_id and\n"
+                 "(((select COUNT(*) from follow where ((user_id = %d and others_id = post.user_id) or (user_id = post.user_id and others_id = %d)) and status = 1) > 0 and (status = 1 or status = 2))\n"
+                 "or\n"
+                 "((select count(*) from follow where (user_id = %d and others_id = post.user_id) and status = 0) > 0 and status = 2))\n"
                  "order by post.created_at desc;", userid, userid, userid);
     Table data = DB_get(&conn, sql);
     send_list_data(client, data);
+    DB_free_data(&data);
     return 1;
 }
 
