@@ -49,6 +49,13 @@ int interaction(MessageCode type);
 
 int follow();
 
+int profile();
+
+int edit_profile();
+
+
+void get_news(Param p);
+
 int login(){
     char enter;
     char i2s[10];
@@ -130,7 +137,9 @@ int main(int argc, char *argv[]){
         printf("\n9. Follower");
         printf("\n10. Unfollow");
         printf("\n11. Accept Friend");
-        printf("\n12. Accept Friend");
+        printf("\n12. Follow");
+        printf("\n13. Profile");
+        printf("\n13. Edit Profile");
         printf("\n100. Notification");
         printf("\nYour choice: ");
 
@@ -173,6 +182,12 @@ int main(int argc, char *argv[]){
             case 12:
                 status = follow();
                 break;
+            case 13:
+                status = profile();
+                break;
+            case 14:
+                status = edit_profile();
+                break;
             case 100:
                 status = notify();
                 break;
@@ -186,6 +201,63 @@ int main(int argc, char *argv[]){
 
     close(client_sock);
     return 0;
+}
+
+int edit_profile() {
+    return 0;
+}
+
+int profile() {
+    printf("Nhap user_id > ");
+    int user_id;
+    scanf("%d", &user_id);
+    char enter;
+    scanf("%c", &enter);
+
+    Param root = param_create(), tail = root;
+    param_add_int(&tail, id);
+    param_add_int(&tail, user_id);
+    Data request = data_create(root, PROFILE);
+    send_data(client_sock, request, 0, 0);
+
+    char *name, *image, *bio, *birthday, *created_at, *interest, gender_str[5] = {0};
+    int gender;
+    Param p;
+    Data response = recv_data(client_sock, 0, 0);
+    MessageCode code = response->message;
+    data_free(&response);
+    if (code == OK){
+        response = recv_data(client_sock, 0, 0);
+        p = response->params;
+        user_id = param_get_int(&p);
+        name = param_get_str(&p);
+        image = param_get_str(&p);
+        bio = param_get_str(&p);
+        gender = param_get_int(&p);
+        birthday = param_get_str(&p);
+        created_at = param_get_str(&p);
+        interest = param_get_str(&p);
+
+        if (gender == 0)strcpy(gender_str, "Nữ");
+        else
+        {
+            strcpy(gender_str, "Nam");
+        }
+        printf("\n------PROFILE------");
+        printf("\n\tuserid: %d, name: %s, gender: %s, bio: %s, birthday: %s, interest: %s\n\timage: %s",
+               user_id, name, gender_str, bio, birthday, interest, image);
+        data_free(&response);
+    }else{
+        return display_error();
+    }
+    response = recv_data(client_sock, 0, 0);
+    code = response->message;
+    if (code == OK){
+        get_news(response->params);
+    }else return display_error();
+    data_free(&response);
+
+    return 1;
 }
 
 int follow() {
@@ -202,18 +274,19 @@ int follow() {
     send_data(client_sock, request, 0, 0);
 
     Data response = recv_data(client_sock, 0, 0);
-    if (response->message == SUCCESS){
+    MessageCode code = response->message;
+    data_free(&response);
+    if (code == SUCCESS){
         logger(L_SUCCESS, "Theo dõi bạn bè thành công");
         return 1;
-    }else if(response->message == FOLLOWED){
+    }else if(code == FOLLOWED){
         logger(L_WARN, "Đã theo dõi người này");
         return 1;
     }
-    else if (response->message == ACCEPTED){
+    else if (code == ACCEPTED){
         logger(L_WARN, "Đã trở thành bạn bè");
     }else{
-        logger(L_ERROR, "HE THONG DANG NANG CAP");
-        return -1;
+        return display_error();
     }
 }
 
@@ -231,20 +304,21 @@ int accept_friend() {
     send_data(client_sock, request, 0, 0);
 
     Data response = recv_data(client_sock, 0, 0);
-    if (response->message == SUCCESS){
+    MessageCode code = response->message;
+    data_free(&response);
+    if (code == SUCCESS){
         logger(L_SUCCESS, "Đã chấp nhận lời mời kết bạn");
         return 1;
-    }else if(response->message == FAIL){
+    }else if(code == FAIL){
         logger(L_WARN, "Người này chưa theo dõi bạn");
         return 0;
     }
-    else if (response->message == ACCEPTED){
+    else if (code == ACCEPTED){
         logger(L_WARN, "Đã trờ thành bạn bè");
         return 0;
     }
     else{
-        logger(L_ERROR, "HE THONG DANG NANG CAP");
-        return -1;
+        return display_error();
     }
 }
 
@@ -262,16 +336,17 @@ int unfollow() {
     send_data(client_sock, request, 0, 0);
 
     Data response = recv_data(client_sock, 0, 0);
-    if (response->message == SUCCESS){
+    MessageCode code = response->message;
+    data_free(&response);
+    if (code == SUCCESS){
         logger(L_SUCCESS, "Bỏ theo dõi thành công");
         return 1;
-    }else if (response->message == FAIL){
+    }else if (code == FAIL){
         logger(L_WARN, "Bạn chưa theo dõi người này");
         return 1;
     }
     else{
-        logger(L_ERROR, "HE THONG DANG NANG CAP");
-        return -1;
+        return display_error();
     }
 }
 
@@ -289,9 +364,10 @@ int interaction(MessageCode type) {
     if (response->message == OK){
         get_list_user(response->params);
     }else if (response->message == ERROR){
-        logger(L_ERROR, "HE THONG DANG NANG CAP");
-        return -1;
+        data_free(&response);
+        return display_error();
     }
+    data_free(&response);
     return 1;
 }
 
@@ -328,18 +404,21 @@ int news() {
     Data request = data_create(root, NEWS);
     send_data(client_sock, request, 0, 0);
 
-    int count;
     Data response = recv_data(client_sock, 0, 0);
-    if (response->message == OK){
-        count = param_get_int(&response->params);
-    }else{
-        printf("\n\tHE THONG DANG NANG CAP");
-        return 0;
+    if (response->message != OK){
+        return display_error();
     }
+
+    get_news(response->params);
+    data_free(&response);
+    return 1;
+}
+
+void get_news(Param p) {
     int postid, userid;
     char *name, *avatar, *title, *content, *image;
-    Param p;
-    data_free(&response);
+    Data response;
+    int count = param_get_int(&p);
     for (int i = 0; i < count; i++){
         response = recv_data(client_sock, 0, 0);
         p = response->params;
@@ -354,7 +433,6 @@ int news() {
         printf("\n-- postid: %d, userid: %d, name: %s, title: %s, content: %s\navatar: %s\nimage: %s", userid, postid, name, title, content, avatar, image);
         data_free(&response);
     }
-    return 1;
 }
 
 int search() {

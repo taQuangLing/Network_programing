@@ -15,7 +15,7 @@
 #define L_INFO "info"
 #define L_SUCCESS "success"
 #define L_WARN "warn"
-#define L_ERROR "error"
+#define L_ERROR "display_error"
 
 
 #define USERNAME_LEN 50

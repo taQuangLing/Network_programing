@@ -64,6 +64,7 @@ typedef enum{
     ACCEPTED,
     FOLLOW,
     FOLLOWED,
+    EDIT_PROFILE,
 }MessageCode;
 
 #endif //LAP_TRINH_MANG_MESSAGECODE_H

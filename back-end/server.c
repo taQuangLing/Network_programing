@@ -50,6 +50,10 @@ int interaction(int client, Param p, MessageCode type);
 
 int follow(int client, Param p);
 
+int profile(int client, Param p);
+
+int edit_profile(int client, Param p);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -136,6 +140,10 @@ void handle_client(int client){
             case FOLLOW:
                 status = follow(client, p);
             case PROFILE:
+                status = profile(client, p);
+                break;
+            case EDIT_PROFILE:
+                status = edit_profile(client, p);
                 break;
             case POST:
                 break;
@@ -157,6 +165,43 @@ void handle_client(int client){
     }
 }
 
+int edit_profile(int client, Param p) {
+    return 0;
+}
+
+int profile(int client, Param p) {
+    char sql[1000] = {0};
+    Table data;
+    int userid = param_get_int(&p);
+    int others_id = param_get_int(&p);
+
+    sprintf(sql, "select id, name, avatar, bio, gender, birthday, created_at, interest from user where id = %d", others_id);
+    data = DB_get(&conn, sql);
+    if (data == NULL){
+        return send_error(client);
+    }
+    send_list_data(client, data);
+    DB_free_data(&data);
+    // send news of user id
+    if (userid == others_id){
+        sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d", userid);
+    }else{
+        sprintf(sql, "select * from follow where ((user_id = %d and others_id = %d) or (others_id = %d and user_id = %d)) and status = 1", userid, others_id, userid, others_id);
+        data = DB_get(&conn, sql);
+        if (data->size == 0){
+            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and status = 2", others_id);
+        }else{
+            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and (status = 1 or status = 2)", others_id);
+        }
+        DB_free_data(&data);
+    }
+    data = DB_get(&conn, sql);
+    if (data == NULL)return send_error(client);
+    send_list_data(client, data);
+    DB_free_data(&data);
+    return 1;
+}
+
 int follow(int client, Param p) {
     Data response;
     int userid = param_get_int(&p), others_id = param_get_int(&p);
@@ -165,9 +210,7 @@ int follow(int client, Param p) {
     Table data = DB_get(&conn, sql);
     int userid_t = DB_int_get_by(data, "user_id");
     if (data == NULL){
-        response = data_create(NULL, ERROR);
-        send_data(client, response, 0, 0);
-        return 1;
+        send_error(client);
     }
 
     if (data->size == 0){
@@ -211,9 +254,7 @@ int accept_friend(int client, Param p) {
     sprintf(sql, "select id, status from follow where user_id = %d and others_id = %d", others_id, userid);
     Table data = DB_get(&conn, sql);
     if (data == NULL){
-        response = data_create(NULL, ERROR);
-        send_data(client, response, 0, 0);
-        return 1;
+        return send_error(client);
     }
     if (data->size == 0){
         response = data_create(NULL, FAIL);
@@ -260,9 +301,7 @@ int unfollow(int client, Param p) {
     int status = atoi(DB_str_get_by(data, "status"));
 
     if (data == NULL){
-        response = data_create(NULL, ERROR);
-        send_data(client, response, 0, 0);
-        return 1;
+        send_error(client);
     }
     if (status == -1 || data->size == 0 || (status == 0 && userid != userid_t)){
         response = data_create(NULL, FAIL);
@@ -310,9 +349,7 @@ int interaction(int client, Param p, MessageCode type) {
             break;
         default:
             logger(L_ERROR, "Lỗi nhiều hơn 3 trạng thái interaction - 187");
-            response = data_create(NULL, ERROR);
-            send_data(client, response, 0, 0);
-            return -1;
+            return send_error(client);
     }
     Table data = DB_get(&conn, sql);
     if (data == NULL){

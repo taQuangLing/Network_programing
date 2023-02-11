@@ -154,10 +154,10 @@ int ping(int sock, int flag){
     Data data = data_create(NULL,PING);
     return send_data(sock, data, flag, 0);
 }
-int send_error(int sock, int flag){
-    Data data;
-    data = data_create(NULL, ERROR_SYSTEM);
-    return send_data(sock, data, flag, 0);
+int send_error(int client){
+    Data response = data_create(NULL, ERROR);
+    send_data(client, response, 0, 0);
+    return 1;
 }
 void get_time_now(char *res, const char *format){
     time_t rawtime;
@@ -271,4 +271,8 @@ void logger(char *type, const char *format, ...) {
     va_end(args);
     printf("\x1b[0m\n");
     fflush(stdout);
+}
+int display_error() {
+    logger(L_ERROR, "HE THONG DANG NANG CAP");
+    return -1;
 }
