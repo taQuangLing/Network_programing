@@ -332,6 +332,10 @@ int write_file(int sock, char *path) {
     char buffer[BUFF_SIZE];
 //  get file name
     Data response = recv_data(sock, 0, 0);
+    if (response->message == FAIL_OPEN_FILE){
+        data_free(&response);
+        return 0;
+    }
     filename = param_get_str(&response->params);
     sprintf(path + strlen(path), "/%s", filename);
     data_free(&response);
