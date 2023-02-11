@@ -177,12 +177,58 @@ void handle_client(int client){
 }
 
 int remove_posts(int client, Param p) {
-    return 0;
+    int userid = param_get_int(&p);
+    int postid = param_get_int(&p);
+    Table data = DB_get_by_id(&conn, "post", postid);
+    int userid_t = DB_int_get_by(data, "user_id");
+    if (userid_t != userid){
+        return send_fail(client);
+    }
+    if (DB_delete(&conn, "post", postid) == -1)return send_error(client);
+    return send_success(client);
 }
 
 int edit_posts(int client, Param p) {
-    return 0;
-}
+    char *title, *content, *image, time_now[20] = {0};
+    int status, userid;
+    userid = param_get_int(&p);
+    int postid = param_get_int(&p);
+    title = param_get_str(&p);
+    content = param_get_str(&p);
+    image = param_get_str(&p);
+    status = param_get_int(&p);
+    get_time_now(time_now, NULL);
+
+    Table data = DB_get_by_id(&conn, "post", postid);
+    int userid_t = DB_int_get_by(data, "user_id");
+
+    if (userid != userid_t){
+        Data response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        return 0;
+    }
+    else{
+        send_success(client);
+    }
+
+    char sql[1000] = {0};
+    char path[150] = {0};
+    sprintf(path, "kho");
+    int state = write_file(client, path);
+    if (state == -1){
+        return send_error(client);
+    }else if (state == 0){
+        sprintf(sql, "update post set title = '%s', content = '%s', image = '%s', status = %d where id = %d", title, content, image, status, postid);
+        if (DB_insert_v2(&conn, sql) == -1){
+            return send_error(client);
+        }
+        return send_success(client);
+    }
+    sprintf(sql, "update post set title = '%s', content = '%s', image = '%s', status = %d, path = '%s' where id = %d", title, content, image, status, path, postid);
+    if (DB_insert_v2(&conn, sql) == -1){
+        return send_error(client);
+    }
+    return send_success(client);}
 
 int posts(int client, Param p) {
     char *title, *content, *image, time_now[20] = {0};

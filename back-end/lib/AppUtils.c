@@ -286,6 +286,11 @@ int send_success(int client){
     send_data(client, response, 0, 0);
     return 1;
 }
+int send_fail(int client){
+    Data response = data_create(NULL, FAIL);
+    send_data(client, response, 0, 0);
+    return 1;
+}
 int send_file(int client, char *path) {
     Data response;
     FILE *f;
@@ -332,7 +337,7 @@ int write_file(int sock, char *path) {
     char buffer[BUFF_SIZE];
 //  get file name
     Data response = recv_data(sock, 0, 0);
-    if (response->message == FAIL_OPEN_FILE){
+    if (response->message == EMPTY){
         data_free(&response);
         return 0;
     }

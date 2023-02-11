@@ -177,6 +177,15 @@ int DB_update_v3(MYSQL **conn, Table data){
             DB_str_get_by(data, "id"));
     return DB_update_v2(conn, sql);
 }
+int DB_delete(MYSQL **conn, char *table, int id){
+    char sql[100] = {0};
+    sprintf(sql, "delete from %s where id = %d", table, id);
+    if (mysql_query(*conn, sql)){
+        logger(L_ERROR, "function: delete(), sql = \"%s\"; %s", sql, (char*)mysql_error(*conn));
+        return -1;
+    }
+    return 1;
+}
 //int main(){
 //    char *server = "localhost";
 //    char *user = "root";

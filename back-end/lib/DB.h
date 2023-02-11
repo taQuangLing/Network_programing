@@ -35,4 +35,6 @@ int DB_int_get_by(Table data, char *field);
 int DB_update_cell(Table data, char *field, char *value);
 
 int DB_update_v3(MYSQL **conn, Table data);
+
+int DB_delete(MYSQL **, char *, int );
 #endif //LAP_TRINH_MANG_DB_H

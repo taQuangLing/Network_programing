@@ -28,6 +28,7 @@ void logger(char *type, const char *format, ...);
 int display_error();
 int display_success();
 int send_success(int );
+int send_fail(int );
 int send_file(int , char *);
 int write_file(int , char *);
 #endif //LAP_TRINH_MANG_APPUTILS_H

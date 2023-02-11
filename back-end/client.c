@@ -220,11 +220,101 @@ int main(int argc, char *argv[]){
 }
 
 int remove_posts() {
-    return 0;
+    int postid;
+    char enter;
+    printf("\n========REMOVE_POSTS=========");
+    printf("\nNhap post_id : ");
+    scanf("%d", &postid);
+    scanf("%c", &enter);
+
+    Param root = param_create(), tail = root;
+    param_add_int(&tail, id);
+    param_add_int(&tail, postid);
+    Data request = data_create(root, REMOVE_POSTS);
+    send_data(client_sock, request, 0, 0);
+
+    Data response = recv_data(client_sock, 0, 0);
+    MessageCode code = response->message;
+    data_free(&response);
+    if (code == SUCCESS){
+        return display_success();
+    }else if(code == FAIL){
+        logger(L_WARN, "Khong co quyen truy cap");
+        return 0;
+    }else{
+        return display_error();
+    }
 }
 
 int edit_posts() {
-    return 0;
+    char title[50] = {0}, enter, content[150] = {0}, image[80] = {0};
+    int status, postid;
+    printf("\n========EDIT_POSTS=========");
+    printf("\nNhap post_id : ");
+    scanf("%d", &postid);
+    scanf("%c", &enter);
+    printf("\nNhap title: ");
+    scanf("%[^\n]s", title);
+    scanf("%c", &enter);
+    printf("\nNhap content: ");
+    scanf("%[^\n]s", content);
+    scanf("%c", &enter);
+    printf("\nNhap image: ");
+    scanf("%[^\n]s", image);
+    scanf("%c", &enter);
+    printf("\nNhap status(0: private, 1: friend, 2:public): ");
+    scanf("%d", &status);
+    scanf("%c", &enter);
+
+    Param root = param_create(), tail = root;
+    Data request, response;
+
+    param_add_int(&tail, id);
+    param_add_int(&tail, postid);
+    param_add_str(&tail, title);
+    param_add_str(&tail, content);
+    param_add_str(&tail, image);
+    param_add_int(&tail, status);
+    request = data_create(root, EDIT_POSTS);
+    send_data(client_sock, request, 0, 0);
+
+    response = recv_data(client_sock, 0, 0);
+    MessageCode code = response->message;
+    data_free(&response);
+    if (code == FAIL){
+        logger(L_WARN, "Khong co quyen truy cap");
+        return 0;
+    }
+
+    usleep(1000);
+    char filename[50] = {0};
+    char path[100] = {0};
+    printf("\nNhap ten file > ");
+    scanf("%[^\n]s", filename);
+    scanf("%c", &enter);
+    if (check_space(filename) == 0){
+        request = data_create(NULL, EMPTY);
+        send_data(client_sock, request, 0, 0);
+        response = recv_data(client_sock, 0, 0);
+        MessageCode code = response->message;
+        if (code != SUCCESS){
+            return display_error();
+        }
+        return display_success();
+    }
+    sprintf(path, "resource/%s", filename);
+    if (send_file(client_sock, path) == -1){
+        request = data_create(NULL, FAIL_OPEN_FILE);
+        send_data(client_sock, request, 0, 0);
+        return display_error();
+    }
+
+    response = recv_data(client_sock, 0, 0);
+    code = response->message;
+    if (code != SUCCESS){
+        return display_error();
+    }
+    return display_success();
 }
 
 int posts() {
