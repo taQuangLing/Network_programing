@@ -197,10 +197,10 @@ int posts(int client, Param p) {
     char sql[1000] = {0};
     char path[150] = {0};
     sprintf(path, "kho");
-    write_file(client, path);
-    if (path == NULL){
+    if (write_file(client, path) == -1){
         return send_error(client);
     }
+
     sprintf(sql, "insert into post (user_id, title, content, image, status, created_at, path) value"
                  "(%d, '%s', '%s', '%s', %d, '%s', '%s')", userid, title, content, image, status, time_now, path);
     if (DB_insert_v2(&conn, sql) == -1){
@@ -604,6 +604,7 @@ int open_book(int client, Param p) {
     if ((path = DB_str_get_by(data, "path")) == NULL){
         return send_error(client);
     }
+    if (post_userid == user_id)status = 2;
     if (status == 0) {
         // 0: private, 1: friend, 2: public
         response = data_create(NULL, FAIL);

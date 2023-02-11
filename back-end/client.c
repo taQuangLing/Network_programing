@@ -262,7 +262,11 @@ int posts() {
     scanf("%[^\n]s", filename);
     scanf("%c", &enter);
     sprintf(path, "resource/%s", filename);
-    if (send_file(client_sock, path) == -1)return display_error();
+    if (send_file(client_sock, path) == -1){
+        request = data_create(NULL, FAIL_OPEN_FILE);
+        send_data(client_sock, request, 0, 0);
+        return display_error();
+    }
 
     response = recv_data(client_sock, 0, 0);
     MessageCode code = response->message;
