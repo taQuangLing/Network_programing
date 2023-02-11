@@ -47,7 +47,7 @@ typedef enum{
     FOLLOWING, // 38
     FOLLOWER, // 39
     PROFILE, // 40
-    POST, // 41
+    POSTS, // 41
     NOTIFY, // 42
     SEARCH, // 43
     COMMENTS,
@@ -65,6 +65,8 @@ typedef enum{
     FOLLOW,
     FOLLOWED,
     EDIT_PROFILE,
+    EDIT_POSTS,
+    REMOVE_POSTS,
 }MessageCode;
 
 #endif //LAP_TRINH_MANG_MESSAGECODE_H

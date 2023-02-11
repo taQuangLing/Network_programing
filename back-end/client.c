@@ -56,6 +56,12 @@ int edit_profile();
 
 void get_news(Param p);
 
+int posts();
+
+int edit_posts();
+
+int remove_posts();
+
 int login(){
     char enter;
     char i2s[10];
@@ -140,6 +146,9 @@ int main(int argc, char *argv[]){
         printf("\n12. Follow");
         printf("\n13. Profile");
         printf("\n14. Edit Profile");
+        printf("\n15. Đăng posts");
+        printf("\n16. Edit Posts");
+        printf("\n17. Gỡ Posts");
         printf("\n100. Notification");
         printf("\nYour choice: ");
 
@@ -188,6 +197,15 @@ int main(int argc, char *argv[]){
             case 14:
                 status = edit_profile();
                 break;
+            case 15:
+                status = posts();
+                break;
+            case 16:
+                status = edit_posts();
+                break;
+            case 17:
+                status = remove_posts();
+                break;
             case 100:
                 status = notify();
                 break;
@@ -200,6 +218,18 @@ int main(int argc, char *argv[]){
     }
 
     close(client_sock);
+    return 0;
+}
+
+int remove_posts() {
+    return 0;
+}
+
+int edit_posts() {
+    return 0;
+}
+
+int posts() {
     return 0;
 }
 

@@ -54,6 +54,12 @@ int profile(int client, Param p);
 
 int edit_profile(int client, Param p);
 
+int posts(int client, Param p);
+
+int edit_posts(int client, Param p);
+
+int remove_posts(int client, Param p);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -145,7 +151,14 @@ void handle_client(int client){
             case EDIT_PROFILE:
                 status = edit_profile(client, p);
                 break;
-            case POST:
+            case POSTS:
+                status = posts(client, p);
+                break;
+            case EDIT_POSTS:
+                status = edit_posts(client, p);
+                break;
+            case REMOVE_POSTS:
+                status = remove_posts(client, p);
                 break;
             case NOTIFY:
                 status = notify(client, p);
@@ -163,6 +176,18 @@ void handle_client(int client){
         data_free(&request);
         if (connection == 0)break;
     }
+}
+
+int remove_posts(int client, Param p) {
+    return 0;
+}
+
+int edit_posts(int client, Param p) {
+    return 0;
+}
+
+int posts(int client, Param p) {
+    return 0;
 }
 
 int edit_profile(int client, Param p) {
