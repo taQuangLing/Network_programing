@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6947cc62-b351-4042-9a10-195dab7b7832" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../kho/tai lieu.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AppUtils.o" beforeDir="false" afterPath="$PROJECT_DIR$/../AppUtils.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client" beforeDir="false" afterPath="$PROJECT_DIR$/../client" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client.c" beforeDir="false" afterPath="$PROJECT_DIR$/../client.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client.o" beforeDir="false" afterPath="$PROJECT_DIR$/../client.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/AppUtils.c" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/AppUtils.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server" beforeDir="false" afterPath="$PROJECT_DIR$/../server" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server.c" beforeDir="false" afterPath="$PROJECT_DIR$/../server.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server.o" beforeDir="false" afterPath="$PROJECT_DIR$/../server.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../resource/(null)" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../resource/abc.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../resource/tai lieu.pdf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
