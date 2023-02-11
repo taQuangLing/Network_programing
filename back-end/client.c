@@ -21,8 +21,6 @@ int notify();
 
 int open_book();
 
-void write_file();
-
 int exit_server();
 
 int sign_up();
@@ -230,7 +228,48 @@ int edit_posts() {
 }
 
 int posts() {
-    return 0;
+    char title[50] = {0}, enter, content[150] = {0}, image[80] = {0};
+    int status;
+    printf("\n========POSTS=========");
+    printf("\nNhap title: ");
+    scanf("%[^\n]s", title);
+    scanf("%c", &enter);
+    printf("\nNhap content: ");
+    scanf("%[^\n]s", content);
+    scanf("%c", &enter);
+    printf("\nNhap image: ");
+    scanf("%[^\n]s", image);
+    scanf("%c", &enter);
+    printf("\nNhap status(0: private, 1: friend, 2:public): ");
+    scanf("%d", &status);
+    scanf("%c", &enter);
+
+    Param root = param_create(), tail = root;
+    Data request, response;
+
+    param_add_int(&tail, id);
+    param_add_str(&tail, title);
+    param_add_str(&tail, content);
+    param_add_str(&tail, image);
+    param_add_int(&tail, status);
+    request = data_create(root, POSTS);
+    send_data(client_sock, request, 0, 0);
+
+    usleep(1000);
+    char filename[50] = {0};
+    char path[100] = {0};
+    printf("\nNhap ten file > ");
+    scanf("%[^\n]s", filename);
+    scanf("%c", &enter);
+    sprintf(path, "resource/%s", filename);
+    if (send_file(client_sock, path) == -1)return display_error();
+
+    response = recv_data(client_sock, 0, 0);
+    MessageCode code = response->message;
+    if (code != SUCCESS){
+        return display_error();
+    }
+    return display_success();
 }
 
 int edit_profile(){
@@ -715,36 +754,11 @@ int open_book() {
     }else if (response->message == ERROR){
         logger(L_ERROR, "%s", "HE THONG DANG NANG CAP");
     }else{
-        write_file();
+        write_file(client_sock, "/resource");
     }
 
     data_free(&response);
     return 1;
-}
-
-void write_file() {
-    int n;
-    FILE *fp;
-    char *filename;
-    char buffer[BUFF_SIZE];
-
-    Data response = recv_data(client_sock, 0, 0);
-    filename = param_get_str(&response->params);
-    data_free(&response);
-
-    fp = fopen(filename, "wb");
-    while (1) {
-        n = recv(client_sock, buffer, BUFF_SIZE, 0);
-        if (fwrite(buffer, 1, n, fp) < n)
-            logger(L_ERROR, "function: write_file()");
-        bzero(buffer, BUFF_SIZE);
-        printf("\nn = %d", n);
-        if (n < BUFF_SIZE)break;
-    }
-    fclose(fp);
-    char command[100] = {0};
-    sprintf(command, "gopen \"%s\"", filename);
-    system(command);
 }
 
 int notify() {
