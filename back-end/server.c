@@ -382,12 +382,12 @@ int news(int client, Param p) {
 
 int search(int client, Param p) {
     char keyword[50] = {0};
-    int id, type;
+    int userid, type;
     char sql[1000] = {0};
     Param root, tail;
     Data response;
 
-    id = param_get_int(&p);
+    userid = param_get_int(&p);
     strcpy(keyword+1, param_get_str(&p));
     type = param_get_int(&p);
 
@@ -397,7 +397,11 @@ int search(int client, Param p) {
     keyword[lenght+1] = '\0';
     if (type == 0){
         // search sach
-        sprintf(sql, "select post.id as postid, user.id as userid, name, image, title, content from post, user where user.id = user_id and (title LIKE '%s' or content LIKE '%s') and status = 1", keyword, keyword);
+        sprintf(sql, "select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and\n"
+                     "((select COUNT(*) from follow where ((user_id = %d and others_id = post.user_id) or (user_id = post.user_id and others_id = %d)) and status = 1) > 0 and (status = 1 or status = 2))\n"
+                     "union\n"
+                     "select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and\n"
+                     "status = 2", keyword, keyword, userid, userid, keyword, keyword);
     }else
     {
         // search nguoi
