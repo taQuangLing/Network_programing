@@ -9,6 +9,7 @@
 #include <ctype.h>
 #include <stdarg.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include "string.h"
 #include "config.h"
 
@@ -284,4 +285,72 @@ int send_success(int client){
     Data response = data_create(NULL, SUCCESS);
     send_data(client, response, 0, 0);
     return 1;
+}
+int send_file(int client, char *path) {
+    Data response;
+    FILE *f;
+    int i, n;
+    if ((f = fopen(path, "rb")) == NULL){
+        response = data_create(NULL, FAIL_OPEN_FILE);
+        send_data(client, response, 0, 0);
+        logger(L_ERROR, "Lỗi mở file %s", path);
+        return -1;
+    }
+    char data[BUFF_SIZE] = {0};
+    char file_name[50] = {0};
+    for (i = strlen(path)-1; i >= 0; i--){
+        if (path[i] == '/'){
+            strcpy(file_name, path+i+1);
+            break;
+        }
+    }
+    if (i == -1){
+        strcpy(file_name, path);
+    }
+    Param root = param_create();
+    param_add_str(&root, file_name);
+    response = data_create(root, OPEN);
+    send_data(client, response, 0, 0);
+    usleep(1000);
+
+    while ((n = fread(data, 1, BUFF_SIZE, f)) > 0) {
+        if (send(client, data, n, 0) == -1) {
+            logger(L_ERROR, "function: send_file()");
+            break;
+        }
+        usleep(1000);
+        bzero(data, BUFF_SIZE);
+    }
+    fclose(f);
+    logger(L_SUCCESS, "File %s sent successfully.", path);
+    return 1;
+}
+int write_file(int sock, char *path) {
+    int n;
+    FILE *fp;
+    char *filename;
+    char buffer[BUFF_SIZE];
+//  get file name
+    Data response = recv_data(sock, 0, 0);
+    filename = param_get_str(&response->params);
+    sprintf(path + strlen(path), "/%s", filename);
+    data_free(&response);
+//  get data
+    fp = fopen(path, "wb");
+    while (1) {
+        n = recv(sock, buffer, BUFF_SIZE, 0);
+        if (fwrite(buffer, 1, n, fp) < n){
+            logger(L_ERROR, "function: write_file()");
+            fclose(fp);
+            return -1;
+        }
+        bzero(buffer, BUFF_SIZE);
+        printf("\nn = %d", n);
+        if (n < BUFF_SIZE)break;
+    }
+    fclose(fp);
+    return 1;
+    //    char command[100] = {0};
+//    sprintf(command, "gopen \"%s\"", filename);
+//    system(command);
 }

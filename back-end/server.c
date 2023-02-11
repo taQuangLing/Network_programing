@@ -24,8 +24,6 @@ int notify(int client, Param p);
 
 int open_book(int client, Param p);
 
-void send_file(int client, char *path);
-
 int sign_up(int client, Param pParam);
 
 int forgot_password(int client, Param p);
@@ -187,7 +185,28 @@ int edit_posts(int client, Param p) {
 }
 
 int posts(int client, Param p) {
-    return 0;
+    char *title, *content, *image, time_now[20] = {0};
+    int status, userid;
+    userid = param_get_int(&p);
+    title = param_get_str(&p);
+    content = param_get_str(&p);
+    image = param_get_str(&p);
+    status = param_get_int(&p);
+    get_time_now(time_now, NULL);
+
+    char sql[1000] = {0};
+    char path[150] = {0};
+    sprintf(path, "kho");
+    write_file(client, path);
+    if (path == NULL){
+        return send_error(client);
+    }
+    sprintf(sql, "insert into post (user_id, title, content, image, status, created_at, path) value"
+                 "(%d, '%s', '%s', '%s', %d, '%s', '%s')", userid, title, content, image, status, time_now, path);
+    if (DB_insert_v2(&conn, sql) == -1){
+        return send_error(client);
+    }
+    return send_success(client);
 }
 
 int edit_profile(int client, Param p) {
@@ -583,9 +602,7 @@ int open_book(int client, Param p) {
     int status = DB_int_get_by(data, "status");
     char *path;
     if ((path = DB_str_get_by(data, "path")) == NULL){
-        response = data_create(NULL, ERROR);
-        send_data(client, response, 0, 0);
-        return 0;
+        return send_error(client);
     }
     if (status == 0) {
         // 0: private, 1: friend, 2: public
@@ -593,9 +610,9 @@ int open_book(int client, Param p) {
         send_data(client, response, 0, 0);
         return 0;
     }else if(status == 1){
-        sprintf(sql, "select * from follow where user_id = %d and others_id = %d", user_id, post_id);
+        sprintf(sql, "select * from follow where (user_id = %d and others_id = %d) or (user_id = %d and others_id = %d) and status = 1", user_id, post_userid, post_userid, user_id);
         data2 = DB_get(&conn, sql);
-        if (data2->size == 0 || atoi(DB_str_get_by(data2, "status")) != 2){
+        if (data2->size == 0){
             response = data_create(NULL, FAIL);
             send_data(client, response, 0, 0);
             DB_free_data(&data2);
@@ -608,45 +625,6 @@ int open_book(int client, Param p) {
     usleep(1000);
     send_file(client, path);
     return 1;
-}
-
-void send_file(int client, char *path) {
-    Data response;
-    FILE *f;
-    int i, n;
-    if ((f = fopen(path, "rb")) == NULL){
-        response = data_create(NULL, FAIL_OPEN_FILE);
-        send_data(client, response, 0, 0);
-        logger(L_ERROR, "Lỗi mở file %s", path);
-        return;
-    }
-    char data[BUFF_SIZE] = {0};
-    char file_name[50] = {0};
-    for (i = strlen(path)-1; i >= 0; i--){
-        if (path[i] == '/'){
-            strcpy(file_name, path+i+1);
-            break;
-        }
-    }
-    if (i == -1){
-        strcpy(file_name, path);
-    }
-    Param root = param_create();
-    param_add_str(&root, file_name);
-    response = data_create(root, OPEN);
-    send_data(client, response, 0, 0);
-    usleep(1000);
-
-    while ((n = fread(data, 1, BUFF_SIZE, f)) > 0) {
-        if (send(client, data, n, 0) == -1) {
-            logger(L_ERROR, "function: send_file()");
-            break;
-        }
-        usleep(1000);
-        bzero(data, BUFF_SIZE);
-    }
-    fclose(f);
-    logger(L_SUCCESS, "File %s sent successfully.", path);
 }
 
 int notify(int client, Param p) {
