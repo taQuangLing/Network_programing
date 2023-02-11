@@ -276,3 +276,12 @@ int display_error() {
     logger(L_ERROR, "HE THONG DANG NANG CAP");
     return -1;
 }
+int display_success(){
+    logger(L_SUCCESS, "Thanh cong");
+    return 1;
+}
+int send_success(int client){
+    Data response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
+    return 1;
+}

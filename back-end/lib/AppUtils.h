@@ -26,4 +26,6 @@ void encode_password(char *pass);
 int random_between(int from, int to);
 void logger(char *type, const char *format, ...);
 int display_error();
+int display_success();
+int send_success(int );
 #endif //LAP_TRINH_MANG_APPUTILS_H

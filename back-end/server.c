@@ -166,7 +166,32 @@ void handle_client(int client){
 }
 
 int edit_profile(int client, Param p) {
-    return 0;
+    char *username, *image, *bio, *birthday, *interest, gender_s[2] = {0};
+    int gender, userid;
+    userid = param_get_int(&p);
+    username = param_get_str(&p);
+    image = param_get_str(&p);
+    bio = param_get_str(&p);
+    gender = param_get_int(&p);
+    birthday = param_get_str(&p);
+    interest = param_get_str(&p);
+    intTostr(gender, gender_s);
+
+    Table data = DB_get_by_id(&conn, "user", userid);
+    if (check_space(username) != 0){
+        DB_update_cell(data, "name", username);
+    }
+    DB_update_cell(data, "avatar", image);
+    DB_update_cell(data, "bio", bio);
+    DB_update_cell(data, "gender", gender_s);
+    DB_update_cell(data, "birthday", birthday);
+    DB_update_cell(data, "interest", interest);
+
+    char sql[1000] = {0};
+    if (DB_update_v3(&conn,data) == -1){
+        send_error(client);
+    }
+    return send_success(client);
 }
 
 int profile(int client, Param p) {

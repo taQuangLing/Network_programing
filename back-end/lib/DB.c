@@ -155,6 +155,28 @@ char *DB_str_get_by(Table data, char *field){
 int DB_int_get_by(Table data, char *field){
     return atoi(DB_str_get_by(data, field));
 }
+int DB_update_cell(Table data, char *field, char *value){
+    for (int i = 0; i < data->column; i++){
+        if (strcmp(data->header[i], field) == 0){
+            data->data[0][i] = value;
+            return 1;
+        }
+    }
+    logger(L_ERROR, "Không tồn tại trường: %s", field);
+    return -1;
+}
+int DB_update_v3(MYSQL **conn, Table data){
+    char sql[1000] = {0};
+    sprintf(sql, "update user set name = '%s', avatar = '%s', bio = '%s', gender = %d, birthday = '%s', interest = '%s' where id = %s",
+            DB_str_get_by(data, "name"),
+            DB_str_get_by(data, "avatar"),
+            DB_str_get_by(data, "bio"),
+            DB_int_get_by(data, "gender"),
+            DB_str_get_by(data, "birthday"),
+            DB_str_get_by(data, "interest"),
+            DB_str_get_by(data, "id"));
+    return DB_update_v2(conn, sql);
+}
 //int main(){
 //    char *server = "localhost";
 //    char *user = "root";

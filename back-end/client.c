@@ -139,7 +139,7 @@ int main(int argc, char *argv[]){
         printf("\n11. Accept Friend");
         printf("\n12. Follow");
         printf("\n13. Profile");
-        printf("\n13. Edit Profile");
+        printf("\n14. Edit Profile");
         printf("\n100. Notification");
         printf("\nYour choice: ");
 
@@ -203,8 +203,52 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-int edit_profile() {
-    return 0;
+int edit_profile(){
+    char username[USERNAME_LEN] = {0}, image[100] = {0}, bio[100] = {0}, birthday[20] = {0}, interest[150] = {0};
+    char enter;
+    int gender = -1;
+    printf("\n===========PROFILE==========");
+    printf("\nNhap ten: ");
+    scanf("%[^\n]s", username);
+    if (check_space(username) == 0){
+        logger(L_WARN, "\nKhong dc bo trong username!!!");
+        return 0;
+    }
+    scanf("%c", &enter);
+    printf("\nNhap image: ");
+    scanf("%[^\n]s", image);
+    scanf("%c", &enter);
+    printf("\nNhap bio: ");
+    scanf("%[^\n]s", bio);
+    scanf("%c", &enter);
+    printf("\nNhap gender(\"Nam\": 1, \"Nu\": 0): ");
+    scanf("%d", &gender);
+    scanf("%c", &enter);
+    if (gender < 0 || gender > 1)gender = 0;
+    printf("\nNhap birthday(yean/month/day): ");
+    scanf("%[^\n]s", birthday);
+    scanf("%c", &enter);
+    printf("\nNhap so thich: ");
+    scanf("%[^\n]s", interest);
+    scanf("%c", &enter);
+printf("\ngender = %d", gender);
+    Param root = param_create(), tail = root;
+    param_add_int(&tail, id);
+    param_add_str(&tail, username);
+    param_add_str(&tail, image);
+    param_add_str(&tail, bio);
+    param_add_int(&tail, gender);
+    param_add_str(&tail, birthday);
+    param_add_str(&tail, interest);
+    Data request = data_create(root, EDIT_PROFILE);
+    send_data(client_sock, request, 0, 0);
+
+    Data response = recv_data(client_sock, 0 , 0);
+    MessageCode code = response->message;
+    if (code == SUCCESS){
+        return display_success();
+    }else
+        return display_error();
 }
 
 int profile() {
