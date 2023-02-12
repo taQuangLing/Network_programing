@@ -342,7 +342,7 @@ int write_file(int sock, char *path) {
         return 0;
     }
     filename = param_get_str(&response->params);
-    sprintf(path + strlen(path), "/%s", filename);
+    sprintf(path + strlen(path), "%s", filename);
     data_free(&response);
 //  get data
     fp = fopen(path, "wb");

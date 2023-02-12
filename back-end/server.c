@@ -241,9 +241,11 @@ int posts(int client, Param p) {
     status = param_get_int(&p);
     get_time_now(time_now, NULL);
 
+    Table data2 = DB_get(&conn, "select max(id) as id from post");
+    int post_id = DB_int_get_by(data2, "id");
     char sql[1000] = {0};
     char path[150] = {0};
-    sprintf(path, "kho");
+    sprintf(path, "kho/%d-%d-", userid, post_id+1);
     if (write_file(client, path) == -1){
         return send_error(client);
     }
@@ -253,7 +255,7 @@ int posts(int client, Param p) {
     if (DB_insert_v2(&conn, sql) == -1){
         return send_error(client);
     }
-    Table data, data2;
+    Table data;
     int others_id;
     refresh(sql, 1000);
     if (status == 1){
