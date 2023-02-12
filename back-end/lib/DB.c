@@ -153,7 +153,7 @@ char *DB_str_get_by(Table data, char *field){
     return NULL;
 }
 int DB_int_get_by(Table data, char *field){
-    return atoi(DB_str_get_by(data, field));
+    int id =  atoi(DB_str_get_by(data, field));
 }
 int DB_update_cell(Table data, char *field, char *value){
     for (int i = 0; i < data->column; i++){

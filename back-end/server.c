@@ -252,6 +252,45 @@ int posts(int client, Param p) {
     if (DB_insert_v2(&conn, sql) == -1){
         return send_error(client);
     }
+    Table data, data2;
+    int others_id;
+    refresh(sql, 1000);
+    if (status == 1){
+        // friend
+        sprintf(sql, "select others_id from follow where user_id = %d and status = 1 "
+                     "union select user_id as others_id from follow where others_id = %d and status = 1", userid, userid);
+        data2 = DB_get(&conn, "select max(id) as id from post");
+        int post_id = DB_int_get_by(data2, "id");
+        data = DB_get(&conn, sql);
+
+        for (int i = 0; i < data->size; i++){
+            refresh(sql, 1000);
+            others_id = atoi(data->data[i][0]);
+            sprintf(sql, "insert into notification (to_user_id, from_user_id, type, seen, link_id) value (%d, %d, 0, 0, %d)",
+                   others_id , userid, post_id);
+            DB_insert_v2(&conn, sql);
+        }
+        DB_free_data(&data);
+        DB_free_data(&data2);
+    }else if (status == 2){
+        // public
+        sprintf(sql, "select others_id from follow where user_id = %d and status = 1 "
+                     "union select user_id as others_id from follow where others_id = %d and status = 1 "
+                     "union select user_id as others_id from follow where others_id = %d and status = 0 ", userid, userid, userid);
+
+        data2 = DB_get(&conn, "select max(id) as id from post");
+        int post_id = DB_int_get_by(data2, "id");
+        data = DB_get(&conn, sql);
+        for (int i = 0; i < data->size; i++){
+            refresh(sql, 1000);
+            others_id = atoi(data->data[i][0]);
+            sprintf(sql, "insert into notification (to_user_id, from_user_id, type, seen, link_id) value (%d, %d, 0, 0, %d)",
+                    others_id, userid, post_id);
+            DB_insert_v2(&conn, sql);
+        }
+        DB_free_data(&data);
+        DB_free_data(&data2);
+    }
     return send_success(client);
 }
 

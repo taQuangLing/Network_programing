@@ -13,7 +13,7 @@
 #include "lib/AppUtils.h"
 
 
-int id = 1;
+int id = -1;
 int client_sock;
 
 
