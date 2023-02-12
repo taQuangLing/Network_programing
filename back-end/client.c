@@ -849,7 +849,7 @@ int open_book() {
         logger(L_ERROR, "%s", "HE THONG DANG NANG CAP");
     }else{
         char path[150] = {0};
-        sprintf(path, "resource");
+        sprintf(path, "resource/");
         write_file(client_sock, path);
     }
 
