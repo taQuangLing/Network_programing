@@ -867,10 +867,6 @@ int notify() {
     // waiting from server
     response = recv_data(client_sock, 0, 0);
 
-    if (response->message == FAIL){
-        logger(L_WARN, "%s", response->params->value);
-        return 0;
-    }
     int seen, i;
     char *content, *username, *image;
     count = param_get_int(&response->params);

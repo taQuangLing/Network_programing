@@ -742,14 +742,6 @@ int notify(int client, Param p) {
     sprintf(sql, "select user.name, avatar, type, seen, link_id from notification, user where from_user_id = user.id and to_user_id = %d", toId);
     result1= DB_get(&conn, sql);
 
-    if (result1->size == 0){
-        param_add_str(&root, "No record!");
-        response = data_create(root, FAIL);
-        if (send_data(client, response, 0, 0) == -1){
-            logger(L_ERROR, "%s - function: notify() - 126");
-            return -1;
-        }
-    }
     param_add_int(&root, result1->size);
     response = data_create(root, NOTIFY);
     send_data(client, response, 0, 0);
@@ -767,7 +759,7 @@ int notify(int client, Param p) {
         type = atoi(result1->data[i][2]);
         seen = atoi(result1->data[i][3]);
         link_id = atoi(result1->data[i][4]);
-        if (type == 2){
+        if (type == 0){
             // thong bao ve bai post
             result2 = DB_get_by_id(&conn, "post", link_id);
             for (j = 0; j < result2->column; j++){
@@ -780,7 +772,7 @@ int notify(int client, Param p) {
             }
             sprintf(noidung, "đã đăng bài viết: %s...\n\t%s...", title, content);
             DB_free_data(&result2);
-        }else if(type == 3){
+        }else if(type == 1){ // chua hoan thanh chuc nang comment
             // thong bao ve comment
             sprintf(sql, "select comment.content as content, title from post, comment where post.id = comment.post_id and comment.id = %d", link_id);
             result2 = DB_get_by_id(&conn, "comment", link_id);
@@ -795,9 +787,13 @@ int notify(int client, Param p) {
             sprintf(noidung, "đã bình luận bài viết: %s...\n%s...", title, content);
             DB_free_data(&result2);
         }
-        else {
-            // thong bao ve loi moi ket ban
-            sprintf(noidung, "đã gửi lời mời kết bạn");
+        else if (type == 2){
+            // thong bao co nguoi khac follow
+            sprintf(noidung, "đã follow bạn.");
+        }
+        else if(type == 3){
+            // thong bao chap nhan loi moi ket ban
+            sprintf(noidung, "đã chấp nhận lời mời kết bạn.");
         }
         param_add_str(&tail, username);
         param_add_str(&tail, avatar);
