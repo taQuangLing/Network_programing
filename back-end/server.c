@@ -143,6 +143,7 @@ void handle_client(int client){
                 break;
             case FOLLOW:
                 status = follow(client, p);
+                break;
             case PROFILE:
                 status = profile(client, p);
                 break;
@@ -398,6 +399,14 @@ int follow(int client, Param p) {
 
     response = data_create(NULL, SUCCESS);
     send_data(client, response, 0, 0);
+
+    refresh(sql, 1000);
+    refresh(sql, 1000);
+    sprintf(sql, "insert into notification (to_user_id, from_user_id, type, seen) value (%d, %d, %d, 0)", others_id, userid, 2);
+    if (DB_insert_v2(&conn, sql) == -1){
+        logger(L_WARN, "Function: accept_friend()");
+        return -1;
+    }
     return 1;
 }
 
@@ -430,9 +439,15 @@ int accept_friend(int client, Param p) {
         send_data(client, response, 0, 0);
         return -1;
     }
-
     response = data_create(NULL, SUCCESS);
     send_data(client, response, 0, 0);
+
+    refresh(sql, 1000);
+    sprintf(sql, "insert into notification (to_user_id, from_user_id, type, seen) value (%d, %d, %d, 0)", others_id, userid, 3);
+    if (DB_insert_v2(&conn, sql) == -1){
+        logger(L_WARN, "Function: accept_friend()");
+        return -1;
+    }
     return 1;
 }
 

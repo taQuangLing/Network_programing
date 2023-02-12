@@ -1216,6 +1216,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     </column>
     <column id="323" parent="301" name="link_id">
       <DasType>int|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
       <Position>6</Position>
     </column>
     <index id="324" parent="301" name="PRIMARY">
