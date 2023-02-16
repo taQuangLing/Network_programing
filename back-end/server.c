@@ -58,6 +58,8 @@ int edit_posts(int client, Param p);
 
 int remove_posts(int client, Param p);
 
+int seen_notifi(int client, Param p);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -165,6 +167,9 @@ void handle_client(int client){
             case SEARCH:
                 status = search(client, p);
                 break;
+            case SEEN_NOTIFI:
+                status = seen_notifi(client, p);
+                break;
             case EXIT:
                 close(client);
                 connection = 0;
@@ -175,6 +180,24 @@ void handle_client(int client){
         data_free(&request);
         if (connection == 0)break;
     }
+}
+
+int seen_notifi(int client, Param p) {
+    int userid = param_get_int(&p);
+    int noti_id = param_get_int(&p);
+    Table data = DB_get_by_id(&conn, "notification", noti_id);
+    int userid_t = DB_int_get_by(data, "to_user_id");
+    if (userid_t != userid){
+        Data response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        return 0;
+    }
+    char sql[1000] = {0};
+    sprintf(sql, "update notification set seen = 1 where id = %d", noti_id);
+    if (DB_update_v2(&conn, sql) == -1){
+        return send_error(client);
+    }
+    return send_success(client);
 }
 
 int remove_posts(int client, Param p) {
@@ -731,59 +754,51 @@ int open_book(int client, Param p) {
 }
 
 int notify(int client, Param p) {
+    MYSQL *conn2;
+    conn2 = mysql_init(NULL);
+    if (!mysql_real_connect(conn2, SERVER, USER, PASSWORD, DATABASE, 0, NULL, 0)) {
+        logger(L_ERROR, "%s", mysql_error(conn));
+        exit(1);
+    }
+
     Data response;
     Param root = param_create(), tail = root;
     int i, j, type, seen, link_id;
     Table result1, result2;
     int toId = param_get_int(&p);
-    char username[USERNAME_LEN], avatar[150], title[20], content[40], noidung[200];
+    char *username, *avatar, *title, *content, noidung[200] = {0};
     char sql[1000];
     refresh(sql, 1000);
-    sprintf(sql, "select user.name, avatar, type, seen, link_id from notification, user where from_user_id = user.id and to_user_id = %d", toId);
+    sprintf(sql, "select notification.id as id, user.name as name, avatar, type, seen, link_id from notification, user where from_user_id = user.id and to_user_id = %d", toId);
     result1= DB_get(&conn, sql);
 
-    param_add_int(&root, result1->size);
+    param_add_int(&root, (int)result1->size);
     response = data_create(root, NOTIFY);
     send_data(client, response, 0, 0);
     usleep(500);
     for (i = 0; i < result1->size; i++){
         root = param_create();
         tail = root;
-        refresh(username, USERNAME_LEN);
-        refresh(avatar, 150);
-        refresh(title, 20);
-        refresh(content, 40);
 
-        strcpy(username, result1->data[i][0]);
-        strncpy(avatar, result1->data[i][1], 30);
-        type = atoi(result1->data[i][2]);
-        seen = atoi(result1->data[i][3]);
-        link_id = atoi(result1->data[i][4]);
+        int id = DB_int_get_by(result1, "id");
+        username = DB_str_get_by(result1, "name");
+        avatar = DB_str_get_by(result1, "avatar");
+        type = DB_int_get_by(result1, "type");
+        seen = DB_int_get_by(result1, "seen");
+        link_id = DB_int_get_by(result1, "link_id");
         if (type == 0){
             // thong bao ve bai post
-            result2 = DB_get_by_id(&conn, "post", link_id);
-            for (j = 0; j < result2->column; j++){
-                if (strcmp(result2->header[j], "title") == 0){
-                    strncpy(title, result2->data[0][j], 20);
-                }
-                if (strcmp(result2->header[j], "content") == 0){
-                    strncpy(content, result2->data[0][j], 40);
-                }
-            }
+            result2 = DB_get_by_id(&conn2, "post", link_id);
+            title = DB_str_get_by(result2, "title");
+            content = DB_str_get_by(result2, "content");
             sprintf(noidung, "đã đăng bài viết: %s...\n\t%s...", title, content);
             DB_free_data(&result2);
         }else if(type == 1){ // chua hoan thanh chuc nang comment
             // thong bao ve comment
             sprintf(sql, "select comment.content as content, title from post, comment where post.id = comment.post_id and comment.id = %d", link_id);
-            result2 = DB_get_by_id(&conn, "comment", link_id);
-            for (j = 0; j < result2->column; j++){
-                if (strcmp(result2->header[j], "content") == 0){
-                    strncpy(content, result2->data[0][j], 40);
-                }
-                if (strcmp(result2->header[j], "title") == 0){
-                    strncpy(title, result2->data[0][j], 20);
-                }
-            }
+            result2 = DB_get_by_id(&conn2, "comment", link_id);
+            title = DB_str_get_by(result2, "title");
+            content = DB_str_get_by(result2, "content");
             sprintf(noidung, "đã bình luận bài viết: %s...\n%s...", title, content);
             DB_free_data(&result2);
         }
@@ -795,6 +810,7 @@ int notify(int client, Param p) {
             // thong bao chap nhan loi moi ket ban
             sprintf(noidung, "đã chấp nhận lời mời kết bạn.");
         }
+        param_add_int(&tail, id);
         param_add_str(&tail, username);
         param_add_str(&tail, avatar);
         param_add_str(&tail, noidung);
@@ -802,10 +818,13 @@ int notify(int client, Param p) {
         response = data_create(root, NOTIFY);
         if (send_data(client, response, 0, 0) == -1){
             logger(L_ERROR, "%s - function: notify() - 176");
+            mysql_close(conn2);
             return -1;
         }
         usleep(500);
+
     }
+    mysql_close(conn2);
     return 1;
 }
 
@@ -834,5 +853,6 @@ int main(int argc, char *argv[]){
     printf("\t=======================\n");
     server_listen();
     close(server_sock);
+    mysql_close(conn);
     return 1;
 }

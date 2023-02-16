@@ -60,6 +60,8 @@ int edit_posts();
 
 int remove_posts();
 
+int seen_notifi();
+
 int login(){
     char enter;
     char i2s[10];
@@ -204,6 +206,9 @@ int main(int argc, char *argv[]){
             case 17:
                 status = remove_posts();
                 break;
+            case 18:
+                status = seen_notifi();
+                break;
             case 100:
                 status = notify();
                 break;
@@ -217,6 +222,32 @@ int main(int argc, char *argv[]){
 
     close(client_sock);
     return 0;
+}
+
+int seen_notifi() {
+    int noti_id;
+    char enter;
+    printf("\nSEEN_NOTIFI");
+    printf("\nNhap notify id > ");
+    scanf("%d", &noti_id);
+    scanf("%c", &enter);
+
+    Param root = param_create(), tail = root;
+    param_add_int(&tail, id);
+    param_add_int(&tail, noti_id);
+    Data request = data_create(root, SEEN_NOTIFI);
+    send_data(client_sock, request, 0, 0);
+
+    Data response = recv_data(client_sock, 0, 0);
+    if (response->message == FAIL){
+        logger(L_WARN, "Khong co quyen truy cap");
+        return 0;
+    }else if (response->message == ERROR) {
+        data_free(&response);
+        return display_error();
+    }
+    data_free(&response);
+    return display_success();
 }
 
 int remove_posts() {
@@ -875,15 +906,16 @@ int notify() {
         response = recv_data(client_sock, 0, 0);
 
         Param p = response->params;
+        int noti_id = param_get_int(&p);
         username = param_get_str(&p);
         image = param_get_str(&p);
         content = param_get_str(&p);
         seen = param_get_int(&p);
 
         if (seen == 1){
-            printf("\n\t%s(img=\"%s\") %s (đã xem)\n", username, image, content);
+            printf("\n\tid = %d, %s(img=\"%s\") %s (đã xem)\n", noti_id,username, image, content);
         }else
-            printf("\n\t%s(img=\"%s\")\n\t %s (chưa xem)\n",  username, image, content);
+            printf("\n\tid = %d, %s(img=\"%s\")\n\t %s (chưa xem)\n",noti_id, username, image, content);
 
         data_free(&response);
     }

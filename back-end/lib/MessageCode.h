@@ -68,6 +68,7 @@ typedef enum{
     EDIT_POSTS,
     REMOVE_POSTS,
     EMPTY,
+    SEEN_NOTIFI,
 }MessageCode;
 
 #endif //LAP_TRINH_MANG_MESSAGECODE_H
