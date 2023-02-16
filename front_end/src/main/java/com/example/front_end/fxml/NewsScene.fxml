@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.Avatar?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="747.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.NewsScene">
+   <children>
+      <ScrollPane hbarPolicy="NEVER" prefHeight="600.0" prefWidth="342.0" vbarPolicy="NEVER">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="570.0" prefWidth="347.0">
+               <children>
+                  <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" prefWidth="341.0" style="-fx-region-border: white;">
+                     <children>
+                        <ScrollPane hbarPolicy="NEVER" hmax="0.0" pannable="true" prefHeight="375.0" prefWidth="343.0" vbarPolicy="NEVER" vmax="0.0">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="378.0" prefWidth="348.0">
+                                 <children>
+                                    <Pane prefHeight="376.0" prefWidth="343.0">
+                                       <children>
+                                          <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
+                                             <image>
+                                                <Image url="@../../../../../resources/image/luffy.png" />
+                                             </image>
+                                          </Avatar>
+                                          <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
+                                          <Text layoutX="36.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đắc Nhân Tâm – How To Win Friends and InfluencePeople của Dale Carnegie là quyển sách nổi tiếng bánchạy nhất của mọi thời đại. Sách đã bán được chuyểnngữ sang hầu hết các thứ tiếng trên thế giới và có" textAlignment="JUSTIFY" wrappingWidth="271.000000834465" />
+                                          <ImageView cache="true" disable="true" fitHeight="390.0" fitWidth="281.0" layoutX="36.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                                             <image>
+                                                <Image url="@đắc%20nhân%20tâm.jpg" />
+                                             </image>
+                                             <viewport>
+                                                <Rectangle2D />
+                                             </viewport>
+                                             <cursor>
+                                                <Cursor fx:constant="NONE" />
+                                             </cursor>
+                                          </ImageView>
+                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#837d7d" height="503.0" layoutX="26.0" layoutY="63.0" opacity="0.64" stroke="WHITE" strokeType="INSIDE" width="292.0" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </ScrollPane>
+                        <ScrollPane hbarPolicy="NEVER" hmax="0.0" pannable="true" prefHeight="375.0" prefWidth="343.0" vbarPolicy="NEVER" vmax="0.0">
+                           <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="378.0" prefWidth="348.0">
+                                 <children>
+                                    <Pane prefHeight="376.0" prefWidth="343.0">
+                                       <children>
+                                          <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
+                                             <image>
+                                                <Image url="@../../../../../resources/image/luffy.png" />
+                                             </image>
+                                          </Avatar>
+                                          <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
+                                          <Text layoutX="36.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đắc Nhân Tâm – How To Win Friends and InfluencePeople của Dale Carnegie là quyển sách nổi tiếng bánchạy nhất của mọi thời đại. Sách đã bán được chuyểnngữ sang hầu hết các thứ tiếng trên thế giới và có" textAlignment="JUSTIFY" wrappingWidth="271.000000834465" />
+                                          <ImageView cache="true" disable="true" fitHeight="390.0" fitWidth="281.0" layoutX="36.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                                             <image>
+                                                <Image url="@đắc%20nhân%20tâm.jpg" />
+                                             </image>
+                                             <viewport>
+                                                <Rectangle2D />
+                                             </viewport>
+                                             <cursor>
+                                                <Cursor fx:constant="NONE" />
+                                             </cursor>
+                                          </ImageView>
+                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#837d7d" height="503.0" layoutX="26.0" layoutY="63.0" opacity="0.64" stroke="WHITE" strokeType="INSIDE" width="292.0" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </ScrollPane>
+                        <ScrollPane hbarPolicy="NEVER" hmax="0.0" pannable="true" prefHeight="375.0" prefWidth="343.0" vbarPolicy="NEVER" vmax="0.0">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="378.0" prefWidth="348.0">
+                                 <children>
+                                    <Pane prefHeight="376.0" prefWidth="343.0">
+                                       <children>
+                                          <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
+                                             <image>
+                                                <Image url="@../../../../../resources/image/luffy.png" />
+                                             </image>
+                                          </Avatar>
+                                          <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
+                                          <Text layoutX="36.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đắc Nhân Tâm – How To Win Friends and InfluencePeople của Dale Carnegie là quyển sách nổi tiếng bánchạy nhất của mọi thời đại. Sách đã bán được chuyểnngữ sang hầu hết các thứ tiếng trên thế giới và có" textAlignment="JUSTIFY" wrappingWidth="271.000000834465" />
+                                          <ImageView cache="true" disable="true" fitHeight="390.0" fitWidth="281.0" layoutX="36.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                                             <image>
+                                                <Image url="@đắc%20nhân%20tâm.jpg" />
+                                             </image>
+                                             <viewport>
+                                                <Rectangle2D />
+                                             </viewport>
+                                             <cursor>
+                                                <Cursor fx:constant="NONE" />
+                                             </cursor>
+                                          </ImageView>
+                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#837d7d" height="503.0" layoutX="26.0" layoutY="63.0" opacity="0.64" stroke="WHITE" strokeType="INSIDE" width="292.0" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </ScrollPane>
+                        <ScrollPane hbarPolicy="NEVER" hmax="0.0" pannable="true" prefHeight="375.0" prefWidth="343.0" vbarPolicy="NEVER" vmax="0.0">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="378.0" prefWidth="348.0">
+                                 <children>
+                                    <Pane prefHeight="376.0" prefWidth="343.0">
+                                       <children>
+                                          <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
+                                             <image>
+                                                <Image url="@../../../../../resources/image/luffy.png" />
+                                             </image>
+                                          </Avatar>
+                                          <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
+                                          <Text layoutX="36.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đắc Nhân Tâm – How To Win Friends and InfluencePeople của Dale Carnegie là quyển sách nổi tiếng bánchạy nhất của mọi thời đại. Sách đã bán được chuyểnngữ sang hầu hết các thứ tiếng trên thế giới và có" textAlignment="JUSTIFY" wrappingWidth="271.000000834465" />
+                                          <ImageView cache="true" disable="true" fitHeight="390.0" fitWidth="281.0" layoutX="36.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                                             <image>
+                                                <Image url="@đắc%20nhân%20tâm.jpg" />
+                                             </image>
+                                             <viewport>
+                                                <Rectangle2D />
+                                             </viewport>
+                                             <cursor>
+                                                <Cursor fx:constant="NONE" />
+                                             </cursor>
+                                          </ImageView>
+                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#837d7d" height="503.0" layoutX="26.0" layoutY="63.0" opacity="0.64" stroke="WHITE" strokeType="INSIDE" width="292.0" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

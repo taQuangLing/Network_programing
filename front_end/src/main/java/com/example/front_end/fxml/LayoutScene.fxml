@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="650.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.fxml.LayoutScene">
+   <children>
+      <HBox maxHeight="-Infinity" prefWidth="550.0" style="-fx-border-color: black;">
+         <children>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #000; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5" />
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #000; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5" />
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #000; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5" />
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #000; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5" />
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #000; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5" />
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #000; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5" />
+               </graphic>
+            </Hyperlink>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
