@@ -19,7 +19,7 @@ public class RegisterController {
     private TextField passwordInput;
     @FXML
     private TextField confirmPasswordInput;
-    void register(ActionEvent e) throws IOException {
+    public void register(ActionEvent e) throws IOException {
         String email = emailInput.getText();
         String username = usernameInput.getText();
         String password = passwordInput.getText();

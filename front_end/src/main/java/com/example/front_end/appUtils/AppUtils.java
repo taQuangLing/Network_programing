@@ -6,6 +6,7 @@ import com.example.front_end.model.Data;
 import java.io.IOException;
 
 public class AppUtils {
+
     public static ClientSock clientSock;
     public enum MessageCode{
         USERNAME_DUPLICATE(0), //0
