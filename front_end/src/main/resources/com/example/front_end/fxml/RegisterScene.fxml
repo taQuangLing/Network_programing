@@ -20,7 +20,7 @@
             <Font name="Serif Regular" size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="118.0" layoutY="202.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
+      <TextField fx:id="emailInput" layoutX="118.0" layoutY="202.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
          <font>
             <Font size="18.0" />
          </font>
@@ -33,7 +33,7 @@
             <Font name="Serif Regular" size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="118.0" layoutY="285.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
+      <TextField fx:id="usernameInput" layoutX="118.0" layoutY="285.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
          <font>
             <Font size="18.0" />
          </font>
@@ -41,7 +41,7 @@
             <Insets left="10.0" />
          </padding>
       </TextField>
-      <Button layoutX="118.0" layoutY="564.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="315.0" style="-fx-background-color: #3465a4; -fx-background-radius: 5;" text="Đăng ký" textFill="WHITE">
+      <Button layoutX="118.0" layoutY="564.0" mnemonicParsing="false" onAction="#register" prefHeight="38.0" prefWidth="315.0" style="-fx-background-color: #3465a4; -fx-background-radius: 5;" text="Đăng ký" textFill="WHITE">
          <font>
             <Font size="19.0" />
          </font>
@@ -51,7 +51,7 @@
             <Font name="Serif Regular" size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="118.0" layoutY="371.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
+      <TextField fx:id="passwordInput" layoutX="118.0" layoutY="371.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
          <font>
             <Font size="18.0" />
          </font>
@@ -64,7 +64,7 @@
             <Font name="Serif Regular" size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="118.0" layoutY="459.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
+      <TextField fx:id="confirmPasswordInput" layoutX="118.0" layoutY="459.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
          <font>
             <Font size="18.0" />
          </font>

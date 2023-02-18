@@ -1,16 +1,18 @@
-package com.example.front_end.controller;
+package com.example.front_end.model;
+
+import lombok.SneakyThrows;
 
 import java.io.*;
 import java.net.Socket;
 
-public class ClientSock {
+public class ClientSock{
     private BufferedWriter os;
     private BufferedReader is;
-    private Socket clientSocket;
+    protected Socket clientSocket;
     private int ID_Server;
 
-    public void connectServer() throws IOException {
-        clientSocket = new Socket("127.0.0.1", 5000);
+    public ClientSock(String ip, int port) throws IOException {
+        clientSocket = new Socket(ip, port);
         System.out.println("Kết nối thành công!");
 
         // Tạo luồng đầu ra tại client (Gửi dữ liệu tới server)
@@ -25,4 +27,14 @@ public class ClientSock {
         os.write(message);
         os.flush();
     }
+    public void closeSocket(){
+        try {
+            os.close();
+            is.close();
+            clientSocket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

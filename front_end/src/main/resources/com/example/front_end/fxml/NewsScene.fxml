@@ -29,7 +29,7 @@
                                        <children>
                                           <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
                                              <image>
-                                                <Image url="@../../../../../resources/image/luffy.png" />
+                                                <Image url="@../../../../image/luffy.png" />
                                              </image>
                                           </Avatar>
                                           <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
@@ -60,7 +60,7 @@
                                        <children>
                                           <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
                                              <image>
-                                                <Image url="@../../../../../resources/image/luffy.png" />
+                                                <Image url="@../../../../image/luffy.png" />
                                              </image>
                                           </Avatar>
                                           <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
@@ -91,7 +91,7 @@
                                        <children>
                                           <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
                                              <image>
-                                                <Image url="@../../../../../resources/image/luffy.png" />
+                                                <Image url="@../../../../image/luffy.png" />
                                              </image>
                                           </Avatar>
                                           <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
@@ -122,7 +122,7 @@
                                        <children>
                                           <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
                                              <image>
-                                                <Image url="@../../../../../resources/image/luffy.png" />
+                                                <Image url="@../../../../image/luffy.png" />
                                              </image>
                                           </Avatar>
                                           <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
