@@ -1,6 +1,7 @@
 module com.example.front_end {
     requires javafx.controls;
     requires javafx.fxml;
+    requires lombok;
 
 
     opens com.example.front_end to javafx.fxml;
