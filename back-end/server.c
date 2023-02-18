@@ -105,8 +105,12 @@ void handle_client(int client){
     MessageCode option;
     while (0==0){
         request = recv_data(client, 0, 0);
-        p = request->params;
-        option = request->message;
+        if (request == NULL){
+            option = EXIT;
+        }else{
+            p = request->params;
+            option = request->message;
+        }
         switch (option) {
             case LOGIN:
                 status = login(client, p);
@@ -177,7 +181,7 @@ void handle_client(int client){
             default:
                 break;
         }
-        data_free(&request);
+        if (request != NULL)data_free(&request);
         if (connection == 0)break;
     }
 }
@@ -763,7 +767,7 @@ int notify(int client, Param p) {
 
     Data response;
     Param root = param_create(), tail = root;
-    int i, j, type, seen, link_id;
+    int i, type, seen, link_id;
     Table result1, result2;
     int toId = param_get_int(&p);
     char *username, *avatar, *title, *content, noidung[200] = {0};
