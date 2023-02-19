@@ -71,7 +71,8 @@ public class AppUtils {
         EDIT_POSTS(59),
         REMOVE_POSTS(60),
         EMPTY(61),
-        SEEN_NOTIFI(62);
+        SEEN_NOTIFI(62),
+        WARNING(63);
         private int value;
         MessageCode(int value) {
             this.value = value;

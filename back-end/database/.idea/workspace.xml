@@ -5,15 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6947cc62-b351-4042-9a10-195dab7b7832" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../client" beforeDir="false" afterPath="$PROJECT_DIR$/../client" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/AppUtils.c" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/AppUtils.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../kho/1-28-hello.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../kho/hello.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../resource/1-28-hello.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../resource/hello.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../resource/mạch logic.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/ForgotPasswordController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/FriendsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/NewsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/NotificationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/PostsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/ProfileController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/SearchController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server" beforeDir="false" afterPath="$PROJECT_DIR$/../server" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server.c" beforeDir="false" afterPath="$PROJECT_DIR$/../server.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/HelloApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/AppUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/AppUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/ClientSock.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/ClientSock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/model/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/model/Data.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/RegisterController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/ForgotPasswordScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/ForgotPasswordScene.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/FriendsScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/FriendsScene.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/LoginScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/LoginScene.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/NewsScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/NewsScene.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/NotificationScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/NotificationScene.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/PostScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/PostScene.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/ProfileScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/ProfileScene.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/RegisterScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/RegisterScene.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/SearchScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/SearchScene.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

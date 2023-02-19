@@ -50,7 +50,7 @@
             <Font size="14.0" />
          </font>
       </Hyperlink>
-      <Hyperlink fx:id="forgotPasswordId" layoutX="216.0" layoutY="581.0" text="Quên mật khẩu" textFill="#3465a4" underline="true" wrapText="true">
+      <Hyperlink fx:id="forgotPasswordId" layoutX="216.0" layoutY="581.0" onAction="#switchToForgotPassword" text="Quên mật khẩu" textFill="#3465a4" underline="true" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>

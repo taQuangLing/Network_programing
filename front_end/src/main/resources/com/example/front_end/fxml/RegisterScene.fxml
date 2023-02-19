@@ -83,7 +83,7 @@
             <Font size="11.0" />
          </font>
       </CheckBox>
-      <Hyperlink layoutX="232.0" layoutY="602.0" text="Đăng nhập" textFill="#3465a4" underline="true">
+      <Hyperlink layoutX="232.0" layoutY="602.0" onAction="#switchToLogin" text="Đăng nhập" textFill="#3465a4" underline="true">
          <font>
             <Font size="14.0" />
          </font>
