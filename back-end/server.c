@@ -76,8 +76,9 @@ int login(int client, Param p){
     sprintf(sql, "select * from user where email = '%s' and password = '%s';", email, password);
     Table data = DB_get(&conn, sql);
     if (data->size == 0){
-        logger(L_ERROR, "%s", "Email va mat khau khong hop le");
+        logger(L_WARN, "%s", "Email va mat khau khong hop le");
         response = data_create(NULL, INCORRECT_PASS);
+        send_data(client, response, 0, 0);
         return 0;
     }else{
         logger(L_SUCCESS, "%s: %s", email, "da dang nhap");
@@ -105,12 +106,16 @@ void handle_client(int client){
     MessageCode option;
     while (0==0){
         request = recv_data(client, 0, 0);
-        p = request->params;
-        option = request->message;
+        if (request == NULL){
+            option = EXIT;
+        }else{
+            p = request->params;
+            option = request->message;
+        }
         switch (option) {
             case LOGIN:
                 status = login(client, p);
-                if (status == 0)exit(0);
+                if (status == -1)exit(0);
                 break;
             case SIGNUP:
                 status = sign_up(client, p);
@@ -177,7 +182,7 @@ void handle_client(int client){
             default:
                 break;
         }
-        data_free(&request);
+        if (request != NULL)data_free(&request);
         if (connection == 0)break;
     }
 }
@@ -664,6 +669,7 @@ int forgot_password(int client, Param p) {
         return 1;
     }
     request = recv_data(client, 0, 0);
+    if (request->message == CANCEL)return 1;
     int key = param_get_int(&request->params);
     char *password = param_get_str(&request->params);
     char *field[] = {"password"};
@@ -763,7 +769,7 @@ int notify(int client, Param p) {
 
     Data response;
     Param root = param_create(), tail = root;
-    int i, j, type, seen, link_id;
+    int i, type, seen, link_id;
     Table result1, result2;
     int toId = param_get_int(&p);
     char *username, *avatar, *title, *content, noidung[200] = {0};

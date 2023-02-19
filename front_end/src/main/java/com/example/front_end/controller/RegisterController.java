@@ -6,68 +6,69 @@ import com.example.front_end.model.Data;
 import com.example.front_end.view.Message;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 import static com.example.front_end.appUtils.AppUtils.clientSock;
-import static java.lang.System.exit;
 
-public class LoginController{
+public class RegisterController {
     @FXML
     private TextField emailInput;
     @FXML
+    private TextField usernameInput;
+    @FXML
     private TextField passwordInput;
-    private Scene scene;
-    private Parent root;
+    @FXML
+    private TextField confirmPasswordInput;
     private Stage stage;
-
-    public void login(ActionEvent e) throws IOException {
+    Message message;
+    public void register(ActionEvent e) throws IOException {
         String email = emailInput.getText();
+        String username = usernameInput.getText();
         String password = passwordInput.getText();
-        Data request = new Data(AppUtils.MessageCode.LOGIN);
+        String confirmPass = confirmPasswordInput.getText();
+
+        if (password.equals(confirmPass) == false){
+            message = new Message(AppUtils.MessageCode.WARNING, "Confirm password chưa đúng");
+            message.alert();
+            return;
+        }
+        Data request = new Data(AppUtils.MessageCode.SIGNUP);
         request.getData().add(email);
+        request.getData().add(username);
         request.getData().add(password);
         AppUtils.sendData(clientSock, request);
+        // waiting from server
         Data response = AppUtils.recvData(clientSock);
         System.out.println(response);
-        Message message;
-        switch (response.getMessageCode()){
-            case LOGIN_SUCCESS:
-                message = new Message(AppUtils.MessageCode.SUCCESS, "Đăng nhập thành công!");
+        switch (response.getMessageCode()) {
+            case EMAIL_DUPLICATE:
+                message = new Message(AppUtils.MessageCode.WARNING, "Email đã đăng kí tài khoản");
                 message.alert();
-                // switch to news
-                break;
-            case INCORRECT_PASS:
-                message = new Message(AppUtils.MessageCode.WARNING, "Email hoặc mật khẩu không chính xác!");
+                return;
+            case SUCCESS:
+                // dang ki thanh cong, chuyen trang dang nhap
+                message = new Message(AppUtils.MessageCode.SUCCESS, "Đăng ký tài khoản thành công");
                 message.alert();
+                switchToLogin(e);
                 break;
             default:
                 message = new Message(AppUtils.MessageCode.ERROR);
                 message.alert();
-                exit(-1);
+                // he thong dang bao tri
+                break;
         }
     }
-    public void changeRegister(ActionEvent e) throws IOException {
+    public void switchToLogin(ActionEvent e){
         emailInput.setText("");
         passwordInput.setText("");
+        confirmPasswordInput.setText("");
+        usernameInput.setText("");
         GlobalVariable globalVars = GlobalVariable.getInstance();
-        globalVars.getScreenController().activate("register");
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        stage.setScene(globalVars.getScreenController().getMain());
-        stage.show();
-    }
-    public void switchToForgotPassword(ActionEvent e){
-        emailInput.setText("");
-        passwordInput.setText("");
-        GlobalVariable globalVars = GlobalVariable.getInstance();
-        globalVars.getScreenController().activate("forgot_password");
+        globalVars.getScreenController().activate("login");
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.setScene(globalVars.getScreenController().getMain());
         stage.show();

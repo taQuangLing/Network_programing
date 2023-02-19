@@ -43,7 +43,7 @@ Data str_to_data(char *str, int key){
     char message_code[10], sizes[10];
     for (i = 0;; i++){
         refresh(param, 255);
-        if (str[i] == '*'){
+        if (str[i] == '#'){
             if (flag == 0){
                 strncpy(message_code, str, i);
                 code = atoi(message_code);
@@ -96,13 +96,13 @@ char *data_to_str(Data data, int key){
     char *request_str = (char*)malloc(request_size+1); // 10 = size(count), 2 = size(key)
     intTostr(data->message, i2s);
     int index = append(request_str, 0, i2s); // add message code
-    index = append(request_str, index, "*"); // add character
+    index = append(request_str, index, "#"); // add character
 
     for (Param p = data->params;p != NULL; p = p->next){
         refresh(str_res, 255);
         ceaser_encode(p->value, str_res, key);
         index = append(request_str, index, str_res);
-        index = append(request_str, index, "*");
+        index = append(request_str, index, "#");
     }
     intTostr(payload_size, i2s);
     index = append(request_str, index, i2s); // add payload length
@@ -128,6 +128,7 @@ int send_data(int sock, Data data, int flag, int key){
 //    print_mess(buff, "");
     data_free(&data);
     int bytes_sent = send(sock, buff, strlen(buff), flag);
+    send(sock, "\n", 1, flag);
     bzero(buff, BUFF_SIZE);
     if(bytes_sent == -1){
         logger(L_ERROR, "%s", "Error sending data");
@@ -144,6 +145,10 @@ Data recv_data(int sock, int flag, int key){
     buff[byte_recv] = '\0';
     if(byte_recv == -1){
         logger(L_ERROR, "%s", "Error recv data");
+        return NULL;
+    }
+    if (buff[0] == '\0'){
+        logger(L_SUCCESS, "Close client: %d", sock);
         return NULL;
     }
     Data data = str_to_data(buff, key);

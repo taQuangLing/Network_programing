@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="550.0" scaleShape="false" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.Login">
+<AnchorPane prefHeight="650.0" prefWidth="550.0" scaleShape="false" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.LoginController">
    <children>
       <Label alignment="CENTER" layoutX="118.0" layoutY="65.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="59.0" prefWidth="325.0" text="ĐĂNG NHẬP" textAlignment="CENTER" textFill="#3465a4" textOverrun="CENTER_ELLIPSIS">
          <font>
@@ -19,7 +19,7 @@
             <Font name="Serif Regular" size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="123.0" layoutY="247.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
+      <TextField fx:id="emailInput" layoutX="123.0" layoutY="247.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
          <font>
             <Font size="18.0" />
          </font>
@@ -32,7 +32,7 @@
             <Font name="Serif Regular" size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="123.0" layoutY="342.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
+      <TextField fx:id="passwordInput" layoutX="123.0" layoutY="342.0" prefHeight="35.0" prefWidth="315.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;">
          <font>
             <Font size="18.0" />
          </font>
@@ -40,17 +40,17 @@
             <Insets left="10.0" />
          </padding>
       </TextField>
-      <Button layoutX="123.0" layoutY="460.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="315.0" style="-fx-background-color: #3465a4; -fx-background-radius: 5;" text="Đăng nhập" textFill="WHITE">
+      <Button layoutX="123.0" layoutY="460.0" mnemonicParsing="false" onAction="#login" prefHeight="38.0" prefWidth="315.0" style="-fx-background-color: #3465a4; -fx-background-radius: 5;" text="Đăng nhập" textFill="WHITE">
          <font>
             <Font size="19.0" />
          </font>
       </Button>
-      <Hyperlink layoutX="241.0" layoutY="555.0" text="Đăng ký" textFill="#3465a4" wrapText="true">
+      <Hyperlink fx:id="registerId" layoutX="241.0" layoutY="555.0" onAction="#changeRegister" text="Đăng ký" textFill="#3465a4" underline="true" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Hyperlink>
-      <Hyperlink layoutX="216.0" layoutY="581.0" text="Quên mật khẩu" textFill="#3465a4" wrapText="true">
+      <Hyperlink fx:id="forgotPasswordId" layoutX="216.0" layoutY="581.0" onAction="#switchToForgotPassword" text="Quên mật khẩu" textFill="#3465a4" underline="true" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
