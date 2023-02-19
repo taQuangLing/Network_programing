@@ -1,0 +1,8 @@
+.circular-image {
+    -fx-background-radius: 50%;
+    -fx-border-color: #000000;
+    -fx-background-color: white;
+    -fx-background-size: cover;
+    /*-fx-background-image: url("path/to/image.png");*/
+    -fx-background-position: center;
+}

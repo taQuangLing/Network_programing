@@ -1,155 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.gluonhq.charm.glisten.control.Avatar?>
-<?import javafx.geometry.Rectangle2D?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Hyperlink?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.HBox?>
 
-<AnchorPane prefHeight="747.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.NewsController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="650.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.NewsController">
    <children>
-      <ScrollPane hbarPolicy="NEVER" prefHeight="600.0" prefWidth="342.0" vbarPolicy="NEVER">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="570.0" prefWidth="347.0">
-               <children>
-                  <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" prefWidth="341.0" style="-fx-region-border: white;">
-                     <children>
-                        <ScrollPane hbarPolicy="NEVER" hmax="0.0" pannable="true" prefHeight="375.0" prefWidth="343.0" vbarPolicy="NEVER" vmax="0.0">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="378.0" prefWidth="348.0">
-                                 <children>
-                                    <Pane prefHeight="376.0" prefWidth="343.0">
-                                       <children>
-                                          <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
-                                             <image>
-                                                <Image url="@../../../../image/luffy.png" />
-                                             </image>
-                                          </Avatar>
-                                          <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
-                                          <Text layoutX="36.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đắc Nhân Tâm – How To Win Friends and InfluencePeople của Dale Carnegie là quyển sách nổi tiếng bánchạy nhất của mọi thời đại. Sách đã bán được chuyểnngữ sang hầu hết các thứ tiếng trên thế giới và có" textAlignment="JUSTIFY" wrappingWidth="271.000000834465" />
-                                          <ImageView cache="true" disable="true" fitHeight="390.0" fitWidth="281.0" layoutX="36.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                                             <image>
-                                                <Image url="@đắc%20nhân%20tâm.jpg" />
-                                             </image>
-                                             <viewport>
-                                                <Rectangle2D />
-                                             </viewport>
-                                             <cursor>
-                                                <Cursor fx:constant="NONE" />
-                                             </cursor>
-                                          </ImageView>
-                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#837d7d" height="503.0" layoutX="26.0" layoutY="63.0" opacity="0.64" stroke="WHITE" strokeType="INSIDE" width="292.0" />
-                                       </children>
-                                    </Pane>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </ScrollPane>
-                        <ScrollPane hbarPolicy="NEVER" hmax="0.0" pannable="true" prefHeight="375.0" prefWidth="343.0" vbarPolicy="NEVER" vmax="0.0">
-                           <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="378.0" prefWidth="348.0">
-                                 <children>
-                                    <Pane prefHeight="376.0" prefWidth="343.0">
-                                       <children>
-                                          <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
-                                             <image>
-                                                <Image url="@../../../../image/luffy.png" />
-                                             </image>
-                                          </Avatar>
-                                          <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
-                                          <Text layoutX="36.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đắc Nhân Tâm – How To Win Friends and InfluencePeople của Dale Carnegie là quyển sách nổi tiếng bánchạy nhất của mọi thời đại. Sách đã bán được chuyểnngữ sang hầu hết các thứ tiếng trên thế giới và có" textAlignment="JUSTIFY" wrappingWidth="271.000000834465" />
-                                          <ImageView cache="true" disable="true" fitHeight="390.0" fitWidth="281.0" layoutX="36.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                                             <image>
-                                                <Image url="@đắc%20nhân%20tâm.jpg" />
-                                             </image>
-                                             <viewport>
-                                                <Rectangle2D />
-                                             </viewport>
-                                             <cursor>
-                                                <Cursor fx:constant="NONE" />
-                                             </cursor>
-                                          </ImageView>
-                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#837d7d" height="503.0" layoutX="26.0" layoutY="63.0" opacity="0.64" stroke="WHITE" strokeType="INSIDE" width="292.0" />
-                                       </children>
-                                    </Pane>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </ScrollPane>
-                        <ScrollPane hbarPolicy="NEVER" hmax="0.0" pannable="true" prefHeight="375.0" prefWidth="343.0" vbarPolicy="NEVER" vmax="0.0">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="378.0" prefWidth="348.0">
-                                 <children>
-                                    <Pane prefHeight="376.0" prefWidth="343.0">
-                                       <children>
-                                          <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
-                                             <image>
-                                                <Image url="@../../../../image/luffy.png" />
-                                             </image>
-                                          </Avatar>
-                                          <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
-                                          <Text layoutX="36.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đắc Nhân Tâm – How To Win Friends and InfluencePeople của Dale Carnegie là quyển sách nổi tiếng bánchạy nhất của mọi thời đại. Sách đã bán được chuyểnngữ sang hầu hết các thứ tiếng trên thế giới và có" textAlignment="JUSTIFY" wrappingWidth="271.000000834465" />
-                                          <ImageView cache="true" disable="true" fitHeight="390.0" fitWidth="281.0" layoutX="36.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                                             <image>
-                                                <Image url="@đắc%20nhân%20tâm.jpg" />
-                                             </image>
-                                             <viewport>
-                                                <Rectangle2D />
-                                             </viewport>
-                                             <cursor>
-                                                <Cursor fx:constant="NONE" />
-                                             </cursor>
-                                          </ImageView>
-                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#837d7d" height="503.0" layoutX="26.0" layoutY="63.0" opacity="0.64" stroke="WHITE" strokeType="INSIDE" width="292.0" />
-                                       </children>
-                                    </Pane>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </ScrollPane>
-                        <ScrollPane hbarPolicy="NEVER" hmax="0.0" pannable="true" prefHeight="375.0" prefWidth="343.0" vbarPolicy="NEVER" vmax="0.0">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="378.0" prefWidth="348.0">
-                                 <children>
-                                    <Pane prefHeight="376.0" prefWidth="343.0">
-                                       <children>
-                                          <Avatar layoutX="15.0" layoutY="20.0" radius="20.0">
-                                             <image>
-                                                <Image url="@../../../../image/luffy.png" />
-                                             </image>
-                                          </Avatar>
-                                          <Hyperlink layoutX="72.0" layoutY="28.0" text="Nguyen A" />
-                                          <Text layoutX="36.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đắc Nhân Tâm – How To Win Friends and InfluencePeople của Dale Carnegie là quyển sách nổi tiếng bánchạy nhất của mọi thời đại. Sách đã bán được chuyểnngữ sang hầu hết các thứ tiếng trên thế giới và có" textAlignment="JUSTIFY" wrappingWidth="271.000000834465" />
-                                          <ImageView cache="true" disable="true" fitHeight="390.0" fitWidth="281.0" layoutX="36.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                                             <image>
-                                                <Image url="@đắc%20nhân%20tâm.jpg" />
-                                             </image>
-                                             <viewport>
-                                                <Rectangle2D />
-                                             </viewport>
-                                             <cursor>
-                                                <Cursor fx:constant="NONE" />
-                                             </cursor>
-                                          </ImageView>
-                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#837d7d" height="503.0" layoutX="26.0" layoutY="63.0" opacity="0.64" stroke="WHITE" strokeType="INSIDE" width="292.0" />
-                                       </children>
-                                    </Pane>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </ScrollPane>
-                     </children>
-                  </VBox>
-               </children>
-            </AnchorPane>
-        </content>
-      </ScrollPane>
+      <ListView fx:id="postListView" layoutY="93.0" maxWidth="-Infinity" prefHeight="556.0" prefWidth="554.0" />
+      <HBox maxHeight="-Infinity" prefWidth="550.0" style="-fx-border-color: #ccc;">
+         <children>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
+                     <image>
+                        <Image url="@../../../../image/bx-home-alt-2.png" />
+                     </image></ImageView>
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
+                     <image>
+                        <Image url="@../../../../image/bx-plus-medical.png" />
+                     </image></ImageView>
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
+                     <image>
+                        <Image url="@../../../../image/friends.png" />
+                     </image></ImageView>
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
+                     <image>
+                        <Image url="@../../../../image/bxs-bell.png" />
+                     </image></ImageView>
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
+                     <image>
+                        <Image url="@../../../../image/search-alt-2-regular-36.png" />
+                     </image></ImageView>
+               </graphic>
+            </Hyperlink>
+            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
+                     <image>
+                        <Image url="@../../../../image/bxs-user-detail.png" />
+                     </image></ImageView>
+               </graphic>
+            </Hyperlink>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
