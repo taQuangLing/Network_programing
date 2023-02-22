@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.PostsController">
+   <children>
+      <Pane fx:id="createPostPane" prefHeight="650.0" prefWidth="550.0">
+         <children>
+            <Label layoutX="50.0" layoutY="37.0" text="Tiêu đề:">
+               <font>
+                  <Font size="16.0" />
+               </font></Label>
+            <Label layoutX="50.0" layoutY="115.0" text="Nội dung:">
+               <font>
+                  <Font size="16.0" />
+               </font></Label>
+            <Label fx:id="imageLabel" disable="true" layoutX="224.0" layoutY="471.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
+            <Label fx:id="fileLabel" disable="true" layoutX="224.0" layoutY="530.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
+            <TextField fx:id="titleText" layoutX="50.0" layoutY="60.0" prefHeight="28.0" prefWidth="450.0" style="-fx-border-color: #3465a4; -fx-border-radius: 5; -fx-background-color: white;">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <TextArea fx:id="contentText" layoutX="50.0" layoutY="138.0" prefHeight="204.0" prefWidth="450.0" style="-fx-border-color: #3465a4; -fx-border-radius: 5; -fx-background-color: white;">
+               <font>
+                  <Font name="FreeSerif" size="18.0" />
+               </font>
+            </TextArea>
+            <MenuButton fx:id="status" layoutX="50.0" layoutY="408.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #ffffff; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Public">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Public" />
+                  <MenuItem mnemonicParsing="false" text="Friend" />
+                <MenuItem mnemonicParsing="false" text="Private" />
+              </items>
+               <font>
+                  <Font name="Ubuntu" size="15.0" />
+               </font>
+            </MenuButton>
+            <Button fx:id="imageBtn" layoutX="50.0" layoutY="465.0" mnemonicParsing="false" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn ảnh">
+               <font>
+                  <Font name="Ubuntu" size="15.0" />
+               </font></Button>
+            <Button fx:id="fileBtn" layoutX="50.0" layoutY="524.0" mnemonicParsing="false" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn tệp">
+               <font>
+                  <Font name="Ubuntu" size="15.0" />
+               </font></Button>
+            <Button fx:id="postBtn" layoutX="50.0" layoutY="588.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="140.0" style="-fx-background-color: #5792bb; -fx-border-color: #757575; -fx-border-radius: 5; -fx-text-fill: #090404;" text="ĐĂNG">
+               <font>
+                  <Font size="16.0" />
+               </font></Button>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

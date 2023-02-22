@@ -33,4 +33,7 @@ public class ScreenController {
     public Scene getMain(){
         return main;
     }
+    public Pane getPane(String name){
+        return screenMap.get(name);
+    }
 }
