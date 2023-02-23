@@ -1,19 +1,14 @@
 package com.example.front_end;
 
+import com.example.front_end.appUtils.AppUtils;
 import com.example.front_end.model.Post;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -101,14 +96,15 @@ public class PostCell extends ListCell<Post> {
             Image image = new Image(post.getImage());
             imageId.setImage(image);
             Image avatar = new Image(post.getAvatar());
+            avatarId.setFitWidth(60);
+            avatarId.setFitHeight(60);
             avatarId.setImage(avatar);
+            AppUtils.cropCircleImageView(avatarId);
             titleId.setText(post.getTitle());
             titleId.setTextAlignment(TextAlignment.JUSTIFY);
             titleId.setWrappingWidth(380);
             if (titleId.getText().length() > 28){
                 titleId.setText(titleId.getText().substring(0, 28) + "...");
-            }else {
-                titleId.setText(titleId.getText());
             }
             heightTitle = titleId.getLayoutBounds().getHeight();
             contentId.setText(post.getContent());
@@ -116,15 +112,13 @@ public class PostCell extends ListCell<Post> {
             contentId.setWrappingWidth(421);
             if (contentId.getText().length() > 210){
                 contentId.setText(contentId.getText().substring(0, 210) + "...");
-            }else {
-                contentId.setText(contentId.getText());
             }
             contentId.setY(contentId.getY()+heightTitle+10);
             heightContent = contentId.getLayoutBounds().getHeight();
             imageId.setY(imageId.getY() + heightContent + heightTitle + 20);
             usernameId.setText(post.getUsername());
             if (index == 0){
-                scrollId.setLayoutY(scrollId.getLayoutY() + 60);
+                scrollId.setLayoutY(scrollId.getLayoutY() + 70);
             }
             setText(null);
             setGraphic(paneId);

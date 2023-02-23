@@ -7,13 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class Notification {
     private Integer id;
-    private Integer userId;
     private String username;
     private String avatar;
     private String title;
     private String content;
-    private String image;
-    private String linkBook;
+    private boolean seen;
 }

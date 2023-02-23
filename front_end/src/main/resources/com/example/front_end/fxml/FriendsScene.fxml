@@ -13,7 +13,7 @@
    <children>
       <Pane fx:id="friendsPane" maxWidth="530.0" minWidth="530.0" prefHeight="560.0" prefWidth="530.0" style="-fx-background-color: white;">
          <children>
-            <ListView fx:id="friendListView" maxWidth="530.0" minWidth="530.0" prefHeight="560.0" prefWidth="530.0" />
+            <ListView fx:id="friendListView" layoutY="61.0" maxWidth="530.0" minWidth="530.0" prefHeight="499.0" prefWidth="530.0" />
             <HBox layoutX="50.0" layoutY="14.0" prefWidth="430.0" stylesheets="@../css/style.css">
                <children>
                   <Button fx:id="friendsBtn" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#friendsOnClick" prefHeight="35.0" prefWidth="143.0" stylesheets="@../css/style.css" text="Bạn bè">

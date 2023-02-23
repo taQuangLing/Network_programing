@@ -1,5 +1,6 @@
 package com.example.front_end;
 
+import com.example.front_end.appUtils.AppUtils;
 import com.example.front_end.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +15,7 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 
-public class FriendsCell extends ListCell<User> {
+public class UserCell extends ListCell<User> {
     @FXML Pane friendsCellPane;
     @FXML
     AnchorPane friendsCellAnchorPane;
@@ -33,7 +34,7 @@ public class FriendsCell extends ListCell<User> {
     private FXMLLoader fxmlLoader;
     private int status;
 
-    public FriendsCell(int status) {
+    public UserCell(int status) {
         super();
         try {
             this.status = status;
@@ -66,21 +67,35 @@ public class FriendsCell extends ListCell<User> {
             setText(null);
             setGraphic(null);
         } else {
-            avatarImg.setImage(new Image(user.getAvatar()));
-            avatarImg.setFitWidth(60);
-            avatarImg.setFitHeight(60);
+            Image image = new Image(user.getAvatar());
+            double width = image.getWidth();
+            double height = image.getHeight();
+            avatarImg.setImage(image);
+            double ratio;
+            if (image.getHeight() < image.getWidth()){
+                ratio = height/60;
+            }else{
+                ratio = width/60;
+            }
+            avatarImg.setFitHeight(height/ratio);
+            avatarImg.setFitWidth(width/ratio);
+//            AppUtils.cropSquareImageView(avatarImg);
+//            avatarImg.setFitWidth(60);
+//            avatarImg.setFitHeight(60);
+            AppUtils.cropCircleImageView(avatarImg);
             avatarImg.setStyle("-fx-shape: \"M0,0 L" + avatarImg.getFitWidth() + ",0 A" + avatarImg.getFitWidth()/2 + "," + avatarImg.getFitHeight()/2 + " 0 0,0 " + avatarImg.getFitWidth() + "," + avatarImg.getFitHeight() + " L0," + avatarImg.getFitHeight() + " A" + avatarImg.getFitWidth()/2 + "," + avatarImg.getFitHeight()/2 + " 0 0,0 0,0 Z\"");
             username.setText(user.getName());
-            if (getIndex() == 0){
-                friendsCellPane.setLayoutY(friendsCellPane.getLayoutY() + 70);
-            }
             switch (status){
                 case 0:
+                    friendsMenuBtn.setVisible(false);
+                    followerMenuBtn.setVisible(false);
+                    break;
                 case 1:
+                case 2:
                     friendsMenuBtn.setVisible(true);
                     followerMenuBtn.setVisible(false);
                     break;
-                case 2:
+                case 3:
                     friendsMenuBtn.setVisible(false);
                     followerMenuBtn.setVisible(true);
                     break;

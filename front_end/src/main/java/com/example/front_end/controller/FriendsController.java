@@ -1,10 +1,9 @@
 package com.example.front_end.controller;
 
-import com.example.front_end.FriendsCell;
+import com.example.front_end.UserCell;
 import com.example.front_end.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -23,11 +22,6 @@ public class FriendsController implements Initializable{
     @FXML Button friendsBtn;
     @FXML Button followingBtn;
     @FXML Button followerBtn;
-//    public void Initializable(){
-//        friendsBtn.setStyle("-fx-font-weight: bold;");
-//        friendsBtn.setTextFill(Paint.valueOf("#3465A4"));
-//        status = 0;
-//    }
     public void friendsOnClick(MouseEvent e){
         friendsBtn.setStyle("-fx-font-weight: bold;");
         followingBtn.setStyle("-fx-font-weight: normal;");
@@ -35,8 +29,7 @@ public class FriendsController implements Initializable{
         friendsBtn.setTextFill(Paint.valueOf("#3465A4"));
         followingBtn.setTextFill(Paint.valueOf("#000"));
         followerBtn.setTextFill(Paint.valueOf("#000"));
-        int status = 0;
-        friendListView.setCellFactory(param -> new FriendsCell(status));
+        friendListView.setCellFactory(param -> new UserCell(1));
         ObservableList<User> userList = FXCollections.observableArrayList();
         userList.add(new User(1,
                 "Ta Quang Linh",
@@ -80,8 +73,7 @@ public class FriendsController implements Initializable{
         friendsBtn.setTextFill(Paint.valueOf("#000"));
         followingBtn.setTextFill(Paint.valueOf("#3465A4"));
         followerBtn.setTextFill(Paint.valueOf("#000"));
-        int status = 1;
-        friendListView.setCellFactory(param -> new FriendsCell(status));
+        friendListView.setCellFactory(param -> new UserCell(2));
         ObservableList<User> userList = FXCollections.observableArrayList();
         userList.add(new User(1,
                 "Ta Quang Linh",
@@ -124,8 +116,7 @@ public class FriendsController implements Initializable{
         friendsBtn.setTextFill(Paint.valueOf("#000"));
         followingBtn.setTextFill(Paint.valueOf("#000"));
         followerBtn.setTextFill(Paint.valueOf("#3465A4"));
-        int status = 2;
-        friendListView.setCellFactory(param -> new FriendsCell(status));
+        friendListView.setCellFactory(param -> new UserCell(3));
         ObservableList<User> userList = FXCollections.observableArrayList();
         userList.add(new User(1,
                 "Ta Quang Linh",
@@ -165,8 +156,7 @@ public class FriendsController implements Initializable{
     public void initialize(URL url, ResourceBundle resourceBundle) {
         friendsBtn.setStyle("-fx-font-weight: bold;");
         friendsBtn.setTextFill(Paint.valueOf("#3465A4"));
-        int status = 0;
-        friendListView.setCellFactory(param -> new FriendsCell(status));
+        friendListView.setCellFactory(param -> new UserCell(1));
         ObservableList<User> userList = FXCollections.observableArrayList();
         userList.add(new User(1,
                 "Ta Quang Linh",

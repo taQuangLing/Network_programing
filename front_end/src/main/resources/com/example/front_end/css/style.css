@@ -25,3 +25,11 @@
 .friend-layout-friend{
     -fx-border-width: 0 1px 0 1px;
 }
+.search-layout-button{
+    -fx-border-width: 1px 1px 1px 1px;
+    -fx-border-insets: 1px 1px 1px 1px;
+    -fx-border-color: #888; /* set màu border */
+    -fx-border-style: solid; /* set kiểu border */
+    -fx-background-color: #fff;
+    -fx-font-size: 18px;
+}
