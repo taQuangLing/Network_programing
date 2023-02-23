@@ -75,6 +75,7 @@ public class PostCell extends ListCell<Post> {
                 rectangleId.toBack();
                 rectangleId.toBack();
                 rectangleId.toBack();
+                rectangleId.setDisable(true);
                 titleId.setText(post.getTitle());
                 contentId.setText(post.getContent());
                 double heightContent = contentId.getLayoutBounds().getHeight() - this.heightContent;
@@ -83,7 +84,7 @@ public class PostCell extends ListCell<Post> {
                 imageId.setY(imageId.getY() + heightContent + heightTitle + 10);
                 rectangleId.setHeight(imageId.getFitHeight() + contentId.getLayoutBounds().getHeight() + titleId.getLayoutBounds().getHeight() - 70);
                 scrollId.setPrefHeight(rectangleId.getHeight() + avatarId.getFitHeight());
-                rectangleId.setOpacity(0.18);
+                rectangleId.setOpacity(0.1);
             }
         });
 
@@ -95,6 +96,7 @@ public class PostCell extends ListCell<Post> {
             setText(null);
             setGraphic(null);
         } else {
+            int index = getIndex();
             // Load and set the first image URL in the ImageView
             Image image = new Image(post.getImage());
             imageId.setImage(image);
@@ -121,6 +123,9 @@ public class PostCell extends ListCell<Post> {
             heightContent = contentId.getLayoutBounds().getHeight();
             imageId.setY(imageId.getY() + heightContent + heightTitle + 20);
             usernameId.setText(post.getUsername());
+            if (index == 0){
+                scrollId.setLayoutY(scrollId.getLayoutY() + 60);
+            }
             setText(null);
             setGraphic(paneId);
 

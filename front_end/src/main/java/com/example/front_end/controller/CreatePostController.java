@@ -1,15 +1,12 @@
-package com.example.front_end;
+package com.example.front_end.controller;
 
-import com.example.front_end.model.Post;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
-import java.io.IOException;
-
-public class CreatePost{
+public class CreatePostController {
     @FXML Text titleText;
     @FXML TextArea contentText;
     @FXML RadioButton status;

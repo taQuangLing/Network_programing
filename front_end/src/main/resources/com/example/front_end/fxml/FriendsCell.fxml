@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="friendsCellAnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane fx:id="friendsCellPane" prefHeight="89.0" prefWidth="510.0" style="-fx-background-color: white;" stylesheets="@../css/style.css">
+         <children>
+            <Line endX="384.0" layoutX="86.0" layoutY="80.0" startX="-46.0" />
+            <ImageView fx:id="avatarImg" fitWidth="40.0" layoutX="55.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" styleClass="friend-avatar">
+               <image>
+                  <Image url="@../../../../image/đắc%20nhân%20tâm.jpg" />
+               </image>
+            </ImageView>
+            <Text fx:id="username" layoutX="132.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ta Quang Linh" wrappingWidth="261.7294921875">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Text>
+            <Pane layoutX="431.0" layoutY="17.0" prefHeight="40.0" prefWidth="40.0">
+               <children>
+                  <MenuButton fx:id="friendsMenuBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white;">
+                    <items>
+                      <MenuItem fx:id="cancelFollowing" mnemonicParsing="false" text="Hủy theo dõi" />
+                    </items>
+                  </MenuButton>
+                  <MenuButton fx:id="followerMenuBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white;" visible="false">
+                     <items>
+                        <MenuItem fx:id="follow" mnemonicParsing="false" text="Theo dõi lại" />
+                        <MenuItem fx:id="delele" mnemonicParsing="false" text="Xóa" />
+                     </items>
+                  </MenuButton>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

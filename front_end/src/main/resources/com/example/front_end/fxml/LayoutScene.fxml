@@ -1,77 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="650.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.LayoutController">
    <children>
-      <ListView fx:id="postListView" layoutY="94.0" maxWidth="-Infinity" prefHeight="556.0" prefWidth="554.0" style="-fx-background-color: #fff;">
+      <ListView fx:id="postListView" layoutX="5.0" maxWidth="540.0" minWidth="540.0" prefHeight="650.0" prefWidth="540.0" style="-fx-background-color: #fff;" styleClass="layout-listview" stylesheets="@../css/style.css">
          <cursor>
             <Cursor fx:constant="DEFAULT" />
          </cursor>
       </ListView>
-      <Pane fx:id="paneView" layoutY="94.0" prefHeight="556.0" prefWidth="554.0" visible="false" />
-      <HBox focusTraversable="true" maxHeight="-Infinity" mouseTransparent="true" prefWidth="550.0" style="-fx-border-color: #ccc;">
-         <children>
-            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
-               <graphic>
-                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
-                     <image>
-                        <Image url="@../../../../image/bx-home-alt-2.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Hyperlink>
-            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#createPost" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
-               <graphic>
-                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
-                     <image>
-                        <Image url="@../../../../image/bx-plus-medical.png" />
-                     </image></ImageView>
-               </graphic>
-            </Hyperlink>
-            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
-               <graphic>
-                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
-                     <image>
-                        <Image url="@../../../../image/friends.png" />
-                     </image></ImageView>
-               </graphic>
-            </Hyperlink>
-            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
-               <graphic>
-                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
-                     <image>
-                        <Image url="@../../../../image/bxs-bell.png" />
-                     </image></ImageView>
-               </graphic>
-            </Hyperlink>
-            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
-               <graphic>
-                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
-                     <image>
-                        <Image url="@../../../../image/search-alt-2-regular-36.png" />
-                     </image></ImageView>
-               </graphic>
-            </Hyperlink>
-            <Hyperlink alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.5" prefWidth="91.5" style="-fx-border-color: #ccc; -fx-border-style: solid; -fx-border-bottom: 1;" text="Hyperlink" textOverrun="CENTER_ELLIPSIS">
-               <graphic>
-                  <ImageView fitHeight="91.5" fitWidth="91.5" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" scaleX="0.5" scaleY="0.5">
-                     <image>
-                        <Image url="@../../../../image/bxs-user-detail.png" />
-                     </image></ImageView>
-               </graphic>
-            </Hyperlink>
-         </children>
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor>
-      </HBox>
+      <Pane fx:id="paneView" layoutX="5.0" layoutY="76.0" maxWidth="540.0" minWidth="540.0" prefHeight="574.0" prefWidth="540.0" style="-fx-background-color: white;" visible="false" />
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="40.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#homeOnClick" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../image/bx-home-alt-2.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="125.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#createPostOnClick" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../image/bx-plus-medical.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="210.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#friendsOnClick" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../image/friends.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="380.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#notificationOnClick" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../image/bxs-bell.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="295.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#searchOnClick" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../image/search-alt-2-regular-36.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="465.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#profileOnClick" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../image/bxs-user-detail.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

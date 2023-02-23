@@ -19,12 +19,13 @@ public class HelloApplication extends Application {
         globalVars.getScreenController().addScreen("register", FXMLLoader.load(getClass().getResource("fxml/RegisterScene.fxml")));
         globalVars.getScreenController().addScreen("forgot_password", FXMLLoader.load(getClass().getResource("fxml/ForgotPasswordScene.fxml")));
         globalVars.getScreenController().addScreen("create_post", FXMLLoader.load(getClass().getResource("fxml/CreatePostScene.fxml")));
+        globalVars.getScreenController().addScreen("friends", FXMLLoader.load(getClass().getResource("fxml/FriendsScene.fxml")));
         globalVars.getScreenController().addScreen("layout", FXMLLoader.load(getClass().getResource("fxml/LayoutScene.fxml")));
 
 //        globalVars.getScreenController().addScreen("post_cell", FXMLLoader.load(getClass().getResource("fxml/PostCell.fxml")));
 //        globalVars.getScreenController().addScreen("posts", FXMLLoader.load(getClass().getResource("fxml/CreatePostScene.fxml")));
 //        globalVars.getScreenController().addScreen("profile", FXMLLoader.load(getClass().getResource("fxml/ProfileScene.fxml")));
-//        globalVars.getScreenController().addScreen("friends", FXMLLoader.load(getClass().getResource("fxml/FriendsScene.fxml")));
+
 //        globalVars.getScreenController().addScreen("search", FXMLLoader.load(getClass().getResource("fxml/SearchScene.fxml")));
 //        globalVars.getScreenController().addScreen("notification", FXMLLoader.load(getClass().getResource("fxml/NotificationScene.fxml")));
 
