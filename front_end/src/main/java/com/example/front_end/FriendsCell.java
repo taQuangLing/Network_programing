@@ -29,7 +29,7 @@ public class FriendsCell extends ListCell<User> {
     @FXML
     MenuItem cancelFollowing;
     @FXML MenuItem follow;
-    @FXML MenuItem delete;
+    @FXML MenuItem deleteFollower;
     private FXMLLoader fxmlLoader;
     private int status;
 
@@ -55,7 +55,7 @@ public class FriendsCell extends ListCell<User> {
         follow.setOnAction(e -> {
 
         });
-        delete.setOnAction(e -> {
+        deleteFollower.setOnAction(e -> {
 
         });
     }

@@ -35,7 +35,7 @@
                   <MenuButton fx:id="followerMenuBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white;" visible="false">
                      <items>
                         <MenuItem fx:id="follow" mnemonicParsing="false" text="Theo dõi lại" />
-                        <MenuItem fx:id="delele" mnemonicParsing="false" text="Xóa" />
+                        <MenuItem fx:id="deleteFollower" mnemonicParsing="false" text="Xóa" />
                      </items>
                   </MenuButton>
                </children>
