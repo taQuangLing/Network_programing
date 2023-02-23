@@ -1,14 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.front_end.controller.FriendsController"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane maxWidth="530.0" minWidth="530.0" prefHeight="560.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.FriendsController">
+   <children>
+      <Pane fx:id="friendsPane" maxWidth="530.0" minWidth="530.0" prefHeight="560.0" prefWidth="530.0" style="-fx-background-color: white;">
+         <children>
+            <ListView fx:id="friendListView" layoutY="61.0" maxWidth="530.0" minWidth="530.0" prefHeight="499.0" prefWidth="530.0" />
+            <HBox layoutX="50.0" layoutY="14.0" prefWidth="430.0" stylesheets="@../css/style.css">
+               <children>
+                  <Button fx:id="friendsBtn" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#friendsOnClick" prefHeight="35.0" prefWidth="143.0" stylesheets="@../css/style.css" text="Bạn bè">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="friend-layout" />
+                        <String fx:value="friend-layout-friend" />
+                     </styleClass>
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="followingBtn" mnemonicParsing="false" onMouseClicked="#followingOnClick" prefHeight="35.0" prefWidth="143.0" styleClass="friend-layout" stylesheets="@../css/style.css" text="Đang theo dõi">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="followerBtn" mnemonicParsing="false" onMouseClicked="#followerOnClick" prefHeight="35.0" prefWidth="143.0" styleClass="friend-layout" stylesheets="@../css/style.css" text="Người theo dõi">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </Pane>
+   </children>
 </AnchorPane>

@@ -1,0 +1,35 @@
+.circular-image {
+    -fx-background-radius: 50%;
+    -fx-border-color: #000000;
+    -fx-background-color: white;
+    -fx-background-size: cover;
+    /*-fx-background-image: url("path/to/image.png");*/
+}
+.layout-listview{
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: never;
+}
+.friend-avatar{
+    -fx-shape: "M0,0 L50,0 A50,50 0 0,0 0,50 z";
+    -fx-background-radius: 50;
+    -fx-border-radius: 50;
+}
+.friend-layout{
+    -fx-border-width: 0 1px 0 0px; /* set border với 0 cho top và bottom, 5px cho left và right */
+    -fx-border-color: #6e6e6e; /* set màu border */
+    -fx-border-style: solid; /* set kiểu border */
+    -fx-border-insets: 0px 1px 0px 1px; /* set kích thước border cho left và right */
+    -fx-background-color: #fff;
+    -fx-font-size: 18px;
+}
+.friend-layout-friend{
+    -fx-border-width: 0 1px 0 1px;
+}
+.search-layout-button{
+    -fx-border-width: 1px 1px 1px 1px;
+    -fx-border-insets: 1px 1px 1px 1px;
+    -fx-border-color: #888; /* set màu border */
+    -fx-border-style: solid; /* set kiểu border */
+    -fx-background-color: #fff;
+    -fx-font-size: 18px;
+}

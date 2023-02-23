@@ -2,6 +2,9 @@ package com.example.front_end.appUtils;
 
 import com.example.front_end.model.ClientSock;
 import com.example.front_end.model.Data;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
 
@@ -120,5 +123,46 @@ public class AppUtils {
     public static void sendData(ClientSock clientSock, Data data) throws IOException {
         String message = dataToMessage(data);
         clientSock.send(message);
+    }
+    public static void cropCircleImageView(ImageView imageView) {
+        // Tạo một hình tròn mới
+        Circle circle = new Circle();
+        double radius = Math.min(imageView.getFitWidth(), imageView.getFitHeight()) / 2;
+        circle.setRadius(radius);
+        circle.setCenterX(radius);
+        circle.setCenterY(radius);
+
+        // Sử dụng hình tròn mới như một mặt nạ để cắt ImageView
+        imageView.setClip(circle);
+    }
+    public static void cropSquareImageView(ImageView imageView) {
+        double width = imageView.getBoundsInParent().getWidth();
+        double height = imageView.getBoundsInParent().getHeight();
+
+        double size = Math.min(width, height);
+        double x = (width - size) / 2;
+        double y = (height - size) / 2;
+
+        imageView.setFitWidth(size);
+        imageView.setFitHeight(size);
+        imageView.setTranslateX(x);
+        imageView.setTranslateY(y);
+
+        Rectangle clip = new Rectangle(size, size);
+        clip.setArcWidth(10);
+        clip.setArcHeight(10);
+        imageView.setClip(clip);
+    }
+    public static void cropRectangleImageView(ImageView imageView, int width, int height) {
+        double x = (imageView.getFitWidth() - width) / 2;
+        double y = (imageView.getFitHeight() - height) / 2;
+        imageView.setTranslateX(x);
+        imageView.setTranslateY(y);
+        Rectangle clip = new Rectangle(width, height);
+        clip.setArcWidth(10);
+        clip.setArcHeight(10);
+        imageView.setClip(clip);
+        imageView.setX(0);
+        imageView.setY(0);
     }
 }
