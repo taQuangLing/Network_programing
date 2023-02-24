@@ -33,3 +33,16 @@
     -fx-background-color: #fff;
     -fx-font-size: 18px;
 }
+.list-view{
+    -fx-stroke: white;
+}
+.list-view .cell{
+    -fx-background-color: white;
+}
+.list-view .cell:selected {
+    -fx-background-color: transparent;
+}
+.list-view:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}

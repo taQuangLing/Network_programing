@@ -38,8 +38,8 @@
                   </Button>
                </children>
             </HBox>
-            <ListView fx:id="bookListView" layoutX="48.0" layoutY="99.0" prefHeight="461.0" prefWidth="445.0" style="-fx-background-color: white;" />
-            <ListView fx:id="userListView" layoutX="5.0" layoutY="99.0" prefHeight="461.0" prefWidth="530.0" style="-fx-background-color: white;" />
+            <ListView fx:id="bookListView" layoutX="48.0" layoutY="99.0" prefHeight="461.0" prefWidth="445.0" style="-fx-background-color: white;" stylesheets="@../css/style.css" />
+            <ListView fx:id="userListView" layoutX="5.0" layoutY="99.0" prefHeight="461.0" prefWidth="530.0" style="-fx-background-color: white;" stylesheets="@../css/style.css" />
          </children>
       </Pane>
    </children>
