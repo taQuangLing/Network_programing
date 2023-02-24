@@ -26,12 +26,12 @@
       <change afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/image/search-alt-2-regular-36.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/image/đắc nhân tâm.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server.c" beforeDir="false" afterPath="$PROJECT_DIR$/../server.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/FriendsCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/FriendsCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/PostCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/PostCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/appUtils/AppUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/appUtils/AppUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/HelloApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/UserCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/UserCell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/FriendsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/FriendsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/LayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/LayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/FriendsCell.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/FriendsCell.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/ProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/ProfileScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/ProfileScene.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

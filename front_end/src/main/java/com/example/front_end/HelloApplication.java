@@ -21,9 +21,8 @@ public class HelloApplication extends Application {
         globalVars.getScreenController().addScreen("create_post", FXMLLoader.load(getClass().getResource("fxml/CreatePostScene.fxml")));
         globalVars.getScreenController().addScreen("friends", FXMLLoader.load(getClass().getResource("fxml/FriendsScene.fxml")));
         globalVars.getScreenController().addScreen("search", FXMLLoader.load(getClass().getResource("fxml/SearchScene.fxml")));
+        globalVars.getScreenController().addScreen("profile", FXMLLoader.load(getClass().getResource("fxml/ProfileScene.fxml")));
         globalVars.getScreenController().addScreen("layout", FXMLLoader.load(getClass().getResource("fxml/LayoutScene.fxml")));
-
-//        globalVars.getScreenController().addScreen("profile", FXMLLoader.load(getClass().getResource("fxml/ProfileScene.fxml")));
 
         globalVars.getScreenController().activate("layout");
         stage.setScene(globalVars.getScreenController().getMain());
@@ -32,17 +31,10 @@ public class HelloApplication extends Application {
 
     public static void main(String[] args) throws IOException {
 
-//        AppUtils.clientSock = new ClientSock("127.0.0.1", 5000);
+        AppUtils.clientSock = new ClientSock("127.0.0.1", 5000);
         launch();
 
 
-
-//        ClientSock clientSock = new ClientSock();
-//        try {
-//            clientSock.connectServer("127.0.0.1", 5000);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
 //        Data data = new Data(AppUtils.MessageCode.FORGOT);
 //        data.getData().add("abc@gmail.com");
 //        try {

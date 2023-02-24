@@ -79,9 +79,6 @@ public class UserCell extends ListCell<User> {
             }
             avatarImg.setFitHeight(height/ratio);
             avatarImg.setFitWidth(width/ratio);
-//            AppUtils.cropSquareImageView(avatarImg);
-//            avatarImg.setFitWidth(60);
-//            avatarImg.setFitHeight(60);
             AppUtils.cropCircleImageView(avatarImg);
             avatarImg.setStyle("-fx-shape: \"M0,0 L" + avatarImg.getFitWidth() + ",0 A" + avatarImg.getFitWidth()/2 + "," + avatarImg.getFitHeight()/2 + " 0 0,0 " + avatarImg.getFitWidth() + "," + avatarImg.getFitHeight() + " L0," + avatarImg.getFitHeight() + " A" + avatarImg.getFitWidth()/2 + "," + avatarImg.getFitHeight()/2 + " 0 0,0 0,0 Z\"");
             username.setText(user.getName());

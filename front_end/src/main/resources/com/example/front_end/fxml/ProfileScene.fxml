@@ -2,89 +2,84 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="540.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.ProfileController">
+<AnchorPane fx:id="profileAnchorPane" prefHeight="400.0" prefWidth="540.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.ProfileController">
    <children>
-      <Pane layoutX="10.0" prefWidth="520.0">
+      <Pane fx:id="profilePane">
          <children>
-            <ScrollPane hbarPolicy="NEVER" prefHeight="560.0" vbarPolicy="NEVER">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="520.0">
+            <VBox>
+               <children>
+                  <Pane prefHeight="258.0" prefWidth="530.0" style="-fx-background-color: white;">
                      <children>
-                        <ListView layoutY="287.0" prefWidth="520.0" />
-                        <Pane prefHeight="287.0" prefWidth="520.0" style="-fx-background-color: white;">
-                           <children>
-                              <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../../image/luffy.png" />
-                                 </image>
-                              </ImageView>
-                              <Text layoutX="140.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User 1">
-                                 <font>
-                                    <Font size="27.0" />
-                                 </font>
-                              </Text>
-                              <Text fill="#757575" layoutX="140.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bio: Bla bla" wrappingWidth="320.8046875">
-                                 <font>
-                                    <Font size="12.0" />
-                                 </font>
-                              </Text>
-                              <Line endX="360.0" layoutX="125.0" layoutY="128.0" startX="-90.0" stroke="#9a9a9a" />
-                              <Label layoutX="65.0" layoutY="144.0" text="Giới tính:">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="65.0" layoutY="177.0" text="Ngày sinh:">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="65.0" layoutY="209.0" text="Ngày tham gia:">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="65.0" layoutY="243.0" text="Sở thích:">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                              <Text layoutX="145.0" layoutY="159.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nam">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Text>
-                              <Text layoutX="159.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="21/09/2002">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Text>
-                              <Text layoutX="188.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0" text="12/12/2022">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Text>
-                              <Text layoutX="145.0" layoutY="257.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đọc sách, chơi game, bóng đá" wrappingWidth="331.27783203125">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                        </Pane>
-                        <ListView layoutY="279.0" prefWidth="520.0" stylesheets="@../css/style.css" />
+                        <ImageView fx:id="avatarImg" fitHeight="100.0" fitWidth="100.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../image/luffy.png" />
+                           </image>
+                        </ImageView>
+                        <Text fx:id="name" layoutX="140.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User 1">
+                           <font>
+                              <Font size="27.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="bio" fill="#757575" layoutX="140.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bio: Bla bla" wrappingWidth="320.8046875">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Text>
+                        <Line endX="360.0" layoutX="125.0" layoutY="116.0" startX="-14.0" stroke="#9a9a9a" />
+                        <Label layoutX="65.0" layoutY="134.0" text="Giới tính:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="65.0" layoutY="165.0" text="Ngày sinh:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="65.0" layoutY="197.0" text="Ngày tham gia:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="65.0" layoutY="230.0" text="Sở thích:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Text fx:id="gender" layoutX="145.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nam">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="birthday" layoutX="159.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="21/09/2002">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="createdAt" layoutX="188.0" layoutY="212.0" strokeType="OUTSIDE" strokeWidth="0.0" text="12/12/2022">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="interest" layoutX="145.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đọc sách, chơi game, bóng đá" wrappingWidth="331.27783203125">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
                      </children>
-                  </AnchorPane>
-              </content>
-            </ScrollPane>
+                  </Pane>
+                  <ListView fx:id="postListView" prefHeight="302.0" prefWidth="545.0" stylesheets="@../css/style.css" />
+               </children>
+            </VBox>
          </children>
       </Pane>
    </children>

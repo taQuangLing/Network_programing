@@ -22,7 +22,6 @@ public class LayoutController implements Initializable {
     private ListView<Post> postListView;
     @FXML
     private ListView<Notification> notifyListView;
-    private ObservableList<Post> postList = FXCollections.observableArrayList();
     @FXML Pane paneView;
     GlobalVariable globalVariable = GlobalVariable.getInstance();
     @SneakyThrows
@@ -33,6 +32,7 @@ public class LayoutController implements Initializable {
         postListView.setVisible(true);
         notifyListView.setVisible(false);
         paneView.setVisible(false);
+        ObservableList<Post> postList = FXCollections.observableArrayList();
         // get posts from server
 //        Data request = new Data(AppUtils.MessageCode.NEWS);
 //        request.getData().add(1);
@@ -85,6 +85,7 @@ public class LayoutController implements Initializable {
 //        System.out.println(globalVariable.getScreenController());
         paneView.getChildren().add(1, globalVariable.getScreenController().getPane("friends"));
         paneView.getChildren().add(2, globalVariable.getScreenController().getPane("search"));
+        paneView.getChildren().add(3, globalVariable.getScreenController().getPane("profile"));
         postListView.setItems(postList);
     }
 //    public void clickPost(ActionEvent e){
@@ -103,6 +104,7 @@ public class LayoutController implements Initializable {
         paneView.getChildren().get(0).setVisible(true);
         paneView.getChildren().get(1).setVisible(false);
         paneView.getChildren().get(2).setVisible(false);
+        paneView.getChildren().get(3).setVisible(false);
     }
     public void homeOnClick(MouseEvent e){
         postListView.setVisible(true);
@@ -117,6 +119,7 @@ public class LayoutController implements Initializable {
         paneView.getChildren().get(1).setVisible(true);
         paneView.getChildren().get(0).setVisible(false);
         paneView.getChildren().get(2).setVisible(false);
+        paneView.getChildren().get(3).setVisible(false);
         new FriendsController();
     }
     public void notificationOnClick(MouseEvent event){
@@ -159,10 +162,19 @@ public class LayoutController implements Initializable {
         paneView.getChildren().get(0).setVisible(false);
         paneView.getChildren().get(1).setVisible(false);
         paneView.getChildren().get(2).setVisible(true);
+        paneView.getChildren().get(3).setVisible(false);
         new SearchController();
     }
     public void profileOnClick(MouseEvent event){
         System.out.println("profile clicked");
+        postListView.setVisible(false);
+        notifyListView.setVisible(false);
+        paneView.setVisible(true);
+        paneView.getChildren().get(0).setVisible(false);
+        paneView.getChildren().get(1).setVisible(false);
+        paneView.getChildren().get(2).setVisible(false);
+        paneView.getChildren().get(3).setVisible(true);
+        new ProfileController();
     }
 
 }
