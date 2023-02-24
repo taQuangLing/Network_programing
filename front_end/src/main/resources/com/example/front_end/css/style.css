@@ -46,3 +46,11 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+.profile-text {
+    -fx-background-color: white;
+    -fx-text-fill: #333;
+    -fx-opacity: 1;
+}
+.profile-bio-text{
+    -fx-text-fill: #bbb;
+}

@@ -31,7 +31,7 @@ public class HelloApplication extends Application {
 
     public static void main(String[] args) throws IOException {
 
-        AppUtils.clientSock = new ClientSock("127.0.0.1", 5000);
+//        AppUtils.clientSock = new ClientSock("127.0.0.1", 5000);
         launch();
 
 

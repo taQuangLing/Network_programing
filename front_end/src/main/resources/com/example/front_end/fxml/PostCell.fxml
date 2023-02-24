@@ -17,8 +17,8 @@
               <content>
                 <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="413.0" prefWidth="461.0">
                      <children>
-                        <Text fx:id="usernameId" layoutX="58.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="Ta Quang Linh" />
-                        <ImageView fx:id="avatarId" fitHeight="60.0" fitWidth="46.0" layoutX="5.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+                        <Text fx:id="usernameId" layoutX="82.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="Ta Quang Linh" />
+                        <ImageView fx:id="avatarId" fitHeight="107.0" fitWidth="91.0" layoutX="5.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../../../../image/đắc%20nhân%20tâm.jpg" />
                            </image>

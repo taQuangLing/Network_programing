@@ -198,17 +198,17 @@ public class FriendsController implements Initializable{
         friendListView.setCellFactory(param -> new UserCell(1));
         ObservableList<User> userList = FXCollections.observableArrayList();
 
-        Data data = new Data(AppUtils.MessageCode.FRIENDS);
-        data.getData().add(1);
-        AppUtils.sendData(clientSock, data); // send data
-        Data response = AppUtils.recvData(clientSock); // recv count
-        int count = Integer.valueOf((String) response.getData().get(0));
-        System.out.println(response);
-        if (response.getMessageCode() == OK){
-            userList = getUserList(count);
-        }else if (response.getMessageCode() == ERROR){
-            exit(-1);
-        }
+//        Data data = new Data(AppUtils.MessageCode.FRIENDS);
+//        data.getData().add(1);
+//        AppUtils.sendData(clientSock, data); // send data
+//        Data response = AppUtils.recvData(clientSock); // recv count
+//        int count = Integer.valueOf((String) response.getData().get(0));
+//        System.out.println(response);
+//        if (response.getMessageCode() == OK){
+//            userList = getUserList(count);
+//        }else if (response.getMessageCode() == ERROR){
+//            exit(-1);
+//        }
         friendListView.setItems(userList);
     }
 }

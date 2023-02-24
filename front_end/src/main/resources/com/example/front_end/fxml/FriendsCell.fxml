@@ -24,7 +24,7 @@
                <children>
                   <MenuButton fx:id="friendsMenuBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white;">
                     <items>
-                      <MenuItem fx:id="cancelFollowing" mnemonicParsing="false" text="Hủy theo dõi" />
+                      <MenuItem fx:id="cancelFollowing" mnemonicParsing="false" text="Bỏ theo dõi" />
                     </items>
                   </MenuButton>
                   <MenuButton fx:id="followerMenuBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white;" visible="false">

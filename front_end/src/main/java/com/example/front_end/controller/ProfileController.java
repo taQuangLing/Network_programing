@@ -6,11 +6,16 @@ import com.example.front_end.model.Post;
 import com.example.front_end.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -25,21 +30,50 @@ public class ProfileController implements Initializable {
     @FXML
     ImageView avatarImg;
     @FXML
-    Text name;
-    @FXML Text bio;
-    @FXML Text gender;
-    @FXML Text birthday;
-    @FXML Text createdAt;
-    @FXML Text interest;
+    TextField name;
+    @FXML TextField bio;
+    @FXML TextField gender;
+    @FXML TextField birthday;
+    @FXML TextField createdAt;
+    @FXML TextField interest;
     @FXML
     ListView<Post> postListView;
     @FXML
     Pane profilePane;
     @FXML
     AnchorPane profileAnchorPane;
+    @FXML
+    MenuButton profileMenuButton;
+    @FXML MenuButton userMenuButton;
+    @FXML ImageView editImg;
+    @FXML ImageView doneImg;
+    private int state;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        state = 0;
+        name.setDisable(true);
+        bio.setDisable(true);
+        gender.setDisable(true);
+        createdAt.setDisable(true);
+        birthday.setDisable(true);
+        interest.setDisable(true);
+        if (state == 0){
+            //profile
+            profileMenuButton.setVisible(true);
+            editImg.setVisible(false);
+            doneImg.setVisible(false);
+            userMenuButton.setVisible(false);
+
+        }else{
+            // others
+            profileMenuButton.setVisible(false);
+            editImg.setVisible(false);
+            doneImg.setVisible(false);
+            userMenuButton.setVisible(true);
+        }
+
+
         // User user = recv_data from server
         // List<Post> posts = recv date from server
         User user = new User(1,
@@ -102,5 +136,32 @@ public class ProfileController implements Initializable {
                 ""
         ));
         postListView.setItems(postList);
+    }
+    public void editProfile(ActionEvent event){
+        name.setDisable(false);
+        bio.setDisable(false);
+        gender.setDisable(false);
+        createdAt.setDisable(false);
+        birthday.setDisable(false);
+        interest.setDisable(false);
+        profileMenuButton.setVisible(false);
+        editImg.setVisible(true);
+        doneImg.setVisible(true);
+        userMenuButton.setVisible(false);
+    }
+    public void logout(ActionEvent event){
+
+    }
+    public void done(MouseEvent event){
+        name.setDisable(true);
+        bio.setDisable(true);
+        gender.setDisable(true);
+        createdAt.setDisable(true);
+        birthday.setDisable(true);
+        interest.setDisable(true);
+        profileMenuButton.setVisible(true);
+        editImg.setVisible(false);
+        doneImg.setVisible(false);
+        userMenuButton.setVisible(false);
     }
 }

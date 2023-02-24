@@ -82,7 +82,6 @@ public class PostCell extends ListCell<Post> {
                 rectangleId.setOpacity(0.1);
             }
         });
-
     }
     @Override
     protected void updateItem(Post post, boolean empty){
@@ -117,9 +116,6 @@ public class PostCell extends ListCell<Post> {
             heightContent = contentId.getLayoutBounds().getHeight();
             imageId.setY(imageId.getY() + heightContent + heightTitle + 20);
             usernameId.setText(post.getUsername());
-            if (index == 0){
-                scrollId.setLayoutY(scrollId.getLayoutY() + 70);
-            }
             setText(null);
             setGraphic(paneId);
 
