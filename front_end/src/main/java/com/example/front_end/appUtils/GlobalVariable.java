@@ -2,26 +2,17 @@ package com.example.front_end.appUtils;
 
 import com.example.front_end.controller.ScreenController;
 import javafx.scene.Scene;
+import lombok.Data;
 
+@Data
 public class GlobalVariable {
     private static GlobalVariable instance = new GlobalVariable();
     private ScreenController screenController;
-    private Integer id;
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
+    private Integer id = 0;
+    private Integer switchToOthersId = 0;
 
     public Integer getId() {
         return id;
-    }
-
-    public String getToken() {
-        return token;
     }
 
     private String token;

@@ -31,4 +31,5 @@ int send_success(int );
 int send_fail(int );
 int send_file(int , char *);
 int write_file(int , char *);
+int strlen_utf8(const char* str);
 #endif //LAP_TRINH_MANG_APPUTILS_H

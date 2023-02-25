@@ -260,12 +260,11 @@ int edit_posts(int client, Param p) {
     return send_success(client);}
 
 int posts(int client, Param p) {
-    char *title, *content, *image, time_now[20] = {0};
+    char *title, *content, time_now[20] = {0};
     int status, userid;
     userid = param_get_int(&p);
     title = param_get_str(&p);
     content = param_get_str(&p);
-    image = param_get_str(&p);
     status = param_get_int(&p);
     get_time_now(time_now, NULL);
 
@@ -273,11 +272,19 @@ int posts(int client, Param p) {
     int post_id = DB_int_get_by(data2, "id");
     char sql[1000] = {0};
     char path[150] = {0};
-    sprintf(path, "kho/%d-%d-", userid, post_id+1);
-    if (write_file(client, path) == -1){
+    char image[150] = {0};
+    sprintf(image, "kho/%d-%d-", userid, post_id+1);
+    status = write_file(client, image);
+    if (status == -1){
         return send_error(client);
-    }
-
+    }else if (status == 0)return send_fail(client);
+        else send_success(client);
+    sprintf(path, "kho/%d-%d-", userid, post_id+1);
+    status = write_file(client, path);
+    if (status == -1){
+        return send_error(client);
+    }else if (status == 0)return send_fail(client);
+    else send_success(client);
     sprintf(sql, "insert into post (user_id, title, content, image, status, created_at, path) value"
                  "(%d, '%s', '%s', '%s', %d, '%s', '%s')", userid, title, content, image, status, time_now, path);
     if (DB_insert_v2(&conn, sql) == -1){

@@ -2,6 +2,9 @@ module com.example.front_end {
     requires javafx.controls;
     requires javafx.fxml;
     requires lombok;
+    requires java.desktop;
+    requires httpcore;
+    requires httpclient;
 
 
     opens com.example.front_end to javafx.fxml;

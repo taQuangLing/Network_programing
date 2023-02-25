@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.PostsController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.CreatePostController">
    <children>
       <ScrollPane hbarPolicy="NEVER" prefHeight="570.0" vbarPolicy="NEVER">
         <content>
@@ -51,25 +51,25 @@
                         </TextArea>
                         <MenuButton fx:id="status" layoutX="35.0" layoutY="359.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #ffffff; -fx-border-color: #2a5994; -fx-border-radius: 5;" text="Public" textAlignment="CENTER">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="Public" />
-                              <MenuItem mnemonicParsing="false" text="Friend" />
-                            <MenuItem mnemonicParsing="false" text="Private" />
+                            <MenuItem mnemonicParsing="false" onAction="#selectPublic" text="Public" />
+                              <MenuItem mnemonicParsing="false" onAction="#selectFriend" text="Friend" />
+                            <MenuItem mnemonicParsing="false" onAction="#selectPrivate" text="Private" />
                           </items>
                            <font>
                               <Font name="Ubuntu" size="15.0" />
                            </font>
                         </MenuButton>
-                        <Button fx:id="imageBtn" layoutX="35.0" layoutY="419.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn ảnh">
+                        <Button fx:id="imageBtn" layoutX="35.0" layoutY="419.0" mnemonicParsing="false" onMouseClicked="#chooseImage" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn ảnh">
                            <font>
                               <Font name="Ubuntu" size="15.0" />
                            </font>
                         </Button>
-                        <Button fx:id="fileBtn" layoutX="35.0" layoutY="479.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn tệp">
+                        <Button fx:id="fileBtn" layoutX="35.0" layoutY="479.0" mnemonicParsing="false" onMouseClicked="#chooseFile" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn tệp">
                            <font>
                               <Font name="Ubuntu" size="15.0" />
                            </font>
                         </Button>
-                        <Button fx:id="postBtn" layoutX="35.0" layoutY="555.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="140.0" style="-fx-background-color: #5792bb; -fx-border-color: #757575; -fx-border-radius: 5; -fx-text-fill: #090404;" text="ĐĂNG">
+                        <Button fx:id="postBtn" layoutX="35.0" layoutY="555.0" mnemonicParsing="false" onMouseClicked="#post" prefHeight="34.0" prefWidth="140.0" style="-fx-background-color: #5792bb; -fx-border-color: #757575; -fx-border-radius: 5; -fx-text-fill: #090404;" text="ĐĂNG">
                            <font>
                               <Font size="16.0" />
                            </font>

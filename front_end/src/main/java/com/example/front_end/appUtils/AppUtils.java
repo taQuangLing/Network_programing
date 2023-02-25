@@ -5,8 +5,13 @@ import com.example.front_end.model.Data;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
+
+import static com.example.front_end.appUtils.AppUtils.MessageCode.OK;
 
 public class AppUtils {
 
@@ -75,7 +80,8 @@ public class AppUtils {
         REMOVE_POSTS(60),
         EMPTY(61),
         SEEN_NOTIFI(62),
-        WARNING(63);
+        WARNING(63),
+        FAIL(64);
         private int value;
         MessageCode(int value) {
             this.value = value;
@@ -119,6 +125,12 @@ public class AppUtils {
     public static Data recvData(ClientSock clientSock) throws IOException {
         String message = clientSock.recv();
         return messageToData(message);
+    }
+    public static byte[] recvDataV2(ClientSock clientSock) throws IOException {
+        return  clientSock.recvV2();
+    }
+    public static void sendDataV2(ClientSock clientSock, byte[] data, int length) throws IOException {
+        clientSock.sendV2(data, length);
     }
     public static void sendData(ClientSock clientSock, Data data) throws IOException {
         String message = dataToMessage(data);
@@ -164,5 +176,63 @@ public class AppUtils {
         imageView.setClip(clip);
         imageView.setX(0);
         imageView.setY(0);
+    }
+    public static void writeFile(String filename) throws IOException {
+        Stage stage = new Stage();
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select Directory");
+        File initialDirectory = new File(System.getProperty("user.home"));
+        directoryChooser.setInitialDirectory(initialDirectory);
+
+        // Show directory chooser dialog
+        File selectedDirectory = directoryChooser.showDialog(stage);
+
+        if (selectedDirectory != null) {
+            System.out.println("Selected directory: " + selectedDirectory.getAbsolutePath());
+            // Download image from URL using the selected directory path
+            Data request = new Data(OK);
+            sendData(clientSock, request);
+            File file = new File(selectedDirectory.getAbsolutePath() + '/' + filename);
+            FileOutputStream fos = new FileOutputStream(file);
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+            // Ghi dữ liệu vào tệp tin
+            while (true) {
+                byte[] data = recvDataV2(clientSock);
+                bos.write(data);
+                if (data.length < 1024) {
+                    break;
+                }
+            }
+            ProcessBuilder pb = new ProcessBuilder("evince", file.getPath());
+            pb.start();
+//            Desktop.getDesktop().open(file);
+            // Đóng tệp tin
+            bos.close();
+            fos.close();
+        }
+    }
+    public static void sendFile(File file) throws IOException {
+        Data request;
+        FileInputStream fis = new FileInputStream(file);
+        BufferedInputStream bis = new BufferedInputStream(fis);
+        if (file == null){
+            request = new Data(AppUtils.MessageCode.EMPTY);
+            sendData(clientSock, request);
+        }else{
+            request = new Data(AppUtils.MessageCode.OK);
+            request.getData().add(file.getName());
+            sendData(clientSock, request);
+
+            byte[] buffer = new byte[1024];
+            while(true){
+                int bytesRead = bis.read(buffer);
+                if (bytesRead == -1)break;
+                sendDataV2(clientSock, buffer, bytesRead);
+                Arrays.fill(buffer, (byte) 0);
+            }
+        }
+
+        bis.close();
     }
 }

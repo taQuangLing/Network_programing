@@ -1,7 +1,9 @@
 package com.example.front_end;
 
 import com.example.front_end.appUtils.AppUtils;
+import com.example.front_end.model.Data;
 import com.example.front_end.model.Post;
+import com.example.front_end.view.Message;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;
@@ -12,8 +14,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
+//import java.awt.Desktop;
+import java.awt.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+
+import static com.example.front_end.appUtils.AppUtils.MessageCode.*;
+import static com.example.front_end.appUtils.AppUtils.*;
 
 public class PostCell extends ListCell<Post> {
     @FXML
@@ -58,6 +69,41 @@ public class PostCell extends ListCell<Post> {
             if (index >= 0 && index < getListView().getItems().size()) {
                 // open book
                 System.out.println("Image clicked");
+                Data request = new Data(AppUtils.MessageCode.OPEN);
+//                request.getData().add(GlobalVariable.getInstance().getId());
+                request.getData().add(1);
+                request.getData().add(getListView().getItems().get(index).getId());
+                try {
+                    sendData(clientSock, request);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                Data response;
+                String filename;
+                try {
+                    response = recvData(clientSock);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                if (response.getMessageCode() == FAIL){
+                    Message message = new Message(WARNING, "Bạn không có quyền truy cập");
+                    message.alert();
+                }else if (response.getMessageCode() == OK) {
+                    try {
+                        response = recvData(clientSock);
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    filename = (String) response.getData().get(0);
+                    try {
+                        writeFile(filename);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }else{
+                    Message message = new Message(ERROR);
+                }
             }
         });
         rectangleId.setOnMouseClicked(mouseEvent -> {
