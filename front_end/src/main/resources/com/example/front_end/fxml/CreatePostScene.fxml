@@ -4,14 +4,16 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.PostsController">
+<AnchorPane fx:id="createPostAnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.CreatePostController">
    <children>
       <ScrollPane hbarPolicy="NEVER" prefHeight="570.0" vbarPolicy="NEVER">
         <content>
@@ -29,12 +31,12 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="imageLabel" disable="true" layoutX="196.0" layoutY="425.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh">
+                        <Label fx:id="imageLabel" disable="true" layoutX="196.0" layoutY="425.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh" visible="false">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="fileLabel" disable="true" layoutX="196.0" layoutY="485.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh">
+                        <Label fx:id="fileLabel" disable="true" layoutX="196.0" layoutY="485.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh" visible="false">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -49,36 +51,63 @@
                               <Font name="FreeSerif" size="18.0" />
                            </font>
                         </TextArea>
-                        <MenuButton fx:id="status" layoutX="35.0" layoutY="359.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #ffffff; -fx-border-color: #2a5994; -fx-border-radius: 5;" text="Public" textAlignment="CENTER">
+                        <MenuButton fx:id="status" layoutX="35.0" layoutY="359.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #ffffff; -fx-border-color: #2a5994; -fx-border-radius: 5;" text="Công khai" textAlignment="CENTER">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="Public" />
-                              <MenuItem mnemonicParsing="false" text="Friend" />
-                            <MenuItem mnemonicParsing="false" text="Private" />
+                            <MenuItem mnemonicParsing="false" onAction="#selectPublic" text="Công khai" />
+                              <MenuItem mnemonicParsing="false" onAction="#selectFriend" text="Bạn bè" />
+                            <MenuItem mnemonicParsing="false" onAction="#selectPrivate" text="Riêng tư" />
                           </items>
                            <font>
                               <Font name="Ubuntu" size="15.0" />
                            </font>
                         </MenuButton>
-                        <Button fx:id="imageBtn" layoutX="35.0" layoutY="419.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn ảnh">
+                        <Button fx:id="imageBtn" layoutX="35.0" layoutY="419.0" mnemonicParsing="false" onMouseClicked="#chooseImage" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn ảnh">
                            <font>
                               <Font name="Ubuntu" size="15.0" />
                            </font>
                         </Button>
-                        <Button fx:id="fileBtn" layoutX="35.0" layoutY="479.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn tệp">
+                        <Button fx:id="fileBtn" layoutX="35.0" layoutY="479.0" mnemonicParsing="false" onMouseClicked="#chooseFile" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #3465a4; -fx-border-radius: 5;" text="Chọn tệp">
                            <font>
                               <Font name="Ubuntu" size="15.0" />
                            </font>
                         </Button>
-                        <Button fx:id="postBtn" layoutX="35.0" layoutY="555.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="140.0" style="-fx-background-color: #5792bb; -fx-border-color: #757575; -fx-border-radius: 5; -fx-text-fill: #090404;" text="ĐĂNG">
+                        <Button fx:id="postBtn" layoutX="35.0" layoutY="555.0" mnemonicParsing="false" onMouseClicked="#post" prefHeight="34.0" prefWidth="140.0" style="-fx-background-color: #5792bb; -fx-border-color: #757575; -fx-border-radius: 5; -fx-text-fill: #090404;" text="ĐĂNG">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Button>
+                        <Label fx:id="titleStar" disable="true" layoutX="100.0" layoutY="10.0" text="*" textFill="RED" visible="false">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="contentStar" disable="true" layoutX="112.0" layoutY="87.0" text="*" textFill="RED" visible="false">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="imageStar" disable="true" layoutX="162.0" layoutY="415.0" text="*" textFill="RED" visible="false">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="fileStar" disable="true" layoutX="162.0" layoutY="475.0" text="*" textFill="RED" visible="false">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
                      </children>
                   </Pane>
                </children>
             </AnchorPane>
         </content>
       </ScrollPane>
+      <Rectangle fx:id="createPostRectangle" arcHeight="5.0" arcWidth="5.0" fill="#7a828a" height="570.0" opacity="0.37" stroke="BLACK" strokeType="INSIDE" visible="false" width="522.0" />
+      <ProgressBar fx:id="createPostProgressBar" layoutX="33.0" layoutY="259.0" prefHeight="26.0" prefWidth="457.0" progress="0.0" visible="false" />
+      <Label fx:id="processingLabel" layoutX="210.0" layoutY="285.0" text="Processing..." visible="false">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

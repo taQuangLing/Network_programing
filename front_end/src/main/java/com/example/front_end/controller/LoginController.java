@@ -24,8 +24,6 @@ public class LoginController{
     private TextField emailInput;
     @FXML
     private TextField passwordInput;
-    private Scene scene;
-    private Parent root;
     private Stage stage;
 
     public void login(ActionEvent e) throws IOException {

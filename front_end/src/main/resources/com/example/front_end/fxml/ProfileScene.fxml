@@ -1,69 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.ProfileController">
+<AnchorPane fx:id="profileAnchorPane" prefHeight="400.0" prefWidth="540.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.ProfileController">
    <children>
-      <Pane layoutX="10.0" prefWidth="520.0">
+      <Pane fx:id="profilePane">
          <children>
-            <ScrollPane hbarPolicy="NEVER" prefHeight="560.0" vbarPolicy="NEVER">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="520.0">
+            <VBox>
+               <children>
+                  <Pane prefHeight="258.0" prefWidth="530.0" style="-fx-background-color: white;">
                      <children>
-                        <ListView layoutY="287.0" prefWidth="520.0" />
-                        <Pane prefHeight="287.0" prefWidth="520.0" style="-fx-background-color: white;">
-                           <children>
-                              <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../../image/luffy.png" />
-                                 </image>
-                              </ImageView>
-                              <Text layoutX="140.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User 1">
-                                 <font>
-                                    <Font size="27.0" />
-                                 </font>
-                              </Text>
-                              <Text fill="#757575" layoutX="140.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bio: Bla bla" wrappingWidth="320.8046875">
-                                 <font>
-                                    <Font size="12.0" />
-                                 </font>
-                              </Text>
-                              <Line endX="360.0" layoutX="125.0" layoutY="128.0" startX="-90.0" stroke="#9a9a9a" />
-                              <Label layoutX="65.0" layoutY="144.0" text="Giới tính:">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="65.0" layoutY="177.0" text="Ngày sinh:">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="65.0" layoutY="209.0" text="Ngày tham gia:">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="65.0" layoutY="243.0" text="Sở thích:">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </Pane>
+                        <ImageView fx:id="avatarImg" fitHeight="100.0" fitWidth="100.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../image/luffy.png" />
+                           </image>
+                        </ImageView>
+                        <Line endX="360.0" layoutX="125.0" layoutY="116.0" startX="-14.0" stroke="#9a9a9a" />
+                        <MenuButton fx:id="profileMenuButton" layoutX="444.0" layoutY="22.0" mnemonicParsing="false" style="-fx-background-color: white;">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#editProfile" text="Chỉnh sửa" />
+                            <MenuItem mnemonicParsing="false" onAction="#logout" text="Đăng xuất" />
+                          </items>
+                           <font>
+                              <Font size="23.0" />
+                           </font>
+                        </MenuButton>
+                        <MenuButton fx:id="userMenuButton" layoutX="444.0" layoutY="22.0" mnemonicParsing="false" prefWidth="40.0" style="-fx-background-color: white;">
+                           <items>
+                              <MenuItem fx:id="follow" mnemonicParsing="false" text="Theo dõi" />
+                              <MenuItem mnemonicParsing="false" text="Bỏ theo dõi" />
+                           </items>
+                           <font>
+                              <Font size="23.0" />
+                           </font>
+                        </MenuButton>
+                        <TextField fx:id="name" layoutX="124.0" layoutY="18.0" prefHeight="52.0" prefWidth="292.0" style="-fx-background-color: white; -fx-font-size: 24;" styleClass="profile-text" stylesheets="@../css/style.css" text="User 1">
+                           <font>
+                              <Font size="27.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="bio" layoutX="159.0" layoutY="59.0" prefHeight="23.0" prefWidth="286.0" stylesheets="@../css/style.css" text="abc">
+                           <styleClass>
+                              <String fx:value="profile-text" />
+                              <String fx:value="profile-bio-text" />
+                           </styleClass></TextField>
+                        <ImageView fx:id="doneImg" fitHeight="45.0" fitWidth="40.0" layoutX="460.0" layoutY="25.0" onMouseClicked="#done" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../image/done.jpg" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="140.0" layoutY="64.0" styleClass="profile-bio-text" text="Bio:" />
+                        <ImageView fx:id="editImg" fitHeight="19.0" fitWidth="25.0" layoutX="90.0" layoutY="92.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../image/edit-solid-240.png" />
+                           </image>
+                        </ImageView>
+                        <TextField fx:id="gender" layoutX="126.0" layoutY="128.0" style="-fx-font-size: 16; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="Nam">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="birthday" layoutX="140.0" layoutY="159.0" style="-fx-font-size: 16; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="20/12/2002">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="createdAt" layoutX="176.0" layoutY="191.0" style="-fx-font-size: 16; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="1/2/2022">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="interest" layoutX="124.0" layoutY="224.0" prefHeight="26.0" prefWidth="322.0" style="-fx-font-size: 16; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="Chơi game, đá bóng">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <Label layoutX="65.0" layoutY="134.0" text="Giới tính:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="65.0" layoutY="165.0" text="Ngày sinh:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="65.0" layoutY="197.0" text="Ngày tham gia:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="65.0" layoutY="230.0" text="Sở thích:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
                      </children>
-                  </AnchorPane>
-              </content>
-            </ScrollPane>
+                  </Pane>
+                  <ListView fx:id="postListView" prefHeight="302.0" prefWidth="545.0" stylesheets="@../css/style.css" />
+               </children>
+            </VBox>
          </children>
       </Pane>
    </children>

@@ -10,7 +10,7 @@
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="650.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.LayoutController">
    <children>
-      <ListView fx:id="postListView" layoutX="5.0" maxWidth="540.0" minWidth="540.0" prefHeight="650.0" prefWidth="540.0" style="-fx-background-color: #fff;" stylesheets="@../css/style.css">
+      <ListView fx:id="postListView" layoutX="5.0" layoutY="82.0" maxWidth="540.0" minWidth="540.0" prefHeight="568.0" prefWidth="540.0" style="-fx-background-color: #fff;" stylesheets="@../css/style.css">
          <cursor>
             <Cursor fx:constant="DEFAULT" />
          </cursor>
@@ -46,12 +46,12 @@
       </ImageView>
       <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="380.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#notificationOnClick" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../image/bxs-bell.png" />
+            <Image url="@../../../../image/bx-bell.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="295.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#searchOnClick" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../image/search-alt-2-regular-36.png" />
+            <Image url="@../../../../image/bx-search.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="465.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#profileOnClick" pickOnBounds="true" preserveRatio="true">

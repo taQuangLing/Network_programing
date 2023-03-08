@@ -26,17 +26,19 @@
       <change afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/image/search-alt-2-regular-36.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/image/đắc nhân tâm.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server.c" beforeDir="false" afterPath="$PROJECT_DIR$/../server.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/FriendsCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/FriendsCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/PostCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/PostCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/appUtils/AppUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/appUtils/AppUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/LayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/LayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/HelloApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/FriendsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/FriendsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/java/com/example/front_end/controller/ProfileController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/FriendsCell.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/FriendsCell.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/ProfileScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../../front_end/src/main/resources/com/example/front_end/fxml/ProfileScene.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExportToHTMLSettings">
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/exportToHTML" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
@@ -46,20 +48,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenDatabaseViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/ling/Documents/20221/Lap trinh mang/Network_programing/back-end/database&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenDatabaseViewOnStart": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "database.data.extractors.current.export.id": "SQL Inserts",
+    "last_opened_file_path": "/home/ling/Documents/20221/Lap trinh mang/Network_programing/back-end/database",
+    "settings.editor.selected.configurable": "database.query.execution"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
 </project>

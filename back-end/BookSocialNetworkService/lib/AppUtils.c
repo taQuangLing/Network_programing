@@ -82,15 +82,17 @@ char *data_to_str(Data data, int key){
     //code-param1-param2-...-param3-size
     char str_res[255];
     char i2s[10];
-    int payload_size = 0, request_size;
+    int payload_size = 0,payload_size_t, request_size;
     int count = 1;
     for (Param param = data->params; param != NULL; param = param->next){
-        payload_size += (int)strlen(param->value);
+        payload_size += strlen_utf8(param->value);
+        payload_size_t += (int) strlen(param->value);
+        printf("str: %s-payload size : %d", param->value,payload_size);
         count++;
     }
 
     intTostr(data->message, i2s);
-    request_size = payload_size + count + (int)strlen(i2s) + 2;
+    request_size = payload_size_t + count + (int)strlen(i2s) + 2;
     intTostr(payload_size, i2s);
     request_size += strlen(i2s);
     char *request_str = (char*)malloc(request_size+1); // 10 = size(count), 2 = size(key)
@@ -321,7 +323,9 @@ int send_file(int client, char *path) {
     param_add_str(&root, file_name);
     response = data_create(root, OPEN);
     send_data(client, response, 0, 0);
-    usleep(1000);
+
+    response = recv_data(client, 0, 0);
+    if (response->message != OK)return -1;
 
     while ((n = fread(data, 1, BUFF_SIZE, f)) > 0) {
         if (send(client, data, n, 0) == -1) {
@@ -367,4 +371,13 @@ int write_file(int sock, char *path) {
     //    char command[100] = {0};
 //    sprintf(command, "gopen \"%s\"", filename);
 //    system(command);
+}
+int strlen_utf8(const char* str) {
+    int len = 0;
+    for (int i = 0; str[i]; i++) {
+        if ((str[i] & 0xC0) != 0x80) {
+            len++;
+        }
+    }
+    return len;
 }
