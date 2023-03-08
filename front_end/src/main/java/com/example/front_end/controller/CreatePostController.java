@@ -111,6 +111,7 @@ public class CreatePostController {
                     fileLabel.setVisible(false);
                     imageLabel.setVisible(false);
                     createPostAnchorPane.getParent().setVisible(false);
+
                 } else {
                     Message message = new Message(MessageCode.WARNING, "Vui lòng thử lại");
                 }

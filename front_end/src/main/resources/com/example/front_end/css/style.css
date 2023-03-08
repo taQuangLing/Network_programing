@@ -39,10 +39,10 @@
 .list-view .cell{
     -fx-background-color: white;
 }
-.list-view .cell:selected {
+.list-view .cell:selected .pane:selected{
     -fx-background-color: transparent;
 }
-.list-view:focused {
+.list-view:focused .pane:selected{
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }

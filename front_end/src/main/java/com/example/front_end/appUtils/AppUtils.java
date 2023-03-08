@@ -81,7 +81,8 @@ public class AppUtils {
         EMPTY(61),
         SEEN_NOTIFI(62),
         WARNING(63),
-        FAIL(64);
+        FAIL(64),
+        DELETE_FOLLOWER(65);
         private int value;
         MessageCode(int value) {
             this.value = value;
