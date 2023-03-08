@@ -31,19 +31,12 @@ public class LayoutController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Set cell factory for postListView
-        postListView.setCellFactory(param -> new PostCell());
-        postListView.setVisible(true);
-        notifyListView.setVisible(false);
-        paneView.setVisible(false);
-        ObservableList<Post> postList;
-        // get posts from server
-        postList = getPostFromServer();
+        home();
         paneView.getChildren().add(0, globalVariable.getScreenController().getPane("create_post"));
 //        System.out.println(globalVariable.getScreenController());
         paneView.getChildren().add(1, globalVariable.getScreenController().getPane("friends"));
         paneView.getChildren().add(2, globalVariable.getScreenController().getPane("search"));
         paneView.getChildren().add(3, globalVariable.getScreenController().getPane("profile"));
-        postListView.setItems(postList);
     }
 
     private ObservableList<Post> getPostFromServer() throws IOException {
@@ -86,9 +79,20 @@ public class LayoutController implements Initializable{
         paneView.getChildren().get(2).setVisible(false);
         paneView.getChildren().get(3).setVisible(false);
     }
-    public void homeOnClick(MouseEvent e){
+    public void home() throws IOException {
+        postListView.setCellFactory(param -> new PostCell());
+        postListView.setVisible(true);
+        notifyListView.setVisible(false);
+        ObservableList<Post> postList;
+        // get posts from server
+        postList = getPostFromServer();
+        postListView.setItems(postList);
+    }
+    public void homeOnClick(MouseEvent e) throws IOException {
+        paneView.setVisible(false);
         paneView.setVisible(false);
         notifyListView.setVisible(false);
+        home();
     }
     public void friendsOnClick(MouseEvent e){
         System.out.println("Friends click");
