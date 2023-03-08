@@ -5,9 +5,6 @@
 #ifndef LAP_TRINH_MANG_CONFIG_H
 #define LAP_TRINH_MANG_CONFIG_H
 
-#define TIMEOUT 2         /* Timeout cho select() là 5s */
-
-#define BUFF_LEN 1024
 #define PORT 5004
 #define BUFF_SIZE 1024
 #define BUFFER 1024
@@ -28,9 +25,5 @@
 #define USER "root"
 #define DATABASE "network_programing"
 #define PASSWORD "gau.4605"
-
-
-#define FAIL 0
-
 
 #endif //LAP_TRINH_MANG_CONFIG_H

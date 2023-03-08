@@ -260,34 +260,36 @@ int edit_posts(int client, Param p) {
     return send_success(client);}
 
 int posts(int client, Param p) {
-    char *title, *content, time_now[20] = {0};
-    int status, userid;
+    char *title, *content, time_now[20] = {0}, *image;
+    int status, userid, rsp;
     userid = param_get_int(&p);
     title = param_get_str(&p);
     content = param_get_str(&p);
     status = param_get_int(&p);
+    image = param_get_str(&p);
     get_time_now(time_now, NULL);
 
     Table data2 = DB_get(&conn, "select max(id) as id from post");
-    int post_id = DB_int_get_by(data2, "id");
+    int post_id = DB_int_get_by(data2, "id"); // get id bai viet vua dang
     char sql[1000] = {0};
     char path[150] = {0};
-    char image[150] = {0};
-    sprintf(image, "kho/%d-%d-", userid, post_id+1);
-    status = write_file(client, image);
-    if (status == -1){
+//    sprintf(image, "kho/%d-%d-", userid, post_id+1);
+//    status = write_file(client, image);
+//    if (status == -1){
+//        return send_error(client);
+//    }else if (status == 0)return send_fail(client);
+//        else send_success(client);
+    sprintf(path, "kho/%d-%d-", userid, post_id+1); // chon duong dan file
+    rsp = write_file(client, path); // luu file
+    usleep(1000);
+    if (rsp == -1){
         return send_error(client);
-    }else if (status == 0)return send_fail(client);
-        else send_success(client);
-    sprintf(path, "kho/%d-%d-", userid, post_id+1);
-    status = write_file(client, path);
-    if (status == -1){
-        return send_error(client);
-    }else if (status == 0)return send_fail(client);
-    else send_success(client);
+    }else if (rsp == 0)return send_fail(client);
+    else send_success(client); // tra ve ket qua write file
+    usleep(1000);
     sprintf(sql, "insert into post (user_id, title, content, image, status, created_at, path) value"
                  "(%d, '%s', '%s', '%s', %d, '%s', '%s')", userid, title, content, image, status, time_now, path);
-    if (DB_insert_v2(&conn, sql) == -1){
+    if (DB_insert_v2(&conn, sql) == -1){ // insert table
         return send_error(client);
     }
     Table data;
@@ -298,7 +300,7 @@ int posts(int client, Param p) {
         sprintf(sql, "select others_id from follow where user_id = %d and status = 1 "
                      "union select user_id as others_id from follow where others_id = %d and status = 1", userid, userid);
         data2 = DB_get(&conn, "select max(id) as id from post");
-        int post_id = DB_int_get_by(data2, "id");
+        post_id = DB_int_get_by(data2, "id");
         data = DB_get(&conn, sql);
 
         for (int i = 0; i < data->size; i++){
@@ -317,7 +319,7 @@ int posts(int client, Param p) {
                      "union select user_id as others_id from follow where others_id = %d and status = 0 ", userid, userid, userid);
 
         data2 = DB_get(&conn, "select max(id) as id from post");
-        int post_id = DB_int_get_by(data2, "id");
+        post_id = DB_int_get_by(data2, "id");
         data = DB_get(&conn, sql);
         for (int i = 0; i < data->size; i++){
             refresh(sql, 1000);
@@ -354,7 +356,6 @@ int edit_profile(int client, Param p) {
     DB_update_cell(data, "birthday", birthday);
     DB_update_cell(data, "interest", interest);
 
-    char sql[1000] = {0};
     if (DB_update_v3(&conn,data) == -1){
         send_error(client);
     }
@@ -590,8 +591,6 @@ int search(int client, Param p) {
     char keyword[50] = {0};
     int userid, type;
     char sql[1000] = {0};
-    Param root, tail;
-    Data response;
 
     userid = param_get_int(&p);
     strcpy(keyword+1, param_get_str(&p));

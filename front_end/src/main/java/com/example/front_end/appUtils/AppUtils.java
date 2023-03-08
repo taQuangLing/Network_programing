@@ -212,7 +212,7 @@ public class AppUtils {
             fos.close();
         }
     }
-    public static void sendFile(File file) throws IOException {
+    public static void sendFile(File file) throws IOException, InterruptedException {
         Data request;
         FileInputStream fis = new FileInputStream(file);
         BufferedInputStream bis = new BufferedInputStream(fis);
@@ -223,13 +223,14 @@ public class AppUtils {
             request = new Data(AppUtils.MessageCode.OK);
             request.getData().add(file.getName());
             sendData(clientSock, request);
-
+            Thread.sleep(100);
             byte[] buffer = new byte[1024];
             while(true){
                 int bytesRead = bis.read(buffer);
                 if (bytesRead == -1)break;
                 sendDataV2(clientSock, buffer, bytesRead);
                 Arrays.fill(buffer, (byte) 0);
+                Thread.sleep(100);
             }
         }
 
