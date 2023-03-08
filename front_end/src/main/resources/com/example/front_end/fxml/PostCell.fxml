@@ -20,15 +20,15 @@
                         <Text fx:id="usernameId" layoutX="82.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="Ta Quang Linh" />
                         <ImageView fx:id="avatarId" fitHeight="107.0" fitWidth="91.0" layoutX="5.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../../image/đắc%20nhân%20tâm.jpg" />
+                              <Image url="@../../../../image/luffy.png" />
                            </image>
                         </ImageView>
                         <ImageView fx:id="imageId" fitHeight="516.0" fitWidth="355.0" layoutX="53.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../../image/đắc%20nhân%20tâm.jpg" />
+                              <Image url="@../../../../image/luffy.png" />
                            </image>
                         </ImageView>
-                        <Text fx:id="titleId" layoutX="20.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 20;" text="123456789012345678901234567890" wrappingWidth="375.546875" />
+                        <Text fx:id="titleId" layoutX="24.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 20;" text="123456789012345678901234567890123456789012345678901234567890123456789" wrappingWidth="412.546875" />
                         <Text fx:id="contentId" layoutX="20.0" layoutY="107.0" lineSpacing="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="abc" textAlignment="JUSTIFY" wrappingWidth="421.0" />
                         <Rectangle fx:id="rectangleId" arcHeight="5.0" arcWidth="5.0" fill="#666666d3" height="359.0" layoutX="5.0" layoutY="78.0" opacity="0.6" stroke="#0000006d" strokeType="INSIDE" width="452.0" />
                      </children>
