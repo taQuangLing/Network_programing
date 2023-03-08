@@ -2,7 +2,9 @@ package com.example.front_end.view;
 
 import com.example.front_end.appUtils.AppUtils;
 import javafx.scene.control.Alert;
+import lombok.Data;
 
+@Data
 public class Message {
     private AppUtils.MessageCode code;
     private String content;

@@ -22,11 +22,9 @@ import java.util.ResourceBundle;
 
 import static com.example.front_end.appUtils.AppUtils.*;
 
-public class LayoutController implements Initializable {
-    @FXML
-    private ListView<Post> postListView;
-    @FXML
-    private ListView<Notification> notifyListView;
+public class LayoutController implements Initializable{
+    @FXML ListView<Post> postListView;
+    @FXML ListView<Notification> notifyListView;
     @FXML Pane paneView;
     GlobalVariable globalVariable = GlobalVariable.getInstance();
     @SneakyThrows
@@ -81,7 +79,6 @@ public class LayoutController implements Initializable {
 
     public void createPostOnClick(MouseEvent e){
         System.out.println("create post click");
-        postListView.setVisible(false);
         notifyListView.setVisible(false);
         paneView.setVisible(true);
         paneView.getChildren().get(0).setVisible(true);
@@ -90,13 +87,11 @@ public class LayoutController implements Initializable {
         paneView.getChildren().get(3).setVisible(false);
     }
     public void homeOnClick(MouseEvent e){
-        postListView.setVisible(true);
         paneView.setVisible(false);
         notifyListView.setVisible(false);
     }
     public void friendsOnClick(MouseEvent e){
         System.out.println("Friends click");
-        postListView.setVisible(false);
         notifyListView.setVisible(false);
         paneView.setVisible(true);
         paneView.getChildren().get(1).setVisible(true);
@@ -106,7 +101,6 @@ public class LayoutController implements Initializable {
     }
     public void notificationOnClick(MouseEvent event){
         System.out.println("Notify clicked");
-        postListView.setVisible(false);
         notifyListView.setVisible(true);
         paneView.setVisible(false);
 
@@ -138,7 +132,6 @@ public class LayoutController implements Initializable {
     }
     public void searchOnClick(MouseEvent event){
         System.out.println("Search clicked");
-        postListView.setVisible(false);
         notifyListView.setVisible(false);
         paneView.setVisible(true);
         paneView.getChildren().get(0).setVisible(false);
@@ -148,7 +141,6 @@ public class LayoutController implements Initializable {
     }
     public void profileOnClick(MouseEvent event){
         System.out.println("profile clicked");
-        postListView.setVisible(false);
         notifyListView.setVisible(false);
         paneView.setVisible(true);
         paneView.getChildren().get(0).setVisible(false);

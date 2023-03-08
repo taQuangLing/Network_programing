@@ -46,12 +46,12 @@
       </ImageView>
       <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="380.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#notificationOnClick" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../image/bxs-bell.png" />
+            <Image url="@../../../../image/bx-bell.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="295.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#searchOnClick" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../image/search-alt-2-regular-36.png" />
+            <Image url="@../../../../image/bx-search.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="465.0" layoutY="20.0" nodeOrientation="INHERIT" onMouseClicked="#profileOnClick" pickOnBounds="true" preserveRatio="true">

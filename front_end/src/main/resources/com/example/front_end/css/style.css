@@ -54,3 +54,22 @@
 .profile-bio-text{
     -fx-text-fill: #bbb;
 }
+.slide-down{
+    -fx-border-width: 0 2px 2px 2px;
+    /*-fx-border-insets: 0 1px 1px 1px;*/
+    -fx-border-color: #888; /* set màu border */
+    -fx-border-style: solid; /* set kiểu border */
+    -fx-translate-y: -100%;
+    -fx-opacity: 0;
+    -fx-animation: slide-down 1s forwards;
+}
+@keyframes slide-down {
+    from {
+        -fx-translate-y: -100%;
+        -fx-opacity: 0;
+    }
+    to {
+        -fx-translate-y: 0;
+        -fx-opacity: 1;
+    }
+}

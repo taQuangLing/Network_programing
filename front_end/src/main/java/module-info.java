@@ -3,8 +3,10 @@ module com.example.front_end {
     requires javafx.fxml;
     requires lombok;
     requires java.desktop;
-    requires httpcore;
-    requires httpclient;
+    requires java.net.http;
+    requires org.apache.httpcomponents.httpcore;
+    requires org.apache.httpcomponents.httpclient;
+    requires org.apache.httpcomponents.httpmime;
 
 
     opens com.example.front_end to javafx.fxml;
