@@ -10,6 +10,7 @@
 
 
 void DB_free_data(Table *data){
+    mysql_free_result((*data)->result);
     for (int i = 0; i < (*data)->size; i++){
         free((*data)->data[i]);
     }
@@ -54,7 +55,6 @@ int DB_insert_v2(MYSQL **conn, char *sql){
 }
 Table DB_get(MYSQL **conn, char *sql){
     MYSQL_FIELD *field;
-    MYSQL_RES *res;
     MYSQL_ROW row;
 
     Table data = (Table) malloc(sizeof (struct data_t));
@@ -63,17 +63,17 @@ Table DB_get(MYSQL **conn, char *sql){
         logger(L_ERROR, "function: DB_get - 48. %s; %s", sql,(char*)mysql_error(*conn));
         exit(1);
     }
-    res = mysql_store_result(*conn);
-    long num_row = (long)mysql_num_rows(res);
-    int num_field = (int)mysql_num_fields(res);
+    data->result = mysql_store_result(*conn);
+    long num_row = (long)mysql_num_rows(data->result);
+    int num_field = (int)mysql_num_fields(data->result);
     int i = 0, j = 0;
     data->header = (char**)malloc(sizeof (char*) * num_field);
-    for (j = 0; field = mysql_fetch_field(res); j++){
+    for (j = 0; field = mysql_fetch_field(data->result); j++){
         data->header[j] = field->name;
     }
 
     data->data = (char***)malloc(sizeof (char**) * num_row);
-    while ((row = mysql_fetch_row(res))) {
+    while ((row = mysql_fetch_row(data->result))) {
         data->data[i] = (char**)malloc(sizeof (char*) * num_field);
         for (j = 0; j < num_field; j++){
             data->data[i][j] = row[j];
@@ -82,7 +82,6 @@ Table DB_get(MYSQL **conn, char *sql){
     }
     data->size = num_row;
     data->column = num_field;
-    mysql_free_result(res);
     logger(L_INFO, "function: DB_get. %s", sql);
     return data;
 }

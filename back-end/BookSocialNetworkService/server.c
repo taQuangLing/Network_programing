@@ -626,29 +626,31 @@ int news(int client, Param p) {
 }
 
 int search(int client, Param p) {
-    char keyword[50] = {0};
+    char *keyword, text_search[51] = {0};
     int userid, type;
     char sql[1000] = {0};
 
     userid = param_get_int(&p);
-    strcpy(keyword+1, param_get_str(&p));
+    keyword = param_get_str(&p);
     type = param_get_int(&p);
 
-    keyword[0] = '%';
-    int lenght = (int)strlen(keyword);
-    keyword[lenght] = '%';
-    keyword[lenght+1] = '\0';
+    strcpy(text_search+1, keyword);
+    text_search[0] = '%';
+    int lenght = (int)strlen(text_search);
+    text_search[lenght] = '%';
+    text_search[lenght+1] = '\0';
     if (type == 0){
         // search sach
-        sprintf(sql, "select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and\n"
-                     "((select COUNT(*) from follow where ((user_id = %d and others_id = post.user_id) or (user_id = post.user_id and others_id = %d)) and status = 1) > 0 and (status = 1 or status = 2))\n"
-                     "union\n"
-                     "select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and\n"
-                     "status = 2", keyword, keyword, userid, userid, keyword, keyword);
+        sprintf(sql, "(select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and "
+                     "(select COUNT(*) from follow where ((user_id = %d and others_id = post.user_id) or (user_id = post.user_id and others_id = %d)) and status = 1) > 0 and (status = 1) "
+                     "order by post.created_at desc) "
+                     "union "
+                     "(select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and status = 2 "
+                     "order by post.created_at desc) ", text_search, text_search, userid, userid, text_search, text_search);
     }else
     {
         // search nguoi
-        sprintf(sql, "select id, name, avatar from user where name LIKE '%s'", keyword);
+        sprintf(sql, "select id, name, avatar from user where name LIKE '%s'", text_search);
     }
     Table data = DB_get(&conn, sql);
 
@@ -675,10 +677,11 @@ void send_list_data(int client, Table data){
             if (data->data[i][j] == NULL)param_add_str(&tail, "");
             else
                 param_add_str(&tail, data->data[i][j]);
+            printf("\nparam: %s,", data->data[i][j]);
         }
         response = data_create(root, DATAS);
         send_data(client, response, 0, 0);
-        usleep(1000);
+        usleep(100);
     }
 }
 

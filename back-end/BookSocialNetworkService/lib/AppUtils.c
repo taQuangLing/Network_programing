@@ -87,7 +87,6 @@ char *data_to_str(Data data, int key){
     for (Param param = data->params; param != NULL; param = param->next){
         payload_size += strlen_utf8(param->value);
         payload_size_t += (int) strlen(param->value);
-        printf("str: %s-payload size : %d", param->value,payload_size);
         count++;
     }
 

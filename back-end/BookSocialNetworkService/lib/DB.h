@@ -12,6 +12,7 @@ typedef struct data_t{
     int column; // so cot
     char **header; // tieu de
     char ***data; // data
+    MYSQL_RES *result;
 }*Table;
 
 int DB_insert_v2(MYSQL **conn, char *sql);
