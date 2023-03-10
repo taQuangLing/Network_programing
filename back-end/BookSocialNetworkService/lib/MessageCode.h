@@ -71,6 +71,7 @@ typedef enum{
     SEEN_NOTIFI,
     WARNING,
     FAIL,
+    DELETE_FOLLOWER,
 }MessageCode;
 
 #endif //LAP_TRINH_MANG_MESSAGECODE_H

@@ -60,6 +60,8 @@ int remove_posts(int client, Param p);
 
 int seen_notifi(int client, Param p);
 
+int delete_follower(int client, Param p);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -145,6 +147,9 @@ void handle_client(int client){
             case FOLLOWER:
                 status = follower(client, p);
                 break;
+            case DELETE_FOLLOWER:
+                status = delete_follower(client, p);
+                break;
             case ACCEPT:
                 status = accept_friend(client, p);
                 break;
@@ -185,6 +190,40 @@ void handle_client(int client){
         if (request != NULL)data_free(&request);
         if (connection == 0)break;
     }
+}
+
+int delete_follower(int client, Param p) {
+    Data response;
+    int userid = param_get_int(&p), others_id = param_get_int(&p);
+    char sql[1000] = {0};
+    sprintf(sql, "select id, status from follow where user_id = %d and others_id = %d", others_id, userid);
+    Table data = DB_get(&conn, sql);
+    if (data == NULL){
+        return send_error(client);
+    }
+    if (data->size == 0){
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        return 1;
+    }
+    int status = atoi(DB_str_get_by(data, "status"));
+    if (status != 0){
+        response = data_create(NULL, DELETE_FOLLOWER);
+        send_data(client, response, 0, 0);
+        return 1;
+    }
+    int id = atoi(DB_str_get_by(data, "id"));
+    char *key[] = {"status"};
+    char *value[] = {"-1"};
+    if (DB_update(&conn, "follow", id, key, value, 1) == -1){
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        return 0;
+    }
+    refresh(sql, 1000);
+    response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
+    return 1;
 }
 
 int seen_notifi(int client, Param p) {
@@ -239,7 +278,6 @@ int edit_posts(int client, Param p) {
     else{
         send_success(client);
     }
-
     char sql[1000] = {0};
     char path[150] = {0};
     sprintf(path, "kho");
@@ -273,12 +311,6 @@ int posts(int client, Param p) {
     int post_id = DB_int_get_by(data2, "id"); // get id bai viet vua dang
     char sql[1000] = {0};
     char path[150] = {0};
-//    sprintf(image, "kho/%d-%d-", userid, post_id+1);
-//    status = write_file(client, image);
-//    if (status == -1){
-//        return send_error(client);
-//    }else if (status == 0)return send_fail(client);
-//        else send_success(client);
     sprintf(path, "kho/%d-%d-", userid, post_id+1); // chon duong dan file
     rsp = write_file(client, path); // luu file
     usleep(1000);
@@ -430,21 +462,22 @@ int follow(int client, Param p) {
     }else
         sprintf(sql, "update follow set status = %d where id = %d", 0, id);
     if (DB_update_v2(&conn, sql) == -1){
-        response = data_create(NULL, ERROR);
+        response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
-        return -1;
+        return 0;
     }
-
-    response = data_create(NULL, SUCCESS);
-    send_data(client, response, 0, 0);
 
     refresh(sql, 1000);
     refresh(sql, 1000);
     sprintf(sql, "insert into notification (to_user_id, from_user_id, type, seen) value (%d, %d, %d, 0)", others_id, userid, 2);
     if (DB_insert_v2(&conn, sql) == -1){
         logger(L_WARN, "Function: accept_friend()");
-        return -1;
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        return 0;
     }
+    response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
     return 1;
 }
 
@@ -468,24 +501,22 @@ int accept_friend(int client, Param p) {
         send_data(client, response, 0, 0);
         return 1;
     }
-
     int id = atoi(DB_str_get_by(data, "id"));
     char *key[] = {"status"};
     char *value[] = {"1"};
     if (DB_update(&conn, "follow", id, key, value, 1) == -1){
-        response = data_create(NULL, ERROR);
+        response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
-        return -1;
+        return 0;
     }
-    response = data_create(NULL, SUCCESS);
-    send_data(client, response, 0, 0);
-
     refresh(sql, 1000);
     sprintf(sql, "insert into notification (to_user_id, from_user_id, type, seen) value (%d, %d, %d, 0)", others_id, userid, 3);
     if (DB_insert_v2(&conn, sql) == -1){
         logger(L_WARN, "Function: accept_friend()");
-        return -1;
+        return 0;
     }
+    response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
     return 1;
 }
 
@@ -503,6 +534,11 @@ int unfollow(int client, Param p) {
     char sql[1000] = {0};
     sprintf(sql, "select id,user_id, status from follow where (user_id = %d and others_id = %d) or (user_id = %d and others_id = %d)", userid, others_id, others_id, userid);
     Table data = DB_get(&conn, sql);
+    if (data->size == 0){
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        return 0;
+    }
     int id = DB_int_get_by(data, "id");
     int userid_t = DB_int_get_by(data, "user_id");
     int status = atoi(DB_str_get_by(data, "status"));
@@ -513,21 +549,21 @@ int unfollow(int client, Param p) {
     if (status == -1 || data->size == 0 || (status == 0 && userid != userid_t)){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
-        return 1;
+        return 0;
     }
 
     if (status == 1){
         if (userid == userid_t)sprintf(sql, "update follow set user_id = %d, others_id = %d, status = %d where id = %d", others_id, userid, 0, id);
         else{
-            sprintf(sql, "update follow set status = %d where id = %d", -1, id);
+            sprintf(sql, "update follow set status = %d where id = %d", 0, id);
         }
     }else{
         if (userid == userid_t)sprintf(sql, "update follow set status = %d where id = %d", -1, id);
     }
     if (DB_update_v2(&conn, sql) == -1){
-        response = data_create(NULL, ERROR);
+        response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
-        return  -1;
+        return 0;
     }
     response = data_create(NULL, SUCCESS);
     send_data(client, response, 0, 0);
@@ -545,14 +581,16 @@ int interaction(int client, Param p, MessageCode type) {
                          "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and status = 1 and others_id = %d", userid, userid);
             break;
         case FOLLOWING:
-            sprintf(sql, "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and (status = 0 or status = 1)\n"
-                         "union\n"
-                         "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and status = 1", userid, userid);
+//            sprintf(sql, "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and (status = 0 or status = 1)\n"
+//                         "union\n"
+//                         "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and status = 1", userid, userid);
+            sprintf(sql, "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and (status = 0)", userid);
             break;
         case FOLLOWER:
-            sprintf(sql, "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and (status = 0 or status = 1)\n"
-                         "union\n"
-                         "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and status = 1", userid, userid);
+//            sprintf(sql, "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and (status = 0 or status = 1)\n"
+//                         "union\n"
+//                         "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and status = 1", userid, userid);
+            sprintf(sql, "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and status = 0", userid);
             break;
         default:
             logger(L_ERROR, "Lỗi nhiều hơn 3 trạng thái interaction - 187");
