@@ -44,7 +44,6 @@ public class LayoutController implements Initializable{
         Data request = new Data(AppUtils.MessageCode.NEWS);
         request.getData().add(1);
         sendData(clientSock, request);
-
         Data response = recvData(clientSock);
         int count = Integer.valueOf((String) response.getData().get(0));
         ObservableList<Post> postList = FXCollections.observableArrayList();

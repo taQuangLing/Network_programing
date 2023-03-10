@@ -1,7 +1,6 @@
 package com.example.front_end;
 
 import com.example.front_end.appUtils.AppUtils;
-import com.example.front_end.model.ClientSock;
 import com.example.front_end.model.Data;
 import com.example.front_end.model.User;
 import com.example.front_end.view.Message;
