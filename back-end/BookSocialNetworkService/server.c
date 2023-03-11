@@ -807,19 +807,12 @@ int open_book(int client, Param p) {
 }
 
 int notify(int client, Param p) {
-    MYSQL *conn2;
-    conn2 = mysql_init(NULL);
-    if (!mysql_real_connect(conn2, SERVER, USER, PASSWORD, DATABASE, 0, NULL, 0)) {
-        logger(L_ERROR, "%s", mysql_error(conn));
-        exit(1);
-    }
-
     Data response;
     Param root = param_create(), tail = root;
-    int i, type, seen, link_id;
+    int i, type, seen, link_id, id;
     Table result1, result2;
     int toId = param_get_int(&p);
-    char *username, *avatar, *title, *content, noidung[200] = {0};
+    char *username, *avatar, *title, *content, noidung[200] = {0}, tieude[100] = {0};
     char sql[1000];
     refresh(sql, 1000);
     sprintf(sql, "select notification.id as id, user.name as name, avatar, type, seen, link_id from notification, user where from_user_id = user.id and to_user_id = %d", toId);
@@ -832,52 +825,51 @@ int notify(int client, Param p) {
     for (i = 0; i < result1->size; i++){
         root = param_create();
         tail = root;
-
-        int id = DB_int_get_by(result1, "id");
-        username = DB_str_get_by(result1, "name");
-        avatar = DB_str_get_by(result1, "avatar");
-        type = DB_int_get_by(result1, "type");
-        seen = DB_int_get_by(result1, "seen");
-        link_id = DB_int_get_by(result1, "link_id");
+        id = atoi(result1->data[i][0]);
+        username = result1->data[i][1];
+        avatar = result1->data[i][2];
+        type = atoi(result1->data[i][3]);
+        seen = atoi(result1->data[i][4]);
+        link_id = atoi(result1->data[i][5]);
         if (type == 0){
             // thong bao ve bai post
-            result2 = DB_get_by_id(&conn2, "post", link_id);
+            result2 = DB_get_by_id(&conn, "post", link_id);
             title = DB_str_get_by(result2, "title");
-            content = DB_str_get_by(result2, "content");
-            sprintf(noidung, "đã đăng bài viết: %s...\n\t%s...", title, content);
+            sprintf(tieude, "Vừa đăng một bài viết:");
+            sprintf(noidung, "%s", title);
             DB_free_data(&result2);
         }else if(type == 1){ // chua hoan thanh chuc nang comment
             // thong bao ve comment
-            sprintf(sql, "select comment.content as content, title from post, comment where post.id = comment.post_id and comment.id = %d", link_id);
-            result2 = DB_get_by_id(&conn2, "comment", link_id);
-            title = DB_str_get_by(result2, "title");
-            content = DB_str_get_by(result2, "content");
-            sprintf(noidung, "đã bình luận bài viết: %s...\n%s...", title, content);
-            DB_free_data(&result2);
+//            sprintf(sql, "select comment.content as content, title from post, comment where post.id = comment.post_id and comment.id = %d", link_id);
+//            result2 = DB_get_by_id(&conn2, "comment", link_id);
+//            title = DB_str_get_by(result2, "title");
+//            content = DB_str_get_by(result2, "content");
+//            sprintf(noidung, "đã bình luận bài viết: %s...\n%s...", title, content);
+//            DB_free_data(&result2);
         }
         else if (type == 2){
             // thong bao co nguoi khac follow
-            sprintf(noidung, "đã follow bạn.");
+            sprintf(tieude, "Vừa follow bạn.");
+            sprintf(noidung, "");
         }
         else if(type == 3){
             // thong bao chap nhan loi moi ket ban
-            sprintf(noidung, "đã chấp nhận lời mời kết bạn.");
+            sprintf(tieude, "Đã chấp nhận lời mời kết bạn.");
+            sprintf(noidung, "");
         }
         param_add_int(&tail, id);
         param_add_str(&tail, username);
         param_add_str(&tail, avatar);
+        param_add_str(&tail, tieude);
         param_add_str(&tail, noidung);
         param_add_int(&tail, seen);
         response = data_create(root, NOTIFY);
         if (send_data(client, response, 0, 0) == -1){
             logger(L_ERROR, "%s - function: notify() - 176");
-            mysql_close(conn2);
             return -1;
         }
-        usleep(500);
-
+        usleep(100);
     }
-    mysql_close(conn2);
     return 1;
 }
 
