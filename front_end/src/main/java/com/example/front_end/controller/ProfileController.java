@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
@@ -44,7 +45,8 @@ public class ProfileController implements Initializable {
     MenuButton profileMenuButton;
     @FXML MenuButton userMenuButton;
     @FXML ImageView editImg;
-    @FXML ImageView doneImg;
+    @FXML
+    Button doneBtn;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

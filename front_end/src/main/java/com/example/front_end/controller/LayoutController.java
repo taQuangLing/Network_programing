@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
@@ -102,35 +103,36 @@ public class LayoutController implements Initializable{
         paneView.getChildren().get(2).setVisible(false);
         paneView.getChildren().get(3).setVisible(false);
     }
-    public void notificationOnClick(MouseEvent event){
+    private ObservableList<Notification> getNotificationFromServer() throws IOException {
+        Data request = new Data(MessageCode.NOTIFY);
+        request.getData().add(1); // add id
+        sendData(clientSock, request);
+
+        ObservableList<Notification> notifyList = FXCollections.observableArrayList();
+        Data response = recvData(clientSock);
+        int count = Integer.valueOf((String) response.getData().get(0));
+        for (int i = 0; i < count; i++){
+            Data rspItem = recvData(clientSock);
+            Notification notifyItem = new Notification();
+            notifyItem.setId(Integer.valueOf((String)rspItem.getData().get(0)));
+            notifyItem.setUsername((String) rspItem.getData().get(1));
+            notifyItem.setAvatar((String) rspItem.getData().get(2));
+            notifyItem.setTitle((String) rspItem.getData().get(3));
+            notifyItem.setContent((String) rspItem.getData().get(4));
+            if (Integer.valueOf((String)rspItem.getData().get(5)) == 0){
+                notifyItem.setSeen(false);
+            }
+            else notifyItem.setSeen(true);
+            notifyList.add(notifyItem);
+        }
+        return notifyList;
+    }
+    public void notificationOnClick(MouseEvent event) throws IOException {
         System.out.println("Notify clicked");
         notifyListView.setVisible(true);
         paneView.setVisible(false);
-
         notifyListView.setCellFactory(param -> new NotificationCell());
-        ObservableList<Notification> notifications = FXCollections.observableArrayList();
-        notifications.add(new Notification(1, "Ta Quang Linh",
-                "https://demoda.vn/wp-content/uploads/2022/02/anh-meo-cute-dang-yeu.jpeg",
-                "Ta Quang Ling vua follow ban",
-                "",
-                false));
-        notifications.add(new Notification(2, "hoang Anh Tuan",
-                "https://toigingiuvedep.vn/wp-content/uploads/2022/01/anh-meo-cute.jpg",
-                "Hoang Anh Tuan vua dang mot bai viet: ",
-                "Dac Nhan Tam" +
-                        "dac nhan tam la sach hay",
-                false));
-        notifications.add(new Notification(3, "Mai Dao Tuan Thanh",
-                "https://static.wixstatic.com/media/9d8ed5_b8fcc13f08fc4374bb1f979e032b0eb7~mv2.jpg/v1/fit/w_600,h_567,al_c,q_20,enc_auto/file.jpg",
-                "Mai Dao Tuan Thanh vua chap nhan loi moi ket ban",
-                "",
-                true));
-        notifications.add(new Notification(4, "Le trong nghia",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShFksgubjvBsya7NsCbgby4hskXh3UBIr97uWRIoM&s",
-                "Le Trong Nghia vuawf dang mot bai viet:",
-                "Dac Nhan Tam" +
-                        "dac nhan tam la sach hay",
-                true));
+        ObservableList<Notification> notifications = getNotificationFromServer();
         notifyListView.setItems(notifications);
     }
     public void searchOnClick(MouseEvent event){

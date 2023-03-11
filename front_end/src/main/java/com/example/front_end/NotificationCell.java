@@ -1,7 +1,9 @@
 package com.example.front_end;
 
 import com.example.front_end.appUtils.AppUtils;
+import com.example.front_end.model.Data;
 import com.example.front_end.model.Notification;
+import com.example.front_end.view.Message;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;
@@ -14,6 +16,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
+
+import static com.example.front_end.appUtils.AppUtils.*;
 
 public class NotificationCell extends ListCell<Notification> {
     @FXML
@@ -43,9 +47,35 @@ public class NotificationCell extends ListCell<Notification> {
         });
         notifyPane.setOnMouseClicked(event -> {
             // update seen ve server
-            seen.setFill(Paint.valueOf("#fff"));
             int index = getIndex();
-            getListView().getItems().get(index).setSeen(true);
+            Notification notification = getListView().getItems().get(index);
+            if (notification.isSeen())return;
+            notification.setSeen(true);
+            Data request = new Data(AppUtils.MessageCode.SEEN_NOTIFI);
+            request.getData().add(1);
+            request.getData().add(notification.getId());
+            try {
+                sendData(clientSock, request);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Data response;
+            try {
+                response = recvData(clientSock);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (response.getMessageCode() == MessageCode.ERROR){
+                Message message = new Message(MessageCode.ERROR);
+                message.alert();
+                return;
+            }else if(response.getMessageCode() == MessageCode.FAIL){
+                Message message = new Message(MessageCode.WARNING, "Lỗi quyền truy cập");
+                message.alert();
+                return;
+            }
+            seen.setFill(Paint.valueOf("#E0E0E0"));
+            seen.setStroke(Paint.valueOf("#E0E0E0"));
         });
     }
     @Override
@@ -62,12 +92,12 @@ public class NotificationCell extends ListCell<Notification> {
             content.setText(notification.getContent());
             if (notification.isSeen() == true){
                 // color = trang
-                seen.setFill(Paint.valueOf("#fff"));
-                seen.setStroke(Paint.valueOf("#fff"));
+                seen.setFill(Paint.valueOf("#E0E0E0"));
+                seen.setStroke(Paint.valueOf("#E0E0E0"));
             }else{
                 // color = xanh
                 seen.setFill(Paint.valueOf("green"));
-                seen.setStroke(Paint.valueOf("#fff"));
+                seen.setStroke(Paint.valueOf("#E0E0E0"));
             }
             setText(null);
             setGraphic(notificationAnchorPane);

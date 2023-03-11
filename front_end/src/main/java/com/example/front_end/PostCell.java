@@ -130,6 +130,7 @@ public class PostCell extends ListCell<Post> {
             setGraphic(null);
         } else {
             scrollId.setPannable(false);
+            scrollId.setFitToHeight(true);
             titleId.setWrappingWidth(400);
             contentId.setWrappingWidth(400);
             avatarId.setLayoutY(10);

@@ -11,7 +11,7 @@
 
 <AnchorPane fx:id="friendsCellAnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane fx:id="friendsCellPane" prefHeight="89.0" prefWidth="500.0" style="-fx-background-color: white;" stylesheets="@../css/style.css">
+      <Pane fx:id="friendsCellPane" prefHeight="89.0" prefWidth="500.0" style="-fx-background-color: #e0e0e0;" stylesheets="@../css/style.css">
          <children>
             <Line endX="384.0" layoutX="81.0" layoutY="75.0" startX="-46.0" strokeMiterLimit="1.0" />
             <ImageView fx:id="avatarImg" fitHeight="62.0" fitWidth="67.0" layoutX="40.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" styleClass="friend-avatar" />
