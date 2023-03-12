@@ -62,6 +62,8 @@ int seen_notifi(int client, Param p);
 
 int delete_follower(int client, Param p);
 
+int send_a_record(int client, Table data, int i);
+
 int login(int client, Param p){
     Data response;
     Param root;
@@ -378,17 +380,14 @@ int edit_profile(int client, Param p) {
     interest = param_get_str(&p);
     intTostr(gender, gender_s);
 
-    Table data = DB_get_by_id(&conn, "user", userid);
-    if (check_space(username) != 0){
-        DB_update_cell(data, "name", username);
+    if (check_space(username) == 0){
+        return send_fail(client);
     }
-    DB_update_cell(data, "avatar", image);
-    DB_update_cell(data, "bio", bio);
-    DB_update_cell(data, "gender", gender_s);
-    DB_update_cell(data, "birthday", birthday);
-    DB_update_cell(data, "interest", interest);
-
-    if (DB_update_v3(&conn,data) == -1){
+    char sql[1000] = {0};
+    if (strcmp(birthday, "") == 0)sprintf(sql, "update user set name = '%s', avatar = '%s', bio = '%s', gender = %s, interest = '%s' where id = %d", username, image, bio, gender_s, interest, userid);
+    else
+    sprintf(sql, "update user set name = '%s', avatar = '%s', bio = '%s', gender = %s, birthday = '%s', interest = '%s' where id = %d", username, image, bio, gender_s, birthday, interest, userid);
+    if (DB_update_v2(&conn,sql) == -1){
         send_error(client);
     }
     return send_success(client);
@@ -405,8 +404,8 @@ int profile(int client, Param p) {
     if (data == NULL){
         return send_error(client);
     }
-    send_list_data(client, data);
-    sleep(100);
+    send_a_record(client, data, 0);
+    usleep(100);
     DB_free_data(&data);
     // send news of user id
     if (userid == others_id){
@@ -613,7 +612,6 @@ int friends(int client, Param p) {
 
 int news(int client, Param p) {
     int userid = param_get_int(&p);
-
     char sql[1500] = {0};
     sprintf(sql, "select post.id, user.id, name, avatar, title, content, image from post, user where user.id = post.user_id and\n"
                  "(((select COUNT(*) from follow where ((user_id = %d and others_id = post.user_id) or (user_id = post.user_id and others_id = %d)) and status = 1) > 0 and (status = 1 or status = 2))\n"
@@ -659,7 +657,7 @@ int search(int client, Param p) {
 
     return 1;
 }
-void send_a_record(int client, Table data, int i){
+int send_a_record(int client, Table data, int i){
     Param root, tail;
     root = param_create();
     tail = root;
@@ -669,7 +667,8 @@ void send_a_record(int client, Table data, int i){
             param_add_str(&tail, data->data[i][j]);
     }
     Data response = data_create(root, DATAS);
-    send_data(client, response, 0, 0);
+    if (send_data(client, response, 0, 0) == -1)return -1;
+    return 1;
 }
 void send_list_data(int client, Table data){
     Data response;
@@ -683,7 +682,7 @@ void send_list_data(int client, Table data){
     usleep(1000);
 
     for (int i = 0; i < data->size; i++){
-        send_a_record(client, data, i);
+        if (send_a_record(client, data, i) == -1)return;
         usleep(100);
     }
 }
@@ -815,7 +814,7 @@ int notify(int client, Param p) {
     int i, type, seen, link_id, id;
     Table result1, result2;
     int toId = param_get_int(&p);
-    char *username, *avatar, *title, *content, noidung[200] = {0}, tieude[100] = {0};
+    char *username, *avatar, *title, noidung[200] = {0}, tieude[100] = {0};
     char sql[1000];
     refresh(sql, 1000);
     sprintf(sql, "select notification.id as id, user.name as name, avatar, type, seen, link_id from notification, user where from_user_id = user.id and to_user_id = %d", toId);
@@ -853,12 +852,10 @@ int notify(int client, Param p) {
         else if (type == 2){
             // thong bao co nguoi khac follow
             sprintf(tieude, "Vừa follow bạn.");
-            sprintf(noidung, "");
         }
         else if(type == 3){
             // thong bao chap nhan loi moi ket ban
             sprintf(tieude, "Đã chấp nhận lời mời kết bạn.");
-            sprintf(noidung, "");
         }
         param_add_int(&tail, id);
         param_add_str(&tail, username);
