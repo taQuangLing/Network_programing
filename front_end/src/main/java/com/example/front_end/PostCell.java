@@ -1,6 +1,7 @@
 package com.example.front_end;
 
 import com.example.front_end.appUtils.AppUtils;
+import com.example.front_end.appUtils.GlobalVariable;
 import com.example.front_end.model.Data;
 import com.example.front_end.model.Post;
 import com.example.front_end.view.Message;
@@ -66,8 +67,7 @@ public class PostCell extends ListCell<Post> {
                 // open book
                 System.out.println("Image clicked");
                 Data request = new Data(AppUtils.MessageCode.OPEN);
-//                request.getData().add(GlobalVariable.getInstance().getId());
-                request.getData().add(1);
+                request.getData().add(GlobalVariable.getInstance().getId());
                 request.getData().add(getListView().getItems().get(index).getId());
                 try {
                     sendData(clientSock, request);

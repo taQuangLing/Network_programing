@@ -1,6 +1,7 @@
 package com.example.front_end.controller;
 
 import com.example.front_end.appUtils.AppUtils;
+import com.example.front_end.appUtils.GlobalVariable;
 import com.example.front_end.model.Data;
 import com.example.front_end.view.Message;
 import javafx.concurrent.Task;
@@ -12,11 +13,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 
-import javax.print.attribute.standard.MediaSize;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.example.front_end.appUtils.AppUtils.*;
 import static java.lang.System.exit;
@@ -103,7 +102,6 @@ public class CreatePostController {
                     contentText.setText("");
                     selectImage = null;
                     selectFile = null;
-                    status.setText("Công khai");
                     fileStar.setVisible(false);
                     imageStar.setVisible(false);
                     titleStar.setVisible(false);
@@ -163,8 +161,7 @@ public class CreatePostController {
         String image = UploadFileController.uploadFile(selectImage.getPath());
         if (title.isBlank() || content.isBlank() || selectFile == null || selectImage == null)return;
         Data request = new Data(AppUtils.MessageCode.POSTS);
-//        request.getData().add(GlobalVariable.getInstance().getId());
-        request.getData().add(2);
+        request.getData().add(GlobalVariable.getInstance().getId());
         request.getData().add(title);
         request.getData().add(content);
         if (status.getText().equals("Công khai")){

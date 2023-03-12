@@ -1,6 +1,7 @@
 package com.example.front_end;
 
 import com.example.front_end.appUtils.AppUtils;
+import com.example.front_end.appUtils.GlobalVariable;
 import com.example.front_end.model.Data;
 import com.example.front_end.model.Notification;
 import com.example.front_end.view.Message;
@@ -52,7 +53,7 @@ public class NotificationCell extends ListCell<Notification> {
             if (notification.isSeen())return;
             notification.setSeen(true);
             Data request = new Data(AppUtils.MessageCode.SEEN_NOTIFI);
-            request.getData().add(1);
+            request.getData().add(GlobalVariable.getInstance().getId());
             request.getData().add(notification.getId());
             try {
                 sendData(clientSock, request);

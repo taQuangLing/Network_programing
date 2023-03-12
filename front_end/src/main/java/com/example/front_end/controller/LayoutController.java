@@ -40,37 +40,6 @@ public class LayoutController implements Initializable{
         paneView.getChildren().add(2, globalVariable.getScreenController().getPane("search"));
         paneView.getChildren().add(3, globalVariable.getScreenController().getPane("profile"));
     }
-
-    private ObservableList<Post> getPostFromServer() throws IOException {
-        Data request = new Data(AppUtils.MessageCode.NEWS);
-        request.getData().add(1);
-        sendData(clientSock, request);
-        Data response = recvData(clientSock);
-        int count = Integer.valueOf((String) response.getData().get(0));
-        ObservableList<Post> postList = FXCollections.observableArrayList();
-        for (int i = 0; i < count; i++){
-            response = recvData(clientSock);
-            Post post = new Post(
-                    Integer.valueOf((String) response.getData().get(0)),
-                    Integer.valueOf((String) response.getData().get(1)),
-                    (String) response.getData().get(2),
-                    (String) response.getData().get(3),
-                    (String) response.getData().get(4),
-                    (String) response.getData().get(5),
-                    (String) response.getData().get(6)
-            );
-            postList.add(post);
-        }
-        return postList;
-    }
-//    public void clickPost(ActionEvent e){
-//        Post post = postListView.getSelectionModel().getSelectedItem();
-//        if (post == null){
-//            System.out.println("Post = NULL");
-//        }else
-//        System.out.println(post);
-//    }
-
     public void createPostOnClick(MouseEvent e){
         System.out.println("create post click");
         notifyListView.setVisible(false);
@@ -103,36 +72,12 @@ public class LayoutController implements Initializable{
         paneView.getChildren().get(2).setVisible(false);
         paneView.getChildren().get(3).setVisible(false);
     }
-    private ObservableList<Notification> getNotificationFromServer() throws IOException {
-        Data request = new Data(MessageCode.NOTIFY);
-        request.getData().add(1); // add id
-        sendData(clientSock, request);
-
-        ObservableList<Notification> notifyList = FXCollections.observableArrayList();
-        Data response = recvData(clientSock);
-        int count = Integer.valueOf((String) response.getData().get(0));
-        for (int i = 0; i < count; i++){
-            Data rspItem = recvData(clientSock);
-            Notification notifyItem = new Notification();
-            notifyItem.setId(Integer.valueOf((String)rspItem.getData().get(0)));
-            notifyItem.setUsername((String) rspItem.getData().get(1));
-            notifyItem.setAvatar((String) rspItem.getData().get(2));
-            notifyItem.setTitle((String) rspItem.getData().get(3));
-            notifyItem.setContent((String) rspItem.getData().get(4));
-            if (Integer.valueOf((String)rspItem.getData().get(5)) == 0){
-                notifyItem.setSeen(false);
-            }
-            else notifyItem.setSeen(true);
-            notifyList.add(notifyItem);
-        }
-        return notifyList;
-    }
     public void notificationOnClick(MouseEvent event) throws IOException {
         System.out.println("Notify clicked");
         notifyListView.setVisible(true);
         paneView.setVisible(false);
         notifyListView.setCellFactory(param -> new NotificationCell());
-        ObservableList<Notification> notifications = getNotificationFromServer();
+        ObservableList<Notification> notifications = AppUtils.getNotificationFromServer();
         notifyListView.setItems(notifications);
     }
     public void searchOnClick(MouseEvent event){

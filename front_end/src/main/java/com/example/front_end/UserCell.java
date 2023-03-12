@@ -1,6 +1,7 @@
 package com.example.front_end;
 
 import com.example.front_end.appUtils.AppUtils;
+import com.example.front_end.appUtils.GlobalVariable;
 import com.example.front_end.model.Data;
 import com.example.front_end.model.User;
 import com.example.front_end.view.Message;
@@ -60,7 +61,7 @@ public class UserCell extends ListCell<User> {
             int index = getIndex();
             User user = getListView().getItems().get(index);
             Data request = new Data(AppUtils.MessageCode.UNFOLLOW);
-            request.getData().add(1);
+            request.getData().add(GlobalVariable.getInstance().getId());
             request.getData().add(user.getId());
             try {
                 AppUtils.sendData(clientSock, request);
@@ -85,7 +86,7 @@ public class UserCell extends ListCell<User> {
             int index = getIndex();
             User user = getListView().getItems().get(index);
             Data request = new Data(AppUtils.MessageCode.ACCEPT);
-            request.getData().add(1);
+            request.getData().add(GlobalVariable.getInstance().getId());
             request.getData().add(user.getId());
             try {
                 AppUtils.sendData(clientSock, request);
@@ -110,7 +111,7 @@ public class UserCell extends ListCell<User> {
             int index = getIndex();
             User user = getListView().getItems().get(index);
             Data request = new Data(AppUtils.MessageCode.DELETE_FOLLOWER);
-            request.getData().add(1);
+            request.getData().add(GlobalVariable.getInstance().getId());
             request.getData().add(user.getId());
             try {
                 AppUtils.sendData(clientSock, request);
