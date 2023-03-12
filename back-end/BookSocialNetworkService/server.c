@@ -406,6 +406,7 @@ int profile(int client, Param p) {
         return send_error(client);
     }
     send_list_data(client, data);
+    sleep(100);
     DB_free_data(&data);
     // send news of user id
     if (userid == others_id){
@@ -658,7 +659,18 @@ int search(int client, Param p) {
 
     return 1;
 }
-
+void send_a_record(int client, Table data, int i){
+    Param root, tail;
+    root = param_create();
+    tail = root;
+    for (int j = 0; j < data->column; j++){
+        if (data->data[i][j] == NULL)param_add_str(&tail, "");
+        else
+            param_add_str(&tail, data->data[i][j]);
+    }
+    Data response = data_create(root, DATAS);
+    send_data(client, response, 0, 0);
+}
 void send_list_data(int client, Table data){
     Data response;
     Param root, tail;
@@ -671,16 +683,7 @@ void send_list_data(int client, Table data){
     usleep(1000);
 
     for (int i = 0; i < data->size; i++){
-        root = param_create();
-        tail = root;
-        for (int j = 0; j < data->column; j++){
-            if (data->data[i][j] == NULL)param_add_str(&tail, "");
-            else
-                param_add_str(&tail, data->data[i][j]);
-            printf("\nparam: %s,", data->data[i][j]);
-        }
-        response = data_create(root, DATAS);
-        send_data(client, response, 0, 0);
+        send_a_record(client, data, i);
         usleep(100);
     }
 }
