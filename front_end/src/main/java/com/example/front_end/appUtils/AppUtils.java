@@ -2,13 +2,22 @@ package com.example.front_end.appUtils;
 
 import com.example.front_end.model.ClientSock;
 import com.example.front_end.model.Data;
+import com.example.front_end.model.Notification;
+import com.example.front_end.model.Post;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+import javax.swing.text.DateFormatter;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 import static com.example.front_end.appUtils.AppUtils.MessageCode.OK;
@@ -236,5 +245,69 @@ public class AppUtils {
         }
 
         bis.close();
+    }
+    public static ObservableList<Post> getPostFromServer() throws IOException {
+        Data request = new Data(AppUtils.MessageCode.NEWS);
+        request.getData().add(GlobalVariable.getInstance().getId());
+        sendData(clientSock, request);
+        Data response = recvData(clientSock);
+        int count = Integer.valueOf((String) response.getData().get(0));
+        ObservableList<Post> postList = FXCollections.observableArrayList();
+        for (int i = 0; i < count; i++){
+            response = recvData(clientSock);
+            Post post = new Post(
+                    Integer.valueOf((String) response.getData().get(0)),
+                    Integer.valueOf((String) response.getData().get(1)),
+                    (String) response.getData().get(2),
+                    (String) response.getData().get(3),
+                    (String) response.getData().get(4),
+                    (String) response.getData().get(5),
+                    (String) response.getData().get(6)
+            );
+            postList.add(post);
+        }
+        return postList;
+    }
+    public static ObservableList<Notification> getNotificationFromServer() throws IOException {
+        Data request = new Data(MessageCode.NOTIFY);
+        request.getData().add(GlobalVariable.getInstance().getId()); // add id
+        sendData(clientSock, request);
+
+        ObservableList<Notification> notifyList = FXCollections.observableArrayList();
+        Data response = recvData(clientSock);
+        int count = Integer.valueOf((String) response.getData().get(0));
+        for (int i = 0; i < count; i++){
+            Data rspItem = recvData(clientSock);
+            System.out.println(rspItem);
+            Notification notifyItem = new Notification();
+            System.out.println(notifyItem);
+            notifyItem.setId(Integer.valueOf((String)rspItem.getData().get(0)));
+            notifyItem.setUsername((String) rspItem.getData().get(1));
+            notifyItem.setAvatar((String) rspItem.getData().get(2));
+            notifyItem.setTitle((String) rspItem.getData().get(3));
+            notifyItem.setContent((String) rspItem.getData().get(4));
+            if (Integer.valueOf((String)rspItem.getData().get(5)) == 0){
+                notifyItem.setSeen(false);
+            }
+            else notifyItem.setSeen(true);
+            notifyList.add(notifyItem);
+        }
+        return notifyList;
+    }
+    public static LocalDateTime convertStringToDateTime(String time, String format){
+        // create DateTimeFormatter object with pattern matching the String format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+
+        // parse the String to LocalDateTime object
+        LocalDateTime dateTime = LocalDateTime.parse(time, formatter);
+        return dateTime;
+    }
+    public static LocalDate convertStringToDate(String time, String format){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format); // create a formatter
+        return LocalDate.parse(time, formatter); // parse the string into a LocalDate object
+    }
+    public static String convertDateToString(LocalDate date, String format){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format); // create a formatter
+        return date.format(formatter); // format the date as a string
     }
 }
