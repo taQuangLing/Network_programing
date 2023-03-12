@@ -50,9 +50,10 @@
     -fx-background-color: white;
     -fx-text-fill: #333;
     -fx-opacity: 1;
+    -fx-border-color: gray;
 }
 .profile-bio-text{
-    -fx-text-fill: #bbb;
+    -fx-text-fill: #7e7c7c;
 }
 .slide-down{
     -fx-border-width: 0 2px 2px 2px;

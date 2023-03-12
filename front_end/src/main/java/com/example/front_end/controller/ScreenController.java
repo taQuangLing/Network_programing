@@ -2,9 +2,10 @@ package com.example.front_end.controller;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import lombok.Data;
 
 import java.util.HashMap;
-
+@Data
 public class ScreenController {
     private HashMap<String, Pane> screenMap;
     private Scene main;
@@ -29,9 +30,6 @@ public class ScreenController {
         if (main == null){
             main = new Scene(screenMap.get(name));
         }else main.setRoot(screenMap.get(name));
-    }
-    public Scene getMain(){
-        return main;
     }
     public Pane getPane(String name){
         return screenMap.get(name);
