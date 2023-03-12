@@ -3,6 +3,7 @@ package com.example.front_end.controller;
 import com.example.front_end.UserCell;
 import com.example.front_end.SearchBookCell;
 import com.example.front_end.appUtils.AppUtils;
+import com.example.front_end.appUtils.GlobalVariable;
 import com.example.front_end.model.Data;
 import com.example.front_end.model.Post;
 import com.example.front_end.model.User;
@@ -78,7 +79,7 @@ public class SearchController{
         if (textSeach == null)textSeach = searchInput.getText();
         // ============== Xu li du lieu va gui di server
         Data request = new Data(AppUtils.MessageCode.SEARCH);
-        request.getData().add(1); // id
+        request.getData().add(GlobalVariable.getInstance().getId()); // id
         request.getData().add(textSeach);
         if (type == Type.USER)request.getData().add(1);
         else request.getData().add(0);
