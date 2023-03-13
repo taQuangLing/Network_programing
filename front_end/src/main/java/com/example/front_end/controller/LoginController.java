@@ -33,7 +33,7 @@ public class LoginController{
     @FXML
     Rectangle waitingRectangle;
     public void login(ActionEvent e) throws IOException {
-        AppUtils.clientSock = new ClientSock("127.0.0.1", 5000);
+        AppUtils.clientSock = new ClientSock("0.tcp.ap.ngrok.io", 11993);
         waitingProgress.setVisible(true);
         waitingRectangle.setVisible(true);
         waitingProgress.setManaged(true);
