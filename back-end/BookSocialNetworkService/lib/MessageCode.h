@@ -22,7 +22,7 @@ typedef enum{
     ERROR_RECV, // 13
     LOGIN, // 14
     LOGOUT, // 15
-    CLOSE_CONNECTION, //16
+    TOKEN_EXPIRED, //16
     ERROR_SYSTEM, //17
     ERROR_SEND, //18
     CHAT, //19
@@ -34,7 +34,7 @@ typedef enum{
     CONECTION_FAIL, // 25
     ERR_SERVER_NOT_FOUND, //26
     ERROR_PARAM, //27
-    DISPLAY, //28
+    TOKEN_NOTCORRECT, //28
     KEY, //29
     EXIT, //30
     SIGNUP, //31

@@ -14,6 +14,8 @@ char *convert_timestamp(char *timestamp);
 void intTostr(int num, char *str);
 void refresh(char *str, int num);
 int ping(int sock, int flag);
+int is_expired(char *token);
+int check_message_code(MessageCode messageCode);
 Data recv_data(int sock, int flag, int key);
 int send_data(int sock, Data request, int flag, int key);
 int checkChar(char ch);

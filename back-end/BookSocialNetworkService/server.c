@@ -64,9 +64,15 @@ int delete_follower(int client, Param p);
 
 int send_a_record(int client, Table data, int i);
 
+int logout(int client, Param p);
+
+void gen_token(char *token, char *id);
+
+int check_token(Data data);
+
 int login(int client, Param p){
     Data response;
-    Param root;
+    Param root, tail;
     char email[150];
     char password[PASSWORD_LEN];
 
@@ -85,11 +91,20 @@ int login(int client, Param p){
         send_data(client, response, 0, 0);
         return 0;
     }else{
+        char token[21] = {0};
         logger(L_SUCCESS, "%s: %s", email, "da dang nhap");
         root = param_create(); // tail = root;
+        tail = root;
         for (int j = 0; j < data->column; j++){
             if (strcmp(data->header[j], "id") == 0){
-                param_add_str(&root, data->data[0][j]); // nhieu hon 1 param thi truyen tail
+                gen_token(token, data->data[0][j]);
+                param_add_str(&tail, data->data[0][j]); // nhieu hon 1 param thi truyen tail
+                param_add_str(&tail, token);
+                refresh(sql, 1000);
+                sprintf(sql, "update user set token = '%s' where id = %s", token, data->data[0][j]);
+                if (DB_update_v2(&conn, sql) == -1){
+                    return send_error(client);
+                }
                 break;
             }
         }
@@ -102,7 +117,17 @@ int login(int client, Param p){
     return 1;
 }
 
-
+void gen_token(char *token, char *id) {
+    char timenow[15];
+    get_time_now(timenow, "%d%m%Y%H%M%S");
+    int i;
+    for(i = 0; i < 6 - strlen(id); i++){
+        token[i] = '0';
+    }
+    strcpy(token + i, id);
+    strcpy(token + 6, timenow);
+    token[20] = '\0';
+}
 void handle_client(int client){
     Data request;
     Param p;
@@ -110,6 +135,11 @@ void handle_client(int client){
     MessageCode option;
     while (0==0){
         request = recv_data(client, 0, 0);
+        if (check_token(request) == 0){
+            Data response = data_create(NULL, TOKEN_NOTCORRECT);
+            send_data(client, response, 0, 0);
+            continue;
+        }
         if (request == NULL){
             option = EXIT;
         }else{
@@ -126,6 +156,10 @@ void handle_client(int client){
                 break;
             case FORGOT:
                 status = forgot_password(client, p);
+                break;
+            case LOGOUT:
+                status = logout(client, p);
+                if (status == 1)connection = 0;
                 break;
             case NEWS:
                 status = news(client, p);
@@ -189,9 +223,36 @@ void handle_client(int client){
             default:
                 break;
         }
+        if (status == -1)break;
         if (request != NULL)data_free(&request);
         if (connection == 0)break;
     }
+}
+
+int check_token(Data data) {
+    if (check_message_code(data->message) == 0){
+        Param p = data->params;
+        int id = param_get_int(&p);
+        char sql[200] = {0};
+        sprintf(sql, "select token from user where id = %d", id);
+        Table result = DB_get(&conn, sql);
+        char *tokenDB = DB_str_get_by(result, "token");
+        if (strcmp(data->token, tokenDB) != 0){
+            DB_free_data(&result);
+            return 0;
+        }
+        DB_free_data(&result);
+    }
+    return 1;
+}
+int logout(int client, Param p) {
+    int id = param_get_int(&p);
+    char sql[100] = {0};
+    sprintf(sql, "update user set token = null where id = %d", id);
+    if (DB_update_v2(&conn, sql) == -1){
+        return send_error(client);
+    }
+    return send_success(client);
 }
 
 int delete_follower(int client, Param p) {
@@ -383,7 +444,7 @@ int edit_profile(int client, Param p) {
     if (check_space(username) == 0){
         return send_fail(client);
     }
-    char sql[1000] = {0};
+    char sql[2000] = {0};
     if (strcmp(birthday, "") == 0)sprintf(sql, "update user set name = '%s', avatar = '%s', bio = '%s', gender = %s, interest = '%s' where id = %d", username, image, bio, gender_s, interest, userid);
     else
     sprintf(sql, "update user set name = '%s', avatar = '%s', bio = '%s', gender = %s, birthday = '%s', interest = '%s' where id = %d", username, image, bio, gender_s, birthday, interest, userid);
@@ -409,14 +470,14 @@ int profile(int client, Param p) {
     DB_free_data(&data);
     // send news of user id
     if (userid == others_id){
-        sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d", userid);
+        sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d order by post.created_at desc", userid);
     }else{
-        sprintf(sql, "select * from follow where ((user_id = %d and others_id = %d) or (others_id = %d and user_id = %d)) and status = 1", userid, others_id, userid, others_id);
+        sprintf(sql, "select * from follow where ((user_id = %d and others_id = %d) or (others_id = %d and user_id = %d)) and status = 1 order by post.created_at desc", userid, others_id, userid, others_id);
         data = DB_get(&conn, sql);
         if (data->size == 0){
-            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and status = 2", others_id);
+            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and status = 2 order by post.created_at desc", others_id);
         }else{
-            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and (status = 1 or status = 2)", others_id);
+            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and (status = 1 or status = 2) order by post.created_at desc", others_id);
         }
         DB_free_data(&data);
     }
@@ -679,7 +740,7 @@ void send_list_data(int client, Table data){
     param_add_int(&tail, (int)data->size);
     response = data_create(root, OK);
     send_data(client, response, 0, 0);
-    usleep(1000);
+    usleep(100);
 
     for (int i = 0; i < data->size; i++){
         if (send_a_record(client, data, i) == -1)return;

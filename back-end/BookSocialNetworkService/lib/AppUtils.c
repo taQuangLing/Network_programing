@@ -39,20 +39,27 @@ Data str_to_data(char *str, int key){
     Param tail = root;
     char param[255];
     Data data;
-    int flag = 0, i, code, size, size_m = 0;
-    char message_code[10], sizes[10];
+    int flag = 0, i, code, size, size_m = 0, count = 0;
+    char message_code[10], sizes[10] = {0};
+    char token[21] = {0};
     for (i = 0;; i++){
         refresh(param, 255);
         if (str[i] == '#'){
             if (flag == 0){
                 strncpy(message_code, str, i);
                 code = atoi(message_code);
+
             }else{
                 refresh(decode_str, 255);
                 strncpy(param, str+flag, i-flag);
-                size_m += (int)strlen(param);
                 ceaser_decode(param, decode_str, key);
-                param_add_str(&tail, decode_str);
+                if (count == 0 && check_message_code(code) == 0){
+                    strcpy(token, decode_str);
+                    count++;
+                }else{
+                    size_m += (int)strlen(param);
+                    param_add_str(&tail, decode_str);
+                }
             }
             flag = i+1;
         }else
@@ -65,7 +72,7 @@ Data str_to_data(char *str, int key){
     if (size != size_m){
         logger(L_WARN, "%s", "Missing data");
     }
-    data = data_create(root, code);
+    data = data_create_v2(root, code, token);
 
     return data;
 }
@@ -140,6 +147,41 @@ int send_data(int sock, Data data, int flag, int key){
     }
     return 1;
 }
+int is_expired(char *token){
+    if (strcmp(token, "") == 0 || token == NULL)return 0;
+    char day[3] = {0}, month[3] = {0}, year[5] = {0}, hour[3] = {0}, minute[3] = {0}, second[3] = {0};
+    strncpy(day, token+6, 2);
+    strncpy(month, token+8, 2);
+    strncpy(year, token+10, 4);
+    strncpy(hour, token+14, 2);
+    strncpy(minute, token+16, 2);
+    strncpy(second, token+18, 2);
+    struct tm time_info = {0};
+    time_t time_1;
+    time_info.tm_year = atoi(year) - 1900;          // Năm 2023
+    time_info.tm_mon = atoi(month) - 1;          // Tháng 3 (0-based)
+    time_info.tm_mday = atoi(day);           // Ngày 12
+    time_info.tm_hour = atoi(hour);            // Giờ 8
+    time_info.tm_min = atoi(minute);            // Phút 30
+    time_info.tm_sec = atoi(second);
+    time_1 = mktime(&time_info);
+    time_t time_2;
+    time(&time_2);
+    double diff = difftime(time_2, time_1)/3600;
+    if (diff > TIME)return 1;
+    return 0;
+}
+int check_message_code(MessageCode messageCode){
+    switch (messageCode) {
+        case LOGIN:
+        case SIGNUP:
+        case FORGOT:
+        case CANCEL:
+            return 1;
+        default:
+            return 0;
+    }
+}
 Data recv_data(int sock, int flag, int key){
     char buff[BUFF_SIZE];
     int byte_recv = recv(sock, buff, BUFF_SIZE,0);
@@ -153,6 +195,14 @@ Data recv_data(int sock, int flag, int key){
         return NULL;
     }
     Data data = str_to_data(buff, key);
+    if (check_message_code(data->message) == 0){
+        if (is_expired(data->token) == 1){
+            logger(L_WARN, "Token \"%s\" is expired!", data->token);
+            Data response = data_create(NULL, TOKEN_EXPIRED);
+            send_data(sock, response, flag, key);
+            return NULL;
+        }
+    }
     bzero(buff, BUFF_SIZE);
     log_data(data, "Request");
     return data;
