@@ -28,8 +28,8 @@
                               <Image url="@../../../../image/luffy.png" />
                            </image>
                         </ImageView>
-                        <Text fx:id="titleId" layoutX="31.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 20;" text="123456789012345678" wrappingWidth="400.0" />
-                        <Text fx:id="contentId" layoutX="31.0" layoutY="120.0" lineSpacing="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="hghjgjhg" textAlignment="JUSTIFY" wrappingWidth="400.0" />
+                        <Text fx:id="titleId" layoutX="31.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 20;" text="1234567890123456781234567890123456781234567890123456781234567890123" wrappingWidth="400.0" />
+                        <Text fx:id="contentId" layoutX="31.0" layoutY="120.0" lineSpacing="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sfkjskldfjklsdfjlskdfjlksdfjlksdfjlksdjfklsdsfkjskldfjklsdfjlskdfjlksdfjlksdfjlksdjfklsdsfkjskldfjklsdfjlskdfjlksdfjlksdfjlksdjfklsdsfkjdfdsf" textAlignment="JUSTIFY" wrappingWidth="400.0" />
                      </children>
                   </AnchorPane>
               </content>
@@ -37,7 +37,7 @@
                   <Cursor fx:constant="DEFAULT" />
                </cursor>
             </ScrollPane>
-            <Rectangle fx:id="rectangleId" arcHeight="5.0" arcWidth="5.0" fill="#666666d3" height="380.0" layoutX="25.0" layoutY="80.0" opacity="0.6" stroke="#0000006d" strokeType="INSIDE" styleClass="layout-listview" width="452.0" />
+            <Rectangle fx:id="rectangleId" arcHeight="5.0" arcWidth="5.0" fill="#bcbcbcd4" height="380.0" layoutX="25.0" layoutY="80.0" opacity="0.73" stroke="#0000006d" strokeType="INSIDE" styleClass="layout-listview" width="452.0" />
          </children>
       </Pane>
    </children>

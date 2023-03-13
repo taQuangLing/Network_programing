@@ -46,6 +46,11 @@ void param_free(Param *root){
         p = *root;
     }
 }
+Data data_create_v2(Param root, MessageCode code, char token[]){
+    Data data = data_create(root, code);
+    strcpy(data->token, token);
+    return data;
+}
 Data data_create(Param root, MessageCode code){
     Data data = (Data)malloc(sizeof (struct data));
     data->params = root;

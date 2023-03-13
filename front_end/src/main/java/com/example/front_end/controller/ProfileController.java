@@ -12,13 +12,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import lombok.SneakyThrows;
 
 import java.io.File;
@@ -47,9 +50,12 @@ public class ProfileController implements Initializable {
     @FXML
     ListView<Post> postListView;
     @FXML
-    Pane profilePane;
+    Pane profilePane1;
     @FXML
     AnchorPane profileAnchorPane;
+    @FXML
+    VBox profileVbox;
+    @FXML Pane profilePane2;
     @FXML
     MenuButton profileMenuButton;
     @FXML MenuButton userMenuButton;
@@ -59,6 +65,7 @@ public class ProfileController implements Initializable {
     @FXML Label genderLabel;
     private File selectImage;
     private User user;
+    private Stage stage;
     private void setStyleDefault(){
         name.setStyle("-fx-border-color: #fff; -fx-font-size: 20px");
         genderLabel.setStyle("-fx-border-color: #fff; -fx-font-size: 15px; -fx-text-fill: #000000; -fx-background-color: white;");
@@ -133,7 +140,7 @@ public class ProfileController implements Initializable {
         }
         return postList;
     }
-    private void populate() throws IOException {
+    public void populate() throws IOException {
         setStyleDefault();
         // User user = recv_data from server
         // List<Post> posts = recv date from server
@@ -146,17 +153,20 @@ public class ProfileController implements Initializable {
         user.setName((String)response.getData().get(1));
         user.setAvatar((String)response.getData().get(2));
         user.setBio((String)response.getData().get(3));
-        switch (Integer.valueOf((String)response.getData().get(4))){
-            case 0:
-                user.setGender("Nam");
-                break;
-            case 1:
-                user.setGender("Nữ");
-                break;
-            case 2:
-                user.setGender("Khác");
-                break;
-        }
+        if (response.getData().get(4) != ""){
+            switch (Integer.valueOf((String)response.getData().get(4))){
+                case 0:
+                    user.setGender("Nam");
+                    break;
+                case 1:
+                    user.setGender("Nữ");
+                    break;
+                case 2:
+                    user.setGender("Khác");
+                    break;
+            }
+        }else user.setGender("");
+
         if (response.getData().get(5) != ""){
             user.setBirthday(LocalDate.parse((String)response.getData().get(5)));
         }
@@ -165,7 +175,7 @@ public class ProfileController implements Initializable {
 
         ObservableList<Post> postList = getPostFromServer();
 
-        Image image = new Image(user.getAvatar());
+        Image image = new Image(getClass().getResource("/image/avatar-default1.png").toString());
         double width = image.getWidth();
         double height = image.getHeight();
         avatarImg.setImage(image);
@@ -203,8 +213,22 @@ public class ProfileController implements Initializable {
         birthdayInput.setValue(convertStringToDate(birthdayLabel.getText(), "dd-MM-yyyy"));
         birthdayInput.setPromptText(birthdayLabel.getText());
     }
-    public void logout(ActionEvent event){
-
+    public void logout(ActionEvent e) throws IOException {
+        Data request = new Data(LOGOUT);
+        request.getData().add(GlobalVariable.getInstance().getId());
+        sendData(clientSock, request);
+        Data response = recvData(clientSock);
+        if(response.getMessageCode() == SUCCESS){
+            GlobalVariable.getInstance().getScreenController().activate("login");
+            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            stage.setScene(GlobalVariable.getInstance().getScreenController().getMain());
+            stage.show();
+            Message message = new Message(SUCCESS, "Đăng xuất thành công");
+            message.alert();
+        }else {
+            Message message = new Message(WARNING, "Vui lòng thử lại sau");
+            message.alert();
+        }
     }
     public void done(MouseEvent event) throws IOException, URISyntaxException, InterruptedException {
         user.setName(this.name.getText());
@@ -270,5 +294,8 @@ public class ProfileController implements Initializable {
     public void selectOther(ActionEvent event) {
         gender.setText("Khác");
         user.setGender("Khác");
+    }
+    public void reload(ActionEvent e) throws IOException {
+        populate();
     }
 }

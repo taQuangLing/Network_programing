@@ -6,20 +6,22 @@ import com.example.front_end.model.Notification;
 import com.example.front_end.model.Post;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
-import javax.swing.text.DateFormatter;
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
+import static com.example.front_end.appUtils.AppUtils.MessageCode.CANCEL;
 import static com.example.front_end.appUtils.AppUtils.MessageCode.OK;
 
 public class AppUtils {
@@ -42,7 +44,7 @@ public class AppUtils {
         ERROR_RECV(13), // 13
         LOGIN(14), // 14
         LOGOUT(15), // 15
-        CLOSE_CONNECTION(16), //16
+        TOKEN_EXPIRED(16), //16
         ERROR_SYSTEM(17), //17
         ERROR_SEND(18), //18
         CHAT(19), //19
@@ -54,7 +56,7 @@ public class AppUtils {
         CONECTION_FAIL(25), // 25
         ERR_SERVER_NOT_FOUND(26), //26
         ERROR_PARAM(27), //27
-        DISPLAY(28), //28
+        TOKEN_NOTCORRECT(28), //28
         KEY(29), //29
         EXIT(30), //30
         SIGNUP(31), //31
@@ -119,11 +121,26 @@ public class AppUtils {
         }
         return data;
     }
+    private static boolean checkMessageCode(MessageCode messageCode){
+        switch (messageCode) {
+            case LOGIN:
+            case FORGOT:
+            case CANCEL:
+            case SIGNUP:
+                return true;
+            default:
+                return false;
+        }
+    }
     private static String dataToMessage(Data data){
         int size = 0;
         StringBuilder message = new StringBuilder();
         message.append(data.getMessageCode().value);
         message.append("#");
+        if (checkMessageCode(data.getMessageCode()) == false){
+            message.append(GlobalVariable.getInstance().getToken());
+            message.append("#");
+        }
         for (Object item : data.getData()){
             message.append(item.toString());
             size += item.toString().length();
@@ -144,6 +161,7 @@ public class AppUtils {
     }
     public static void sendData(ClientSock clientSock, Data data) throws IOException {
         String message = dataToMessage(data);
+        System.out.println(message);
         clientSock.send(message);
     }
     public static void cropCircleImageView(ImageView imageView) {
@@ -220,6 +238,10 @@ public class AppUtils {
             // Đóng tệp tin
             bos.close();
             fos.close();
+        }
+        else{
+            Data request = new Data(CANCEL);
+            sendData(clientSock, request);
         }
     }
     public static void sendFile(File file) throws IOException, InterruptedException {

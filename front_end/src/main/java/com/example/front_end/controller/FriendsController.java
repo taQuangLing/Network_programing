@@ -104,10 +104,9 @@ public class FriendsController implements Initializable{
     }
     public ObservableList<User> getUserFromServer(AppUtils.MessageCode messageCode) throws IOException {
         ObservableList<User> userList = FXCollections.observableArrayList();
-        Data data = new Data(messageCode);
-//        globalVariable.getId();
-        data.getData().add(1);
-        AppUtils.sendData(clientSock, data); // send data
+        Data request = new Data(messageCode);
+        request.getData().add(GlobalVariable.getInstance().getId());
+        AppUtils.sendData(clientSock, request); // send data
         Data response = AppUtils.recvData(clientSock); // recv count
         int count = Integer.valueOf((String) response.getData().get(0));
         if (response.getMessageCode() == OK){

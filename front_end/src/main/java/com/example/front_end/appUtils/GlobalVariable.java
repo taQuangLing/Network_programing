@@ -3,6 +3,8 @@ package com.example.front_end.appUtils;
 import com.example.front_end.controller.ScreenController;
 import lombok.Data;
 
+import java.util.HashMap;
+
 @Data
 public class GlobalVariable {
     private static GlobalVariable instance = new GlobalVariable();

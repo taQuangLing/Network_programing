@@ -114,8 +114,8 @@ public class PostCell extends ListCell<Post> {
                 contentId.setText(post.getContent());
                 heightTitle = titleId.getLayoutBounds().getHeight();
                 heightContent = contentId.getLayoutBounds().getHeight();
-                contentId.setLayoutY(titleId.getLayoutY() + heightTitle + 10);
-                imageId.setLayoutY(contentId.getLayoutY() + heightContent - 5);
+                contentId.setLayoutY(titleId.getLayoutY() + heightTitle);
+                imageId.setLayoutY(contentId.getLayoutY() + heightContent);
                 scrollId.setPrefHeight(60 + heightTitle + heightContent + imageId.getFitHeight() + 50);
                 rectangleId.setHeight(scrollId.getPrefHeight() - 75);
                 rectangleId.setOpacity(0.1);
@@ -140,6 +140,8 @@ public class PostCell extends ListCell<Post> {
             scrollId.setLayoutY(0);
             rectangleId.setDisable(false);
             rectangleId.setOpacity(0.6);
+            rectangleId.toFront();
+            imageId.setStyle("-fx-border-color: #333");
             // Load and set the first image URL in the ImageView
             Image image;
             try {
@@ -161,8 +163,8 @@ public class PostCell extends ListCell<Post> {
             }
             heightTitle = titleId.getLayoutBounds().getHeight();
             contentId.setText(post.getContent());
-            if (contentId.getText().length() > 210){
-                contentId.setText(contentId.getText().substring(0, 210) + "...");
+            if (contentId.getText().length() > 110){
+                contentId.setText(contentId.getText().substring(0, 110) + "...");
             }
             heightContent = contentId.getLayoutBounds().getHeight();
             contentId.setLayoutY(titleId.getLayoutY() + heightTitle + 10);
