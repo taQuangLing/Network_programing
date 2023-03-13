@@ -45,7 +45,7 @@ int list_insert_after(list** ,int ,void* );
 
 void lnode_flush(list* ,int ,void* );
 
-void list_delete(list** ,int );
+void list_delete_v2(list** ,int );
 
 void list_destory(list* );
 
@@ -55,6 +55,6 @@ void list_travel(list* ,void(*do_function)(void* ));
 
 int list_search(list** ,void* ,int(*compare)(void* ,void* ));
 
-void list_free(list * root);
+void list_free_v2(list * root);
 
 #endif
