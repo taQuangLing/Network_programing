@@ -174,8 +174,12 @@ public class ProfileController implements Initializable {
         user.setInterest((String)response.getData().get(7));
 
         ObservableList<Post> postList = getPostFromServer();
-
-        Image image = new Image(getClass().getResource("/image/avatar-default1.png").toString());
+        Image image;
+        if (user.getAvatar().equals("")){
+            image = new Image(getClass().getResource("/image/avatar-default1.png").toString());
+        }else{
+            image = new Image(user.getAvatar());
+        }
         double width = image.getWidth();
         double height = image.getHeight();
         avatarImg.setImage(image);
@@ -188,7 +192,6 @@ public class ProfileController implements Initializable {
         avatarImg.setFitHeight(height/ratio);
         avatarImg.setFitWidth(width/ratio);
         AppUtils.cropCircleImageView(avatarImg);
-
         name.setText(user.getName());
         bio.setText(user.getBio());
         gender.setText(user.getGender());
