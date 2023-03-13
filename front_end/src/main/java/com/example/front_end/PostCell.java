@@ -1,6 +1,7 @@
 package com.example.front_end;
 
 import com.example.front_end.appUtils.AppUtils;
+import com.example.front_end.appUtils.GlobalVariable;
 import com.example.front_end.model.Data;
 import com.example.front_end.model.Post;
 import com.example.front_end.view.Message;
@@ -10,17 +11,11 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
-//import java.awt.Desktop;
-import java.awt.*;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 
 import static com.example.front_end.appUtils.AppUtils.MessageCode.*;
@@ -36,6 +31,8 @@ public class PostCell extends ListCell<Post> {
     @FXML Pane paneId;
     @FXML Rectangle rectangleId;
     @FXML ScrollPane scrollId;
+    @FXML
+    AnchorPane postAnchorPane;
     private double heightContent;
     private double heightTitle;
 
@@ -70,8 +67,7 @@ public class PostCell extends ListCell<Post> {
                 // open book
                 System.out.println("Image clicked");
                 Data request = new Data(AppUtils.MessageCode.OPEN);
-//                request.getData().add(GlobalVariable.getInstance().getId());
-                request.getData().add(1);
+                request.getData().add(GlobalVariable.getInstance().getId());
                 request.getData().add(getListView().getItems().get(index).getId());
                 try {
                     sendData(clientSock, request);
@@ -112,19 +108,16 @@ public class PostCell extends ListCell<Post> {
                 Post post = getListView().getItems().get(index);
                 // Mo rong sach
                 System.out.println("rectangle clicked");
-//                rectangleId.setVisible(false);
-                rectangleId.toBack();
-                rectangleId.toBack();
                 rectangleId.toBack();
                 rectangleId.setDisable(true);
                 titleId.setText(post.getTitle());
                 contentId.setText(post.getContent());
-                double heightContent = contentId.getLayoutBounds().getHeight() - this.heightContent;
-                double heightTitle = titleId.getLayoutBounds().getHeight() - this.heightTitle;
-                contentId.setY(contentId.getY() + heightTitle);
-                imageId.setY(imageId.getY() + heightContent + heightTitle + 10);
-                rectangleId.setHeight(imageId.getFitHeight() + contentId.getLayoutBounds().getHeight() + titleId.getLayoutBounds().getHeight() - 70);
-                scrollId.setPrefHeight(rectangleId.getHeight() + avatarId.getFitHeight());
+                heightTitle = titleId.getLayoutBounds().getHeight();
+                heightContent = contentId.getLayoutBounds().getHeight();
+                contentId.setLayoutY(titleId.getLayoutY() + heightTitle);
+                imageId.setLayoutY(contentId.getLayoutY() + heightContent);
+                scrollId.setPrefHeight(60 + heightTitle + heightContent + imageId.getFitHeight() + 50);
+                rectangleId.setHeight(scrollId.getPrefHeight() - 75);
                 rectangleId.setOpacity(0.1);
             }
         });
@@ -136,32 +129,56 @@ public class PostCell extends ListCell<Post> {
             setText(null);
             setGraphic(null);
         } else {
-            int index = getIndex();
+            scrollId.setPannable(false);
+            scrollId.setFitToHeight(true);
+            titleId.setWrappingWidth(400);
+            contentId.setWrappingWidth(400);
+            avatarId.setLayoutY(10);
+            titleId.setLayoutY(100);
+            rectangleId.setLayoutY(80);
+            paneId.setLayoutY(0);
+            scrollId.setLayoutY(0);
+            rectangleId.setDisable(false);
+            rectangleId.setOpacity(0.6);
+            rectangleId.toFront();
+            imageId.setStyle("-fx-border-color: #333");
             // Load and set the first image URL in the ImageView
-            Image image = new Image(post.getImage());
-            imageId.setImage(image);
+            Image image;
+            try {
+                image = new Image(post.getImage());
+                imageId.setImage(image);
+                imageId.setFitHeight(image.getHeight()*400/image.getWidth());
+            }catch (Exception e){
+                System.out.println("id = "+post.getId());
+            }
+            imageId.setFitWidth(400);
             Image avatar = new Image(post.getAvatar());
             avatarId.setFitWidth(60);
             avatarId.setFitHeight(60);
             avatarId.setImage(avatar);
             AppUtils.cropCircleImageView(avatarId);
             titleId.setText(post.getTitle());
-            titleId.setTextAlignment(TextAlignment.JUSTIFY);
-            titleId.setWrappingWidth(380);
             if (titleId.getText().length() > 28){
                 titleId.setText(titleId.getText().substring(0, 28) + "...");
             }
             heightTitle = titleId.getLayoutBounds().getHeight();
             contentId.setText(post.getContent());
-            contentId.setTextAlignment(TextAlignment.JUSTIFY);
-            contentId.setWrappingWidth(421);
-            if (contentId.getText().length() > 210){
-                contentId.setText(contentId.getText().substring(0, 210) + "...");
+            if (contentId.getText().length() > 110){
+                contentId.setText(contentId.getText().substring(0, 110) + "...");
             }
-            contentId.setY(contentId.getY()+heightTitle+10);
             heightContent = contentId.getLayoutBounds().getHeight();
-            imageId.setY(imageId.getY() + heightContent + heightTitle + 20);
+            contentId.setLayoutY(titleId.getLayoutY() + heightTitle + 10);
+            imageId.setLayoutY(contentId.getLayoutY() + heightContent - 5);
             usernameId.setText(post.getUsername());
+            if (60 + heightTitle + heightContent + imageId.getFitHeight() + 50 > 460){
+                scrollId.setPrefHeight(460);
+                rectangleId.setHeight(385);
+            }
+            else{
+                scrollId.setPrefHeight(60 + heightTitle + heightContent + imageId.getFitHeight() + 50);
+                rectangleId.setHeight(scrollId.getPrefHeight() - 75);
+            }
+            postAnchorPane.setPrefHeight(postAnchorPane.getPrefHeight() + 20);
             setText(null);
             setGraphic(paneId);
 

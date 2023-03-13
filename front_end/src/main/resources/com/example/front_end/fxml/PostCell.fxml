@@ -9,28 +9,27 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxWidth="530.0" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: yellow;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="postAnchorPane" maxWidth="530.0" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: yellow;" styleClass="pane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane fx:id="paneId" prefWidth="500.0">
+      <Pane fx:id="paneId" prefWidth="500.0" styleClass="pane" stylesheets="@../css/style.css">
          <children>
-            <ScrollPane fx:id="scrollId" focusTraversable="false" hbarPolicy="NEVER" layoutX="18.0" layoutY="3.0" pannable="true" style="-fx-border-color: white;" vbarPolicy="NEVER">
+            <ScrollPane fx:id="scrollId" focusTraversable="false" hbarPolicy="NEVER" layoutX="18.0" prefHeight="460.0" prefWidth="465.0" style="-fx-border-color: white;" styleClass="pane" stylesheets="@../css/style.css" vbarPolicy="NEVER">
               <content>
-                <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="413.0" prefWidth="461.0">
+                <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefWidth="461.0" styleClass="pane">
                      <children>
                         <Text fx:id="usernameId" layoutX="82.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="Ta Quang Linh" />
-                        <ImageView fx:id="avatarId" fitHeight="107.0" fitWidth="91.0" layoutX="5.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="avatarId" fitHeight="60.0" fitWidth="65.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../../../../image/luffy.png" />
                            </image>
                         </ImageView>
-                        <ImageView fx:id="imageId" fitHeight="516.0" fitWidth="355.0" layoutX="53.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="imageId" fitHeight="350.0" fitWidth="400.0" layoutX="31.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../../../../image/luffy.png" />
                            </image>
                         </ImageView>
-                        <Text fx:id="titleId" layoutX="24.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 20;" text="123456789012345678901234567890123456789012345678901234567890123456789" wrappingWidth="412.546875" />
-                        <Text fx:id="contentId" layoutX="20.0" layoutY="107.0" lineSpacing="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="abc" textAlignment="JUSTIFY" wrappingWidth="421.0" />
-                        <Rectangle fx:id="rectangleId" arcHeight="5.0" arcWidth="5.0" fill="#666666d3" height="359.0" layoutX="5.0" layoutY="78.0" opacity="0.6" stroke="#0000006d" strokeType="INSIDE" width="452.0" />
+                        <Text fx:id="titleId" layoutX="31.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 20;" text="1234567890123456781234567890123456781234567890123456781234567890123" wrappingWidth="400.0" />
+                        <Text fx:id="contentId" layoutX="31.0" layoutY="120.0" lineSpacing="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sfkjskldfjklsdfjlskdfjlksdfjlksdfjlksdjfklsdsfkjskldfjklsdfjlskdfjlksdfjlksdfjlksdjfklsdsfkjskldfjklsdfjlskdfjlksdfjlksdfjlksdjfklsdsfkjdfdsf" textAlignment="JUSTIFY" wrappingWidth="400.0" />
                      </children>
                   </AnchorPane>
               </content>
@@ -38,6 +37,7 @@
                   <Cursor fx:constant="DEFAULT" />
                </cursor>
             </ScrollPane>
+            <Rectangle fx:id="rectangleId" arcHeight="5.0" arcWidth="5.0" fill="#bcbcbcd4" height="380.0" layoutX="25.0" layoutY="80.0" opacity="0.73" stroke="#0000006d" strokeType="INSIDE" styleClass="layout-listview" width="452.0" />
          </children>
       </Pane>
    </children>

@@ -10,25 +10,25 @@
 
 <AnchorPane fx:id="notificationAnchorPane" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane fx:id="notifyPane" maxWidth="500.0" minWidth="500.0" prefHeight="140.0" prefWidth="500.0">
+      <Pane fx:id="notifyPane" maxWidth="500.0" minWidth="500.0" prefHeight="128.0" prefWidth="500.0" style="-fx-background-color: #E0E0E0FF; -fx-border-color: gray;">
          <children>
-            <ImageView fx:id="avatarImg" fitHeight="56.0" fitWidth="67.0" layoutX="20.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="avatarImg" fitHeight="56.0" fitWidth="67.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../../image/luffy.png" />
                </image>
             </ImageView>
-            <Text fx:id="username" layoutX="104.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User 1" wrappingWidth="375.72949290275574">
+            <Text fx:id="username" layoutX="95.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User 1" wrappingWidth="350.0">
                <font>
-                  <Font size="20.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
             </Text>
-            <Text fx:id="content" layoutX="85.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User 1 vừa đăng bài viết vừa đăng bài viết vừa đăng bài viết vừa đăng bài viết" textAlignment="JUSTIFY" wrappingWidth="385.0" />
-            <Text fx:id="title" layoutX="85.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User 1 vừa đăng một bài viết:" wrappingWidth="405.7294911146164">
+            <Text fx:id="content" layoutX="90.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User 1 vừa đăng bài viết vừa đăng bài viết vừa đăng bài viết vừa đăng bài viết" textAlignment="JUSTIFY" wrappingWidth="385.0" />
+            <Text fx:id="title" layoutX="90.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="vừa đăng một bài viết:" wrappingWidth="390.7294911146164">
                <font>
-                  <Font size="16.0" />
+                  <Font size="18.0" />
                </font>
             </Text>
-            <Circle fx:id="seen" fill="WHITE" layoutX="465.0" layoutY="42.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="seen" fill="WHITE" layoutX="468.0" layoutY="33.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
          </children>
       </Pane>
    </children>

@@ -1,7 +1,10 @@
 package com.example.front_end;
 
 import com.example.front_end.appUtils.AppUtils;
+import com.example.front_end.appUtils.GlobalVariable;
+import com.example.front_end.model.Data;
 import com.example.front_end.model.User;
+import com.example.front_end.view.Message;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;
@@ -14,6 +17,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
+
+import static com.example.front_end.appUtils.AppUtils.clientSock;
+import static com.example.front_end.appUtils.AppUtils.recvData;
 
 public class UserCell extends ListCell<User> {
     @FXML Pane friendsCellPane;
@@ -31,6 +37,7 @@ public class UserCell extends ListCell<User> {
     MenuItem cancelFollowing;
     @FXML MenuItem follow;
     @FXML MenuItem deleteFollower;
+    private Message message;
     private FXMLLoader fxmlLoader;
     private int status;
 
@@ -38,7 +45,7 @@ public class UserCell extends ListCell<User> {
         super();
         try {
             this.status = status;
-            fxmlLoader = new FXMLLoader(getClass().getResource("fxml/FriendsCell.fxml"));
+            fxmlLoader = new FXMLLoader(getClass().getResource("fxml/UserCell.fxml"));
             fxmlLoader.setController(this);
             fxmlLoader.load();
         } catch (IOException e) {
@@ -51,13 +58,79 @@ public class UserCell extends ListCell<User> {
 
         });
         cancelFollowing.setOnAction(e ->{
-
+            int index = getIndex();
+            User user = getListView().getItems().get(index);
+            Data request = new Data(AppUtils.MessageCode.UNFOLLOW);
+            request.getData().add(GlobalVariable.getInstance().getId());
+            request.getData().add(user.getId());
+            try {
+                AppUtils.sendData(clientSock, request);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            Data response = null;
+            try {
+                response = recvData(clientSock);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            if (response.getMessageCode() == AppUtils.MessageCode.SUCCESS){
+                message = new Message(AppUtils.MessageCode.SUCCESS, "Hủy follow thành công");
+                message.alert();
+            }else {
+                message = new Message(AppUtils.MessageCode.WARNING, "Vui lòng thử lại sau");
+                message.alert();
+            }
         });
         follow.setOnAction(e -> {
-
+            int index = getIndex();
+            User user = getListView().getItems().get(index);
+            Data request = new Data(AppUtils.MessageCode.ACCEPT);
+            request.getData().add(GlobalVariable.getInstance().getId());
+            request.getData().add(user.getId());
+            try {
+                AppUtils.sendData(clientSock, request);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            Data response = null;
+            try {
+                response = recvData(clientSock);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            if (response.getMessageCode() == AppUtils.MessageCode.SUCCESS){
+                message = new Message(AppUtils.MessageCode.SUCCESS, "Đã trở thành bạn bè");
+                message.alert();
+            }else {
+                message = new Message(AppUtils.MessageCode.WARNING, "Vui lòng thử lại sau");
+                message.alert();
+            }
         });
         deleteFollower.setOnAction(e -> {
-
+            int index = getIndex();
+            User user = getListView().getItems().get(index);
+            Data request = new Data(AppUtils.MessageCode.DELETE_FOLLOWER);
+            request.getData().add(GlobalVariable.getInstance().getId());
+            request.getData().add(user.getId());
+            try {
+                AppUtils.sendData(clientSock, request);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            Data response = null;
+            try {
+                response = recvData(clientSock);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            if (response.getMessageCode() == AppUtils.MessageCode.SUCCESS){
+                message = new Message(AppUtils.MessageCode.SUCCESS, "Xóa thành công");
+                message.alert();
+            }else {
+                message = new Message(AppUtils.MessageCode.WARNING, "Vui lòng thử lại sau");
+                message.alert();
+            }
         });
     }
     @Override

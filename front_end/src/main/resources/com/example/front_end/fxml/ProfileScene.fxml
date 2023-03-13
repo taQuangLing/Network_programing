@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
@@ -16,11 +19,11 @@
 
 <AnchorPane fx:id="profileAnchorPane" prefHeight="400.0" prefWidth="540.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.ProfileController">
    <children>
-      <Pane fx:id="profilePane">
+      <Pane fx:id="profilePane1">
          <children>
-            <VBox>
+            <VBox fx:id="profileVbox">
                <children>
-                  <Pane prefHeight="258.0" prefWidth="530.0" style="-fx-background-color: white;">
+                  <Pane fx:id="profilePane2" prefHeight="258.0" prefWidth="530.0" style="-fx-background-color: white;">
                      <children>
                         <ImageView fx:id="avatarImg" fitHeight="100.0" fitWidth="100.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -46,67 +49,97 @@
                               <Font size="23.0" />
                            </font>
                         </MenuButton>
-                        <TextField fx:id="name" layoutX="124.0" layoutY="18.0" prefHeight="52.0" prefWidth="292.0" style="-fx-background-color: white; -fx-font-size: 24;" styleClass="profile-text" stylesheets="@../css/style.css" text="User 1">
+                        <TextField fx:id="name" layoutX="124.0" layoutY="24.0" prefWidth="316.0" style="-fx-background-color: white; -fx-font-size: 20;" styleClass="profile-text" stylesheets="@../css/style.css" text="User 1">
                            <font>
                               <Font size="27.0" />
                            </font>
+                           <padding>
+                              <Insets bottom="3.0" left="5.0" top="3.0" />
+                           </padding>
                         </TextField>
-                        <TextField fx:id="bio" layoutX="159.0" layoutY="59.0" prefHeight="23.0" prefWidth="286.0" stylesheets="@../css/style.css" text="abc">
+                        <TextField fx:id="bio" layoutX="160.0" layoutY="61.0" prefWidth="280.0" stylesheets="@../css/style.css" text="abc">
                            <styleClass>
                               <String fx:value="profile-text" />
                               <String fx:value="profile-bio-text" />
-                           </styleClass></TextField>
-                        <ImageView fx:id="doneImg" fitHeight="45.0" fitWidth="40.0" layoutX="460.0" layoutY="25.0" onMouseClicked="#done" pickOnBounds="true" preserveRatio="true">
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="3.0" left="3.0" top="3.0" />
+                           </padding></TextField>
+                        <Label layoutX="136.0" layoutY="65.0" style="-fx-text-fill: #484646;" styleClass="profile-bio-text" text="Bio:" />
+                        <ImageView fx:id="editAvatar" fitHeight="19.0" fitWidth="25.0" layoutX="92.0" layoutY="102.0" onMouseClicked="#editAvatar" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../../image/done.jpg" />
+                              <Image url="@../../../../image/edit.png" />
                            </image>
                         </ImageView>
-                        <Label layoutX="140.0" layoutY="64.0" styleClass="profile-bio-text" text="Bio:" />
-                        <ImageView fx:id="editImg" fitHeight="19.0" fitWidth="25.0" layoutX="90.0" layoutY="92.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../image/edit-solid-240.png" />
-                           </image>
-                        </ImageView>
-                        <TextField fx:id="gender" layoutX="126.0" layoutY="128.0" style="-fx-font-size: 16; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="Nam">
+                        <TextField fx:id="createdAt" layoutX="165.0" layoutY="193.0" prefHeight="27.0" prefWidth="126.0" style="-fx-font-size: 15; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="1/2/2022">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="3.0" left="4.0" top="3.0" />
+                           </padding>
+                        </TextField>
+                        <TextField fx:id="interest" layoutX="165.0" layoutY="225.0" prefHeight="29.0" prefWidth="316.0" style="-fx-font-size: 15; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="Chơi game, đá bóng">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets bottom="3.0" left="4.0" top="3.0" />
+                           </padding>
+                        </TextField>
+                        <Label layoutX="44.0" layoutY="134.0" style="-fx-font-size: 15;" text="Giới tính:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="44.0" layoutY="165.0" style="-fx-font-size: 15;" text="Ngày sinh:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="44.0" layoutY="197.0" style="-fx-font-size: 15;" text="Ngày tham gia:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="44.0" layoutY="230.0" style="-fx-font-size: 15;" text="Sở thích:">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="doneBtn" layoutX="455.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#done" style="-fx-background-color: #5792bb; -fx-text-fill: white; -fx-border-color: #5792bb; -fx-border-radius: 10;" text="Done">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </TextField>
-                        <TextField fx:id="birthday" layoutX="140.0" layoutY="159.0" style="-fx-font-size: 16; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="20/12/2002">
+                        </Button>
+                        <MenuButton fx:id="gender" layoutX="165.0" layoutY="128.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="87.0" style="-fx-font-size: 15; -fx-background-color: white; -fx-border-color: gray;" text="Nam">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#selectMale" text="Nam" />
+                            <MenuItem mnemonicParsing="false" onAction="#selectFemale" text="Nữ" />
+                              <MenuItem mnemonicParsing="false" onAction="#selectOther" text="Khác" />
+                          </items>
                            <font>
-                              <Font size="18.0" />
+                              <Font size="15.0" />
                            </font>
-                        </TextField>
-                        <TextField fx:id="createdAt" layoutX="176.0" layoutY="191.0" style="-fx-font-size: 16; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="1/2/2022">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="interest" layoutX="124.0" layoutY="224.0" prefHeight="26.0" prefWidth="322.0" style="-fx-font-size: 16; -fx-background-color: white;" styleClass="profile-text" stylesheets="@../css/style.css" text="Chơi game, đá bóng">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </TextField>
-                        <Label layoutX="65.0" layoutY="134.0" text="Giới tính:">
+                           <padding>
+                              <Insets bottom="-2.0" left="-3.0" top="-2.0" />
+                           </padding>
+                        </MenuButton>
+                        <DatePicker fx:id="birthdayInput" layoutX="165.0" layoutY="161.0" prefHeight="28.0" prefWidth="126.0" promptText="20/07/2001" style="-fx-background-size: 15;" styleClass="profile-text" />
+                        <Label fx:id="birthdayLabel" layoutX="128.0" layoutY="165.0">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label layoutX="65.0" layoutY="165.0" text="Ngày sinh:">
+                        <Label fx:id="genderLabel" layoutX="116.0" layoutY="134.0">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label layoutX="65.0" layoutY="197.0" text="Ngày tham gia:">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="65.0" layoutY="230.0" text="Sở thích:">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
+                        <Button fx:id="reload" layoutX="477.0" layoutY="2.0" mnemonicParsing="false" onAction="#reload" opacity="0.0" text="Update" visible="false" />
                      </children>
                   </Pane>
                   <ListView fx:id="postListView" prefHeight="302.0" prefWidth="545.0" stylesheets="@../css/style.css" />

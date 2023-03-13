@@ -4,8 +4,10 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="650.0" prefWidth="550.0" scaleShape="false" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.front_end.controller.LoginController">
@@ -55,5 +57,7 @@
             <Font size="14.0" />
          </font>
       </Hyperlink>
+      <Rectangle fx:id="waitingRectangle" arcHeight="5.0" arcWidth="5.0" fill="#d0d0d0" height="650.0" opacity="0.66" stroke="#949494" strokeType="INSIDE" visible="false" width="550.0" />
+      <ProgressIndicator fx:id="waitingProgress" layoutX="232.0" layoutY="292.0" prefHeight="66.0" prefWidth="87.0" visible="false" />
    </children>
 </AnchorPane>

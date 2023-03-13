@@ -31,14 +31,14 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="imageLabel" disable="true" layoutX="196.0" layoutY="425.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh" visible="false">
+                        <Label fx:id="imageLabel" layoutX="180.0" layoutY="425.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh" textFill="#757070" visible="false">
                            <font>
-                              <Font size="14.0" />
+                              <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="fileLabel" disable="true" layoutX="196.0" layoutY="485.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh" visible="false">
+                        <Label fx:id="fileLabel" layoutX="180.0" layoutY="485.0" prefHeight="18.0" prefWidth="276.0" text="tên ảnh" textFill="#757070" visible="false">
                            <font>
-                              <Font size="14.0" />
+                              <Font size="15.0" />
                            </font>
                         </Label>
                         <TextField fx:id="titleText" layoutX="35.0" layoutY="37.0" prefHeight="39.0" prefWidth="450.0" style="-fx-border-color: #3465a4; -fx-border-radius: 5; -fx-background-color: white;">
