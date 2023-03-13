@@ -9,16 +9,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include <mysql/mysql.h>
+#include <pthread.h>
+#include <bits/sigthread.h>
+#include <sys/wait.h>
 #include "lib/http.h"
 #include "lib/Data.h"
 #include "lib/AppUtils.h"
 #include "lib/config.h"
 #include "lib/DB.h"
+#include "lib/linklist.h"
 
+typedef struct thread_t{
+    pthread_t pthread;
+    int client;
+}*Thread;
+Thread thread_create(int client){
+    Thread thread = malloc(sizeof (struct thread_t));
+    thread->client = client;
+    return thread;
+}
 typedef struct sockaddr_in socketAddress;
 int server_sock;
 MYSQL *conn;
-
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+unsigned int childProcCount = 0;
+list *thread_root;
 
 int notify(int client, Param p);
 
@@ -60,9 +75,36 @@ int remove_posts(int client, Param p);
 
 int seen_notifi(int client, Param p);
 
+int delete_follower(int client, Param p);
+
+int send_a_record(int client, Table data, int i);
+
+int logout(int client, Param p);
+
+void gen_token(char *token, char *id);
+
+int check_token(Data data);
+
+void signalHandler(int signo) {
+    pid_t pid;
+    int stat;
+    while ((pid = waitpid(-1, &stat, WNOHANG)) > 0)
+        printf("child %d terminated\n", pid);
+
+    printf("Caught signal %d, coming out...\n", signo);
+
+    switch (signo) {
+        case SIGCHLD:
+            break;
+        case SIGINT:
+            close(server_sock);
+            exit(SUCCESS);
+    }
+    return;
+}
 int login(int client, Param p){
     Data response;
-    Param root;
+    Param root, tail;
     char email[150];
     char password[PASSWORD_LEN];
 
@@ -79,13 +121,24 @@ int login(int client, Param p){
         logger(L_WARN, "%s", "Email va mat khau khong hop le");
         response = data_create(NULL, INCORRECT_PASS);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }else{
+        char token[21] = {0};
         logger(L_SUCCESS, "%s: %s", email, "da dang nhap");
         root = param_create(); // tail = root;
+        tail = root;
         for (int j = 0; j < data->column; j++){
             if (strcmp(data->header[j], "id") == 0){
-                param_add_str(&root, data->data[0][j]); // nhieu hon 1 param thi truyen tail
+                gen_token(token, data->data[0][j]);
+                param_add_str(&tail, data->data[0][j]); // nhieu hon 1 param thi truyen tail
+                param_add_str(&tail, token);
+                refresh(sql, 1000);
+                sprintf(sql, "update user set token = '%s' where id = %s", token, data->data[0][j]);
+                if (DB_update_v2(&conn, sql) == -1){
+                    DB_free_data(&data);
+                    return send_error(client);
+                }
                 break;
             }
         }
@@ -93,25 +146,44 @@ int login(int client, Param p){
     }
     if (send_data(client, response, 0, 0) == -1){
         logger(L_ERROR, "%s", "fuction: login - 48");
+        DB_free_data(&data);
         return -1;
     }
+    DB_free_data(&data);
     return 1;
 }
 
-
-void handle_client(int client){
+void gen_token(char *token, char *id) {
+    char timenow[15];
+    get_time_now(timenow, "%d%m%Y%H%M%S");
+    int i;
+    for(i = 0; i < 6 - strlen(id); i++){
+        token[i] = '0';
+    }
+    strcpy(token + i, id);
+    strcpy(token + 6, timenow);
+    token[20] = '\0';
+}
+void *handle_client(void *data){
+    int client = *(int*)data;
     Data request;
     Param p;
     int status, connection = 1;
     MessageCode option;
     while (0==0){
         request = recv_data(client, 0, 0);
+        if (check_token(request) == 0){
+            Data response = data_create(NULL, TOKEN_NOTCORRECT);
+            send_data(client, response, 0, 0);
+            continue;
+        }
         if (request == NULL){
             option = EXIT;
         }else{
             p = request->params;
             option = request->message;
         }
+        pthread_mutex_lock(&mutex);
         switch (option) {
             case LOGIN:
                 status = login(client, p);
@@ -122,6 +194,10 @@ void handle_client(int client){
                 break;
             case FORGOT:
                 status = forgot_password(client, p);
+                break;
+            case LOGOUT:
+                status = logout(client, p);
+                if (status == 1)connection = 0;
                 break;
             case NEWS:
                 status = news(client, p);
@@ -144,6 +220,9 @@ void handle_client(int client){
                 break;
             case FOLLOWER:
                 status = follower(client, p);
+                break;
+            case DELETE_FOLLOWER:
+                status = delete_follower(client, p);
                 break;
             case ACCEPT:
                 status = accept_friend(client, p);
@@ -180,11 +259,80 @@ void handle_client(int client){
                 connection = 0;
                 break;
             default:
+                connection = 0;
                 break;
         }
+        if (status == -1)break;
         if (request != NULL)data_free(&request);
         if (connection == 0)break;
+        pthread_mutex_unlock(&mutex);
     }
+    close(client);
+    return NULL;
+}
+
+int check_token(Data data) {
+    if (check_message_code(data->message) == 0){
+        Param p = data->params;
+        int id = param_get_int(&p);
+        char sql[200] = {0};
+        sprintf(sql, "select token from user where id = %d", id);
+        Table result = DB_get(&conn, sql);
+        char *tokenDB = DB_str_get_by(result, "token");
+        if (strcmp(data->token, tokenDB) != 0){
+            DB_free_data(&result);
+            return 0;
+        }
+        DB_free_data(&result);
+    }
+    return 1;
+}
+int logout(int client, Param p) {
+    int id = param_get_int(&p);
+    char sql[100] = {0};
+    sprintf(sql, "update user set token = null where id = %d", id);
+    if (DB_update_v2(&conn, sql) == -1){
+        return send_error(client);
+    }
+    return send_success(client);
+}
+
+int delete_follower(int client, Param p) {
+    Data response;
+    int userid = param_get_int(&p), others_id = param_get_int(&p);
+    char sql[1000] = {0};
+    sprintf(sql, "select id, status from follow where user_id = %d and others_id = %d", others_id, userid);
+    Table data = DB_get(&conn, sql);
+    if (data == NULL){
+        return send_error(client);
+    }
+    if (data->size == 0){
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        DB_free_data(&data);
+        return 1;
+    }
+    int status = atoi(DB_str_get_by(data, "status"));
+    if (status != 0){
+        response = data_create(NULL, DELETE_FOLLOWER);
+        send_data(client, response, 0, 0);
+        DB_free_data(&data);
+        return 1;
+    }
+    int id = atoi(DB_str_get_by(data, "id"));
+    char *key[] = {"status"};
+    char *value[] = {"-1"};
+    if (DB_update(&conn, "follow", id, key, value, 1) == -1){
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        DB_free_data(&data);
+        return 0;
+    }
+    refresh(sql, 1000);
+    response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
+    DB_free_data(&data);
+    return 1;
 }
 
 int seen_notifi(int client, Param p) {
@@ -195,13 +343,16 @@ int seen_notifi(int client, Param p) {
     if (userid_t != userid){
         Data response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }
     char sql[1000] = {0};
     sprintf(sql, "update notification set seen = 1 where id = %d", noti_id);
     if (DB_update_v2(&conn, sql) == -1){
+        DB_free_data(&data);
         return send_error(client);
     }
+    DB_free_data(&data);
     return send_success(client);
 }
 
@@ -239,7 +390,6 @@ int edit_posts(int client, Param p) {
     else{
         send_success(client);
     }
-
     char sql[1000] = {0};
     char path[150] = {0};
     sprintf(path, "kho");
@@ -273,16 +423,11 @@ int posts(int client, Param p) {
     int post_id = DB_int_get_by(data2, "id"); // get id bai viet vua dang
     char sql[1000] = {0};
     char path[150] = {0};
-//    sprintf(image, "kho/%d-%d-", userid, post_id+1);
-//    status = write_file(client, image);
-//    if (status == -1){
-//        return send_error(client);
-//    }else if (status == 0)return send_fail(client);
-//        else send_success(client);
     sprintf(path, "kho/%d-%d-", userid, post_id+1); // chon duong dan file
     rsp = write_file(client, path); // luu file
     usleep(1000);
     if (rsp == -1){
+        DB_free_data(&data2);
         return send_error(client);
     }else if (rsp == 0)return send_fail(client);
     else send_success(client); // tra ve ket qua write file
@@ -290,6 +435,7 @@ int posts(int client, Param p) {
     sprintf(sql, "insert into post (user_id, title, content, image, status, created_at, path) value"
                  "(%d, '%s', '%s', '%s', %d, '%s', '%s')", userid, title, content, image, status, time_now, path);
     if (DB_insert_v2(&conn, sql) == -1){ // insert table
+        DB_free_data(&data2);
         return send_error(client);
     }
     Table data;
@@ -346,17 +492,14 @@ int edit_profile(int client, Param p) {
     interest = param_get_str(&p);
     intTostr(gender, gender_s);
 
-    Table data = DB_get_by_id(&conn, "user", userid);
-    if (check_space(username) != 0){
-        DB_update_cell(data, "name", username);
+    if (check_space(username) == 0){
+        return send_fail(client);
     }
-    DB_update_cell(data, "avatar", image);
-    DB_update_cell(data, "bio", bio);
-    DB_update_cell(data, "gender", gender_s);
-    DB_update_cell(data, "birthday", birthday);
-    DB_update_cell(data, "interest", interest);
-
-    if (DB_update_v3(&conn,data) == -1){
+    char sql[2000] = {0};
+    if (strcmp(birthday, "") == 0)sprintf(sql, "update user set name = '%s', avatar = '%s', bio = '%s', gender = %s, interest = '%s' where id = %d", username, image, bio, gender_s, interest, userid);
+    else
+    sprintf(sql, "update user set name = '%s', avatar = '%s', bio = '%s', gender = %s, birthday = '%s', interest = '%s' where id = %d", username, image, bio, gender_s, birthday, interest, userid);
+    if (DB_update_v2(&conn,sql) == -1){
         send_error(client);
     }
     return send_success(client);
@@ -373,18 +516,19 @@ int profile(int client, Param p) {
     if (data == NULL){
         return send_error(client);
     }
-    send_list_data(client, data);
+    send_a_record(client, data, 0);
+    usleep(100);
     DB_free_data(&data);
     // send news of user id
     if (userid == others_id){
-        sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d", userid);
+        sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d order by post.created_at desc", userid);
     }else{
-        sprintf(sql, "select * from follow where ((user_id = %d and others_id = %d) or (others_id = %d and user_id = %d)) and status = 1", userid, others_id, userid, others_id);
+        sprintf(sql, "select * from follow where ((user_id = %d and others_id = %d) or (others_id = %d and user_id = %d)) and status = 1 order by post.created_at desc", userid, others_id, userid, others_id);
         data = DB_get(&conn, sql);
         if (data->size == 0){
-            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and status = 2", others_id);
+            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and status = 2 order by post.created_at desc", others_id);
         }else{
-            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and (status = 1 or status = 2)", others_id);
+            sprintf(sql, "select post.id as id, user.id as user_id, name, avatar, title, content, image from post, user where user_id = user.id and user_id = %d and (status = 1 or status = 2) order by post.created_at desc", others_id);
         }
         DB_free_data(&data);
     }
@@ -411,16 +555,19 @@ int follow(int client, Param p) {
         DB_insert_v2(&conn, sql);
         response = data_create(NULL, SUCCESS);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 1;
     }else{
         int status = DB_int_get_by(data, "status");
         if (status == 0){
             response = data_create(NULL, FOLLOWED);
             send_data(client, response, 0, 0);
+            DB_free_data(&data);
             return 1;
         }else if (status == 1){
             response = data_create(NULL, ACCEPTED);
             send_data(client, response, 0, 0);
+            DB_free_data(&data);
             return 1;
         }
     }
@@ -430,21 +577,25 @@ int follow(int client, Param p) {
     }else
         sprintf(sql, "update follow set status = %d where id = %d", 0, id);
     if (DB_update_v2(&conn, sql) == -1){
-        response = data_create(NULL, ERROR);
+        response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
-        return -1;
+        DB_free_data(&data);
+        return 0;
     }
-
-    response = data_create(NULL, SUCCESS);
-    send_data(client, response, 0, 0);
 
     refresh(sql, 1000);
     refresh(sql, 1000);
     sprintf(sql, "insert into notification (to_user_id, from_user_id, type, seen) value (%d, %d, %d, 0)", others_id, userid, 2);
     if (DB_insert_v2(&conn, sql) == -1){
         logger(L_WARN, "Function: accept_friend()");
-        return -1;
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        DB_free_data(&data);
+        return 0;
     }
+    response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -460,32 +611,35 @@ int accept_friend(int client, Param p) {
     if (data->size == 0){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 1;
     }
     int status = atoi(DB_str_get_by(data, "status"));
     if (status != 0){
         response = data_create(NULL, ACCEPTED);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 1;
     }
-
     int id = atoi(DB_str_get_by(data, "id"));
     char *key[] = {"status"};
     char *value[] = {"1"};
     if (DB_update(&conn, "follow", id, key, value, 1) == -1){
-        response = data_create(NULL, ERROR);
+        response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
-        return -1;
+        DB_free_data(&data);
+        return 0;
     }
-    response = data_create(NULL, SUCCESS);
-    send_data(client, response, 0, 0);
-
     refresh(sql, 1000);
     sprintf(sql, "insert into notification (to_user_id, from_user_id, type, seen) value (%d, %d, %d, 0)", others_id, userid, 3);
     if (DB_insert_v2(&conn, sql) == -1){
         logger(L_WARN, "Function: accept_friend()");
-        return -1;
+        DB_free_data(&data);
+        return 0;
     }
+    response = data_create(NULL, SUCCESS);
+    send_data(client, response, 0, 0);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -503,6 +657,12 @@ int unfollow(int client, Param p) {
     char sql[1000] = {0};
     sprintf(sql, "select id,user_id, status from follow where (user_id = %d and others_id = %d) or (user_id = %d and others_id = %d)", userid, others_id, others_id, userid);
     Table data = DB_get(&conn, sql);
+    if (data->size == 0){
+        response = data_create(NULL, FAIL);
+        send_data(client, response, 0, 0);
+        DB_free_data(&data);
+        return 0;
+    }
     int id = DB_int_get_by(data, "id");
     int userid_t = DB_int_get_by(data, "user_id");
     int status = atoi(DB_str_get_by(data, "status"));
@@ -513,24 +673,27 @@ int unfollow(int client, Param p) {
     if (status == -1 || data->size == 0 || (status == 0 && userid != userid_t)){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
-        return 1;
+        DB_free_data(&data);
+        return 0;
     }
 
     if (status == 1){
         if (userid == userid_t)sprintf(sql, "update follow set user_id = %d, others_id = %d, status = %d where id = %d", others_id, userid, 0, id);
         else{
-            sprintf(sql, "update follow set status = %d where id = %d", -1, id);
+            sprintf(sql, "update follow set status = %d where id = %d", 0, id);
         }
     }else{
         if (userid == userid_t)sprintf(sql, "update follow set status = %d where id = %d", -1, id);
     }
     if (DB_update_v2(&conn, sql) == -1){
-        response = data_create(NULL, ERROR);
+        response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
-        return  -1;
+        DB_free_data(&data);
+        return 0;
     }
     response = data_create(NULL, SUCCESS);
     send_data(client, response, 0, 0);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -545,14 +708,16 @@ int interaction(int client, Param p, MessageCode type) {
                          "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and status = 1 and others_id = %d", userid, userid);
             break;
         case FOLLOWING:
-            sprintf(sql, "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and (status = 0 or status = 1)\n"
-                         "union\n"
-                         "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and status = 1", userid, userid);
+//            sprintf(sql, "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and (status = 0 or status = 1)\n"
+//                         "union\n"
+//                         "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and status = 1", userid, userid);
+            sprintf(sql, "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and (status = 0)", userid);
             break;
         case FOLLOWER:
-            sprintf(sql, "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and (status = 0 or status = 1)\n"
-                         "union\n"
-                         "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and status = 1", userid, userid);
+//            sprintf(sql, "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and (status = 0 or status = 1)\n"
+//                         "union\n"
+//                         "select others_id, name, avatar, status from follow, user where follow.others_id = user.id and user_id = %d and status = 1", userid, userid);
+            sprintf(sql, "select user_id as others_id, name, avatar, status from follow, user where follow.user_id = user.id and others_id = %d and status = 0", userid);
             break;
         default:
             logger(L_ERROR, "Lỗi nhiều hơn 3 trạng thái interaction - 187");
@@ -565,6 +730,7 @@ int interaction(int client, Param p, MessageCode type) {
         return -1;
     }
     send_list_data(client, data);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -574,7 +740,6 @@ int friends(int client, Param p) {
 
 int news(int client, Param p) {
     int userid = param_get_int(&p);
-
     char sql[1500] = {0};
     sprintf(sql, "select post.id, user.id, name, avatar, title, content, image from post, user where user.id = post.user_id and\n"
                  "(((select COUNT(*) from follow where ((user_id = %d and others_id = post.user_id) or (user_id = post.user_id and others_id = %d)) and status = 1) > 0 and (status = 1 or status = 2))\n"
@@ -588,37 +753,51 @@ int news(int client, Param p) {
 }
 
 int search(int client, Param p) {
-    char keyword[50] = {0};
+    char *keyword, text_search[51] = {0};
     int userid, type;
     char sql[1000] = {0};
 
     userid = param_get_int(&p);
-    strcpy(keyword+1, param_get_str(&p));
+    keyword = param_get_str(&p);
     type = param_get_int(&p);
 
-    keyword[0] = '%';
-    int lenght = (int)strlen(keyword);
-    keyword[lenght] = '%';
-    keyword[lenght+1] = '\0';
+    strcpy(text_search+1, keyword);
+    text_search[0] = '%';
+    int lenght = (int)strlen(text_search);
+    text_search[lenght] = '%';
+    text_search[lenght+1] = '\0';
     if (type == 0){
         // search sach
-        sprintf(sql, "select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and\n"
-                     "((select COUNT(*) from follow where ((user_id = %d and others_id = post.user_id) or (user_id = post.user_id and others_id = %d)) and status = 1) > 0 and (status = 1 or status = 2))\n"
-                     "union\n"
-                     "select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and\n"
-                     "status = 2", keyword, keyword, userid, userid, keyword, keyword);
+        sprintf(sql, "(select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and "
+                     "(select COUNT(*) from follow where ((user_id = %d and others_id = post.user_id) or (user_id = post.user_id and others_id = %d)) and status = 1) > 0 and (status = 1) "
+                     "order by post.created_at desc) "
+                     "union "
+                     "(select post.id, user.id, name, image, title, content from post, user where user.id = post.user_id and (title LIKE '%s' or content LIKE '%s') and status = 2 "
+                     "order by post.created_at desc) ", text_search, text_search, userid, userid, text_search, text_search);
     }else
     {
         // search nguoi
-        sprintf(sql, "select id, name, avatar from user where name LIKE '%s'", keyword);
+        sprintf(sql, "select id, name, avatar from user where name LIKE '%s'", text_search);
     }
     Table data = DB_get(&conn, sql);
 
     send_list_data(client, data);
-
+    DB_free_data(&data);
     return 1;
 }
-
+int send_a_record(int client, Table data, int i){
+    Param root, tail;
+    root = param_create();
+    tail = root;
+    for (int j = 0; j < data->column; j++){
+        if (data->data[i][j] == NULL)param_add_str(&tail, "");
+        else
+            param_add_str(&tail, data->data[i][j]);
+    }
+    Data response = data_create(root, DATAS);
+    if (send_data(client, response, 0, 0) == -1)return -1;
+    return 1;
+}
 void send_list_data(int client, Table data){
     Data response;
     Param root, tail;
@@ -628,19 +807,11 @@ void send_list_data(int client, Table data){
     param_add_int(&tail, (int)data->size);
     response = data_create(root, OK);
     send_data(client, response, 0, 0);
-    usleep(1000);
+    usleep(100);
 
     for (int i = 0; i < data->size; i++){
-        root = param_create();
-        tail = root;
-        for (int j = 0; j < data->column; j++){
-            if (data->data[i][j] == NULL)param_add_str(&tail, "");
-            else
-                param_add_str(&tail, data->data[i][j]);
-        }
-        response = data_create(root, DATAS);
-        send_data(client, response, 0, 0);
-        usleep(1000);
+        if (send_a_record(client, data, i) == -1)return;
+        usleep(100);
     }
 }
 
@@ -686,6 +857,7 @@ int forgot_password(int client, Param p) {
         response = data_create(NULL, ERROR);
     }
     send_data(client, response, 0, 0);
+    DB_free_data(&data);
     data_free(&request);
     return 0;
 }
@@ -760,25 +932,19 @@ int open_book(int client, Param p) {
     }
     response = data_create(NULL, OK);
     send_data(client, response, 0, 0);
-    usleep(1000);
+    usleep(100);
     send_file(client, path);
+    DB_free_data(&data);
     return 1;
 }
 
 int notify(int client, Param p) {
-    MYSQL *conn2;
-    conn2 = mysql_init(NULL);
-    if (!mysql_real_connect(conn2, SERVER, USER, PASSWORD, DATABASE, 0, NULL, 0)) {
-        logger(L_ERROR, "%s", mysql_error(conn));
-        exit(1);
-    }
-
     Data response;
     Param root = param_create(), tail = root;
-    int i, type, seen, link_id;
+    int i, type, seen, link_id, id;
     Table result1, result2;
     int toId = param_get_int(&p);
-    char *username, *avatar, *title, *content, noidung[200] = {0};
+    char *username, *avatar, *title, noidung[200] = {0}, tieude[100] = {0};
     char sql[1000];
     refresh(sql, 1000);
     sprintf(sql, "select notification.id as id, user.name as name, avatar, type, seen, link_id from notification, user where from_user_id = user.id and to_user_id = %d", toId);
@@ -791,60 +957,76 @@ int notify(int client, Param p) {
     for (i = 0; i < result1->size; i++){
         root = param_create();
         tail = root;
-
-        int id = DB_int_get_by(result1, "id");
-        username = DB_str_get_by(result1, "name");
-        avatar = DB_str_get_by(result1, "avatar");
-        type = DB_int_get_by(result1, "type");
-        seen = DB_int_get_by(result1, "seen");
-        link_id = DB_int_get_by(result1, "link_id");
+        id = atoi(result1->data[i][0]);
+        username = result1->data[i][1];
+        avatar = result1->data[i][2];
+        type = atoi(result1->data[i][3]);
+        seen = atoi(result1->data[i][4]);
+        link_id = atoi(result1->data[i][5]);
         if (type == 0){
             // thong bao ve bai post
-            result2 = DB_get_by_id(&conn2, "post", link_id);
+            result2 = DB_get_by_id(&conn, "post", link_id);
             title = DB_str_get_by(result2, "title");
-            content = DB_str_get_by(result2, "content");
-            sprintf(noidung, "đã đăng bài viết: %s...\n\t%s...", title, content);
+            sprintf(tieude, "Vừa đăng một bài viết:");
+            sprintf(noidung, "%s", title);
             DB_free_data(&result2);
         }else if(type == 1){ // chua hoan thanh chuc nang comment
             // thong bao ve comment
-            sprintf(sql, "select comment.content as content, title from post, comment where post.id = comment.post_id and comment.id = %d", link_id);
-            result2 = DB_get_by_id(&conn2, "comment", link_id);
-            title = DB_str_get_by(result2, "title");
-            content = DB_str_get_by(result2, "content");
-            sprintf(noidung, "đã bình luận bài viết: %s...\n%s...", title, content);
-            DB_free_data(&result2);
+//            sprintf(sql, "select comment.content as content, title from post, comment where post.id = comment.post_id and comment.id = %d", link_id);
+//            result2 = DB_get_by_id(&conn2, "comment", link_id);
+//            title = DB_str_get_by(result2, "title");
+//            content = DB_str_get_by(result2, "content");
+//            sprintf(noidung, "đã bình luận bài viết: %s...\n%s...", title, content);
+//            DB_free_data(&result2);
         }
         else if (type == 2){
             // thong bao co nguoi khac follow
-            sprintf(noidung, "đã follow bạn.");
+            sprintf(tieude, "Vừa follow bạn.");
         }
         else if(type == 3){
             // thong bao chap nhan loi moi ket ban
-            sprintf(noidung, "đã chấp nhận lời mời kết bạn.");
+            sprintf(tieude, "Đã chấp nhận lời mời kết bạn.");
         }
         param_add_int(&tail, id);
         param_add_str(&tail, username);
         param_add_str(&tail, avatar);
+        param_add_str(&tail, tieude);
         param_add_str(&tail, noidung);
         param_add_int(&tail, seen);
         response = data_create(root, NOTIFY);
         if (send_data(client, response, 0, 0) == -1){
             logger(L_ERROR, "%s - function: notify() - 176");
-            mysql_close(conn2);
+            DB_free_data(&result1);
             return -1;
         }
-        usleep(500);
-
+        usleep(100);
     }
-    mysql_close(conn2);
+    DB_free_data(&result1);
     return 1;
 }
-
 void server_listen() {
+    thread_root = list_create();
+    int ret, i;
     // Number of child processes
-
-    int client_sock = accept_connection(server_sock);
-    handle_client(client_sock);
+    for(;;) {
+        int client_sock = accept_connection(server_sock);
+        Thread thread = thread_create(client_sock);
+        pthread_mutex_lock(&mutex);
+        for (i = 0; i < thread_root->limit_size; i++){
+            Thread param = list_visit(thread_root, i);
+            if ((ret = pthread_kill( param->pthread, 0)) != 0){
+                Thread thread_dead = param;
+                free(thread_dead);
+                param = thread;
+            }
+        }
+        if (i == thread_root->limit_size){
+            list_insert_after(&thread_root, thread_root->limit_size-1, thread);
+        }
+        pthread_create(&thread->pthread,NULL,handle_client,(void*)&client_sock);
+        logger(L_INFO, "NUM THREAD = %d", thread_root->limit_size);
+        pthread_mutex_unlock(&mutex);
+    }
 }
 int main(int argc, char *argv[]){
     char *port = argv[1];
@@ -855,6 +1037,8 @@ int main(int argc, char *argv[]){
         logger(L_ERROR, "%s", mysql_error(conn));
         exit(1);
     }
+    signal(SIGCHLD, signalHandler);
+    signal(SIGINT, signalHandler);
     refresh(i2s, 10);
     intTostr(PORT, i2s);
     server_sock = server_init_connect(port);
