@@ -97,7 +97,6 @@ void signalHandler(int signo) {
         case SIGCHLD:
             break;
         case SIGINT:
-            close(server_sock);
             exit(SUCCESS);
     }
     return;
