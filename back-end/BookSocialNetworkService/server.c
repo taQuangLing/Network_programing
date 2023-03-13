@@ -9,16 +9,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include <mysql/mysql.h>
+#include <pthread.h>
+#include <bits/sigthread.h>
+#include <sys/wait.h>
 #include "lib/http.h"
 #include "lib/Data.h"
 #include "lib/AppUtils.h"
 #include "lib/config.h"
 #include "lib/DB.h"
+#include "lib/linklist.h"
 
+typedef struct thread_t{
+    pthread_t pthread;
+    int client;
+}*Thread;
+Thread thread_create(int client){
+    Thread thread = malloc(sizeof (struct thread_t));
+    thread->client = client;
+    return thread;
+}
 typedef struct sockaddr_in socketAddress;
 int server_sock;
 MYSQL *conn;
-
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+unsigned int childProcCount = 0;
+list *thread_root;
 
 int notify(int client, Param p);
 
@@ -70,6 +85,23 @@ void gen_token(char *token, char *id);
 
 int check_token(Data data);
 
+void signalHandler(int signo) {
+    pid_t pid;
+    int stat;
+    while ((pid = waitpid(-1, &stat, WNOHANG)) > 0)
+        printf("child %d terminated\n", pid);
+
+    printf("Caught signal %d, coming out...\n", signo);
+
+    switch (signo) {
+        case SIGCHLD:
+            break;
+        case SIGINT:
+            close(server_sock);
+            exit(SUCCESS);
+    }
+    return;
+}
 int login(int client, Param p){
     Data response;
     Param root, tail;
@@ -89,6 +121,7 @@ int login(int client, Param p){
         logger(L_WARN, "%s", "Email va mat khau khong hop le");
         response = data_create(NULL, INCORRECT_PASS);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }else{
         char token[21] = {0};
@@ -103,6 +136,7 @@ int login(int client, Param p){
                 refresh(sql, 1000);
                 sprintf(sql, "update user set token = '%s' where id = %s", token, data->data[0][j]);
                 if (DB_update_v2(&conn, sql) == -1){
+                    DB_free_data(&data);
                     return send_error(client);
                 }
                 break;
@@ -112,8 +146,10 @@ int login(int client, Param p){
     }
     if (send_data(client, response, 0, 0) == -1){
         logger(L_ERROR, "%s", "fuction: login - 48");
+        DB_free_data(&data);
         return -1;
     }
+    DB_free_data(&data);
     return 1;
 }
 
@@ -128,7 +164,8 @@ void gen_token(char *token, char *id) {
     strcpy(token + 6, timenow);
     token[20] = '\0';
 }
-void handle_client(int client){
+void *handle_client(void *data){
+    int client = *(int*)data;
     Data request;
     Param p;
     int status, connection = 1;
@@ -146,6 +183,7 @@ void handle_client(int client){
             p = request->params;
             option = request->message;
         }
+        pthread_mutex_lock(&mutex);
         switch (option) {
             case LOGIN:
                 status = login(client, p);
@@ -221,12 +259,16 @@ void handle_client(int client){
                 connection = 0;
                 break;
             default:
+                connection = 0;
                 break;
         }
         if (status == -1)break;
         if (request != NULL)data_free(&request);
         if (connection == 0)break;
+        pthread_mutex_unlock(&mutex);
     }
+    close(client);
+    return NULL;
 }
 
 int check_token(Data data) {
@@ -267,12 +309,14 @@ int delete_follower(int client, Param p) {
     if (data->size == 0){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 1;
     }
     int status = atoi(DB_str_get_by(data, "status"));
     if (status != 0){
         response = data_create(NULL, DELETE_FOLLOWER);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 1;
     }
     int id = atoi(DB_str_get_by(data, "id"));
@@ -281,11 +325,13 @@ int delete_follower(int client, Param p) {
     if (DB_update(&conn, "follow", id, key, value, 1) == -1){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }
     refresh(sql, 1000);
     response = data_create(NULL, SUCCESS);
     send_data(client, response, 0, 0);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -297,13 +343,16 @@ int seen_notifi(int client, Param p) {
     if (userid_t != userid){
         Data response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }
     char sql[1000] = {0};
     sprintf(sql, "update notification set seen = 1 where id = %d", noti_id);
     if (DB_update_v2(&conn, sql) == -1){
+        DB_free_data(&data);
         return send_error(client);
     }
+    DB_free_data(&data);
     return send_success(client);
 }
 
@@ -378,6 +427,7 @@ int posts(int client, Param p) {
     rsp = write_file(client, path); // luu file
     usleep(1000);
     if (rsp == -1){
+        DB_free_data(&data2);
         return send_error(client);
     }else if (rsp == 0)return send_fail(client);
     else send_success(client); // tra ve ket qua write file
@@ -385,6 +435,7 @@ int posts(int client, Param p) {
     sprintf(sql, "insert into post (user_id, title, content, image, status, created_at, path) value"
                  "(%d, '%s', '%s', '%s', %d, '%s', '%s')", userid, title, content, image, status, time_now, path);
     if (DB_insert_v2(&conn, sql) == -1){ // insert table
+        DB_free_data(&data2);
         return send_error(client);
     }
     Table data;
@@ -504,16 +555,19 @@ int follow(int client, Param p) {
         DB_insert_v2(&conn, sql);
         response = data_create(NULL, SUCCESS);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 1;
     }else{
         int status = DB_int_get_by(data, "status");
         if (status == 0){
             response = data_create(NULL, FOLLOWED);
             send_data(client, response, 0, 0);
+            DB_free_data(&data);
             return 1;
         }else if (status == 1){
             response = data_create(NULL, ACCEPTED);
             send_data(client, response, 0, 0);
+            DB_free_data(&data);
             return 1;
         }
     }
@@ -525,6 +579,7 @@ int follow(int client, Param p) {
     if (DB_update_v2(&conn, sql) == -1){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }
 
@@ -535,10 +590,12 @@ int follow(int client, Param p) {
         logger(L_WARN, "Function: accept_friend()");
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }
     response = data_create(NULL, SUCCESS);
     send_data(client, response, 0, 0);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -554,12 +611,14 @@ int accept_friend(int client, Param p) {
     if (data->size == 0){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 1;
     }
     int status = atoi(DB_str_get_by(data, "status"));
     if (status != 0){
         response = data_create(NULL, ACCEPTED);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 1;
     }
     int id = atoi(DB_str_get_by(data, "id"));
@@ -568,16 +627,19 @@ int accept_friend(int client, Param p) {
     if (DB_update(&conn, "follow", id, key, value, 1) == -1){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }
     refresh(sql, 1000);
     sprintf(sql, "insert into notification (to_user_id, from_user_id, type, seen) value (%d, %d, %d, 0)", others_id, userid, 3);
     if (DB_insert_v2(&conn, sql) == -1){
         logger(L_WARN, "Function: accept_friend()");
+        DB_free_data(&data);
         return 0;
     }
     response = data_create(NULL, SUCCESS);
     send_data(client, response, 0, 0);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -598,6 +660,7 @@ int unfollow(int client, Param p) {
     if (data->size == 0){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }
     int id = DB_int_get_by(data, "id");
@@ -610,6 +673,7 @@ int unfollow(int client, Param p) {
     if (status == -1 || data->size == 0 || (status == 0 && userid != userid_t)){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }
 
@@ -624,10 +688,12 @@ int unfollow(int client, Param p) {
     if (DB_update_v2(&conn, sql) == -1){
         response = data_create(NULL, FAIL);
         send_data(client, response, 0, 0);
+        DB_free_data(&data);
         return 0;
     }
     response = data_create(NULL, SUCCESS);
     send_data(client, response, 0, 0);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -664,6 +730,7 @@ int interaction(int client, Param p, MessageCode type) {
         return -1;
     }
     send_list_data(client, data);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -715,7 +782,7 @@ int search(int client, Param p) {
     Table data = DB_get(&conn, sql);
 
     send_list_data(client, data);
-
+    DB_free_data(&data);
     return 1;
 }
 int send_a_record(int client, Table data, int i){
@@ -790,6 +857,7 @@ int forgot_password(int client, Param p) {
         response = data_create(NULL, ERROR);
     }
     send_data(client, response, 0, 0);
+    DB_free_data(&data);
     data_free(&request);
     return 0;
 }
@@ -864,8 +932,9 @@ int open_book(int client, Param p) {
     }
     response = data_create(NULL, OK);
     send_data(client, response, 0, 0);
-    usleep(1000);
+    usleep(100);
     send_file(client, path);
+    DB_free_data(&data);
     return 1;
 }
 
@@ -927,18 +996,37 @@ int notify(int client, Param p) {
         response = data_create(root, NOTIFY);
         if (send_data(client, response, 0, 0) == -1){
             logger(L_ERROR, "%s - function: notify() - 176");
+            DB_free_data(&result1);
             return -1;
         }
         usleep(100);
     }
+    DB_free_data(&result1);
     return 1;
 }
-
 void server_listen() {
+    thread_root = list_create();
+    int ret, i;
     // Number of child processes
-
-    int client_sock = accept_connection(server_sock);
-    handle_client(client_sock);
+    for(;;) {
+        int client_sock = accept_connection(server_sock);
+        Thread thread = thread_create(client_sock);
+        pthread_mutex_lock(&mutex);
+        for (i = 0; i < thread_root->limit_size; i++){
+            Thread param = list_visit(thread_root, i);
+            if ((ret = pthread_kill( param->pthread, 0)) != 0){
+                Thread thread_dead = param;
+                free(thread_dead);
+                param = thread;
+            }
+        }
+        if (i == thread_root->limit_size){
+            list_insert_after(&thread_root, thread_root->limit_size-1, thread);
+        }
+        pthread_create(&thread->pthread,NULL,handle_client,(void*)&client_sock);
+        logger(L_INFO, "NUM THREAD = %d", thread_root->limit_size);
+        pthread_mutex_unlock(&mutex);
+    }
 }
 int main(int argc, char *argv[]){
     char *port = argv[1];
@@ -949,6 +1037,8 @@ int main(int argc, char *argv[]){
         logger(L_ERROR, "%s", mysql_error(conn));
         exit(1);
     }
+    signal(SIGCHLD, signalHandler);
+    signal(SIGINT, signalHandler);
     refresh(i2s, 10);
     intTostr(PORT, i2s);
     server_sock = server_init_connect(port);

@@ -162,7 +162,7 @@ void lnode_flush(list * list_head ,int num ,void* new_node_data){
 	current->data=new_node_data;
 }
 
-void list_delete(list ** list_head ,int num){
+void list_delete_v2(list ** list_head ,int num){
 	int i = 0;
 	node* current;
 	node* tmp;
@@ -260,7 +260,7 @@ int list_search(list ** list_head,void* find_data ,int(*compare)(void* ,void* ))
 	      return 0;
 	return counter;
 }
-void list_free(list * root){
+void list_free_v2(list * root){
 	if(root->limit_size<0 || root==NULL){
 		errno=EINVAL;
 		return ;
