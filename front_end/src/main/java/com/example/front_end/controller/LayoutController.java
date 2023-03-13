@@ -1,5 +1,6 @@
 package com.example.front_end.controller;
 
+import com.example.front_end.Loader;
 import com.example.front_end.NotificationCell;
 import com.example.front_end.PostCell;
 import com.example.front_end.appUtils.AppUtils;
@@ -11,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
