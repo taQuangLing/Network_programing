@@ -14,7 +14,7 @@
 #define L_WARN "warn"
 #define L_ERROR "display_error"
 
-
+#define TIME 5
 #define USERNAME_LEN 50
 #define PASSWORD_LEN 50
 #define EMAIL_LEN 50
