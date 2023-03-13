@@ -1,8 +1,9 @@
 package com.example.front_end.appUtils;
 
 import com.example.front_end.controller.ScreenController;
-import javafx.scene.Scene;
 import lombok.Data;
+
+import java.util.HashMap;
 
 @Data
 public class GlobalVariable {
@@ -28,9 +29,5 @@ public class GlobalVariable {
 
     public ScreenController getScreenController() {
         return screenController;
-    }
-
-    public void setCount(ScreenController screenController) {
-        this.screenController = screenController;
     }
 }

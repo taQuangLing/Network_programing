@@ -39,10 +39,10 @@
 .list-view .cell{
     -fx-background-color: white;
 }
-.list-view .cell:selected {
+.list-view .cell:selected .pane:selected{
     -fx-background-color: transparent;
 }
-.list-view:focused {
+.list-view:focused .pane:selected{
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
@@ -50,9 +50,10 @@
     -fx-background-color: white;
     -fx-text-fill: #333;
     -fx-opacity: 1;
+    -fx-border-color: gray;
 }
 .profile-bio-text{
-    -fx-text-fill: #bbb;
+    -fx-text-fill: #7e7c7c;
 }
 .slide-down{
     -fx-border-width: 0 2px 2px 2px;
