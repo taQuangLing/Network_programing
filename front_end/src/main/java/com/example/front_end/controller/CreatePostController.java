@@ -83,6 +83,7 @@ public class CreatePostController {
             protected Void call() throws Exception {
                 // handle
                 sendData(clientSock, request);
+                Thread.sleep(100);
                 AppUtils.sendFile(selectFile);
 
                 Data rsp = recvData(clientSock);
@@ -111,7 +112,7 @@ public class CreatePostController {
                     createPostAnchorPane.getParent().setVisible(false);
 
                 } else {
-                    Message message = new Message(MessageCode.WARNING, "Vui lòng thử lại");
+                    message = new Message(MessageCode.WARNING, "Vui lòng thử lại");
                 }
                 return null;
             }
